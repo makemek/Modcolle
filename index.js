@@ -14,26 +14,29 @@ app.get('/', function (req, res) {
 });
 
 // URIs where Kancolle make a request to external resources
-app.get('/:file', sendStaticFile);
-app.get('/scenes/:file', sendStaticFile);
-app.get('/resources/swf/:file', sendStaticFile);
+app.get('/:file', sendStaticFile());
+app.get('/scenes/:file', sendStaticFile());
+app.get('/resources/swf/:file', sendStaticFile());
 
 app.listen(80, function() {
    console.log('Example app listening on port 80');
 })
 
-function sendStaticFile(req, res) {
-   console.log('-------Request File-------');
-   console.log('Filename: ' + req.params.file);
-   console.log('Parameters: ' + JSON.stringify(req.query));
+function sendStaticFile() {
 
-   var file = path.join(__dirname, req.params.file);
-   var filename = path.basename(file);
+   return function(req, res) {
+      console.log('-------Request File-------');
+      console.log('Filename: ' + req.params.file);
+      console.log('Parameters: ' + JSON.stringify(req.query));
 
-   var mimetype = mime.lookup(file);
-   console.log('Mimetype: ' + mimetype);
+      var file = path.join(__dirname, req.baseUrl, req.path);
+      var filename = path.basename(file);
+
+      var mimetype = mime.lookup(file);
+      console.log('Mimetype: ' + mimetype);
 
 
-   res.setHeader('Content-Type', mimetype);
-   res.sendFile(file)
+      res.setHeader('Content-Type', mimetype);
+      res.sendFile(file)
+   }
 }
