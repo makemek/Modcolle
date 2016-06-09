@@ -10,12 +10,15 @@ app.get('/mainD2.swf', function(req, res) {
    res.sendFile(path.join(__dirname, 'mainD2.swf'))
 })
 
-app.get('/:file', function(req, res) {
-   console.log('Request');
+var downloadSWF = function(req, res) {
+   console.log('-------Request File-------');
    console.log(req.params);
    console.log(req.query);
    res.download(path.join(__dirname, req.params.file))
-})
+}
+
+app.get('/:file', downloadSWF);
+app.get('/scenes/:file', downloadSWF);
 
 app.listen(80, function() {
    console.log('Example app listening on port 80');
