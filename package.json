@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "express": "^4.13.4",
+    "inherit": "^2.2.3",
     "url-join": "^1.1.0"
   },
   "devDependencies": {
