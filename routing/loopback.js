@@ -10,12 +10,6 @@ var path = require('path');
 var settings = require('../settings');
 var kancolleExternal = require('../model/kancolleExternal')
 
-var onlyMp3AndSwf = /^.*\.(swf|mp3)$/i;
-
-router.get(onlyMp3AndSwf, function(req, res) {
-   retrieveLocalKancolleFile(res, path.join(req.baseUrl, req.path));
-});
-
 router.get('/resources/image/world/:worldImg.png', function(req, res) {
    var host = new RegExp(req.headers.host, 'gi');
    var worldImageUrl = req.url.replace(host, settings.MY_WORLD_SERVER)
@@ -24,6 +18,11 @@ router.get('/resources/image/world/:worldImg.png', function(req, res) {
 
    retrieveLocalKancolleFile(res, worldImageUrl);
 })
+
+var onlyMp3AndSwf = /^.*\.(swf|mp3|png)$/i;
+router.get(onlyMp3AndSwf, function(req, res) {
+   retrieveLocalKancolleFile(res, path.join(req.baseUrl, req.path));
+});
 
 function retrieveLocalKancolleFile(res, path2file) {
    console.log('-------Request File-------');
@@ -42,6 +41,7 @@ function retrieveLocalKancolleFile(res, path2file) {
 
 function retriveOnlineKancolleFile(res, path2file) {
    var onlineResourceUrl = kancolleExternal.kcsResource(path2file);
+   console.log('Request external resource ' + onlineResourceUrl);
    res.redirect(onlineResourceUrl);
 }
 
