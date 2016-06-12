@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.13.4",
     "inherit": "^2.2.3",
+    "request": "^2.72.0",
     "url-join": "^1.1.0"
   },
   "devDependencies": {

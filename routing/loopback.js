@@ -8,7 +8,8 @@ var router = express.Router();
 var path = require('path');
 
 var settings = require('../settings');
-var kancolleExternal = require('../model/kancolleExternal')
+var kancolleExternal = require('../model/kancolleExternal');
+var agent = require('request');
 
 router.get('/resources/image/world/:worldImg.png', function(req, res) {
    var host = new RegExp(req.headers.host, 'gi');
@@ -43,7 +44,7 @@ function retriveOnlineKancolleFile(kcsUrl) {
    return function(res) {
       var onlineResourceUrl = kancolleExternal.kcsResource(kcsUrl);
       console.log('Request external resource ' + onlineResourceUrl);
-      res.redirect(onlineResourceUrl);
+      agent.get(onlineResourceUrl).pipe(res);
    }
 }
 
