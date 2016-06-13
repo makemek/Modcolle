@@ -19,11 +19,13 @@ var agent = {
 		return request.get(url, onResponse).pipe(res);
 	},
 
-	postRequest: function(_url, req, onResponse) {
+	apiRequest: function(_url, req, onResponse) {
+		var returnResponseAsBuffer = null;
 		request.post({
 			url: _url, 
 			form: req.body,
-			headers: forgeKancolleHttpRequestHeader(req.headers)
+			headers: forgeKancolleHttpRequestHeader(req.headers),
+			encoding: returnResponseAsBuffer
 		}, onResponse);
 	}
 }
