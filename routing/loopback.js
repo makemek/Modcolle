@@ -1,3 +1,4 @@
+'use strict';
 /*
  * Handle Kancolle's request to external resources
  */

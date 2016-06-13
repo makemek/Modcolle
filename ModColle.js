@@ -1,7 +1,8 @@
-'use strict'
-var inherit = require('inherit');
-var express = require('express');
-var bodyParser = require('body-parser');
+'use strict';
+
+const inherit = require('inherit');
+const express = require('express');
+const bodyParser = require('body-parser');
 
 var Application = {
 

@@ -1,8 +1,10 @@
-var express = require('express');
-var router = express.Router();
+'use strict';
 
-var kancolleExternal = require('../../model/kancolleExternal');
-var agent = require('../../model/agent');
+const express = require('express');
+const router = express.Router();
+
+const kancolleExternal = require('../../model/kancolleExternal');
+const agent = require('../../model/agent');
 
 router.post('/*', function(req, res, next) {
 	var apiUrl = kancolleExternal.api(req.url);

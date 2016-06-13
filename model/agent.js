@@ -1,9 +1,11 @@
-var settings = require('../settings');
-var request = require('request');
-var path = require('path');
-var urljoin = require('url-join');
+'use strict';
 
-var kancolleExternal = require('./kancolleExternal');
+const settings = require('../settings');
+const request = require('request');
+const path = require('path');
+const urljoin = require('url-join');
+
+const kancolleExternal = require('./kancolleExternal');
 
 var agent = {
 

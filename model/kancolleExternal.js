@@ -1,23 +1,25 @@
-var inherit = require('inherit');
-var urljoin = require('url-join');
-var settings = require('../settings');
+'use strict';
+
+const inherit = require('inherit');
+const urljoin = require('url-join');
+const settings = require('../settings');
 
 var kancolleExternal = {
 	kcsResource: function(url) {
-		var baseDir = 'kcs';
-		var fullUrl = urljoin(this.host(), baseDir, url);
+		const BASE_DIR = 'kcs';
+		var fullUrl = urljoin(this.host(), BASE_DIR, url);
 		return fullUrl;
 	},
 
 	api: function(url) {
-		var baseDir = 'kcsapi';
-		var fullUrl = urljoin(this.host(), baseDir, url);
+		const BASE_DIR = 'kcsapi';
+		var fullUrl = urljoin(this.host(), BASE_DIR, url);
 		return fullUrl;
 	},
 
 	host: function() {
-		var protocol = 'http';
-		return protocol + '://' + settings.MY_WORLD_SERVER;
+		const PROTOCOL = 'http';
+		return PROTOCOL + '://' + settings.MY_WORLD_SERVER;
 	}
 }
 

@@ -1,7 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var path = require('path');
-var settings = require('../settings');
+'use strict';
+
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const settings = require('../settings');
 
 router.get('/', function (req, res) {
   res.sendFile(path.join(__SERVER_ROOT, 'views', 'index.html'));
