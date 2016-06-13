@@ -1,12 +1,14 @@
 'use strict'
 var inherit = require('inherit');
 var express = require('express');
+var bodyParser = require('body-parser');
 
 var Application = {
 
 	__constructor: function() {
 		this.app = express();
 
+		setupMiddleware(this.app);
 		setupDefaultLocalResponseHeader(this.app);
 		setupRouting(this.app);
 	},
@@ -29,5 +31,9 @@ function setupRouting(app) {
 	app.use('/kcsapi', require('./routing/kcsapi'));
 }
 
+function setupMiddleware(app) {
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: true }));
+}
 
 module.exports = exports = inherit(Application);

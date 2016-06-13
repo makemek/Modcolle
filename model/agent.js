@@ -1,6 +1,9 @@
 var settings = require('../settings');
 var request = require('request');
 var path = require('path');
+var urljoin = require('url-join');
+
+var kancolleExternal = require('./kancolleExternal');
 
 var agent = {
 
@@ -14,11 +17,36 @@ var agent = {
 		return request.get(url, onResponse).pipe(res);
 	},
 
-	postRequest: function(_url, parameters, onResponse) {
-		return request.post({
+	postRequest: function(_url, req, onResponse) {
+		request.post({
 			url: _url, 
-			form: parameters
+			form: req.body,
+			headers: forgeKancolleHttpRequestHeader(req.headers)
 		}, onResponse);
+	}
+}
+
+function forgeKancolleHttpRequestHeader(httpHeader) {
+	var headers = cloneHeader(httpHeader);
+	modifyHeader(settings.MY_WORLD_SERVER, kancolleExternal.host());
+	avoidSocketHangup();
+
+	return headers;
+
+	function avoidSocketHangup() {
+		delete headers['connection'];
+		delete headers['content-length'];
+		delete headers['content-type'];
+	}
+
+	function cloneHeader(header) {
+		return JSON.parse(JSON.stringify(header));
+	}
+
+	function modifyHeader(serverIp, hostRoot) {
+		headers['host'] = serverIp;
+		headers['origin'] = hostRoot;
+		headers['referer'] = httpHeader.referer.replace(httpHeader.host, serverIp);
 	}
 }
 
