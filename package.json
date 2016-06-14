@@ -12,7 +12,9 @@
   "dependencies": {
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
     "inherit": "^2.2.3",
+    "moment-timezone": "^0.5.4",
     "request": "^2.72.0",
     "url-join": "^1.1.0"
   },
