@@ -27,7 +27,7 @@ router.post('/*', function(req, res, next) {
 			appLog.info('----API RESPONSE----');
 			appLog.info(jsonResponse); 
 			appLog.info('----END RESPONSE----');
-			res.send(response);
+			res.json(jsonResponse);
 		});
 	});
 	// res.redirect(307, apiUrl);
