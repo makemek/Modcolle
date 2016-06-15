@@ -44,7 +44,7 @@ function handleFileNotFound(urlDownload, res, next) {
             appLog.debug('Response header: ' + response.headers);
          });
       }
-      else {
+      else if(error) {
          appLog.error(error);
          return next(error);
       }
