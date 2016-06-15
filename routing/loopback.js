@@ -37,7 +37,12 @@ function handleFileNotFound(urlDownload, res, next) {
          var resource = kancolleExternal.kcsResource(urlDownload);
          appLog.info('File not found or not cached');
          appLog.info('Get resource from: ' + resource);
-         return agent.download(res, resource);
+         return agent.download(res, resource, function(response) {
+            appLog.info('Download Completed');
+            appLog.info('Source URL: ' + resource);
+            appLog.debug('Return status code: ' + response.statusCode);
+            appLog.debug('Response header: ' + response.headers);
+         });
       }
       else {
          appLog.error(error);

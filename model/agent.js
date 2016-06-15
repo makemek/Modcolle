@@ -17,7 +17,7 @@ var agent = {
 	},
 
 	download: function(res, url, onResponse) {
-		return request.get(url, onResponse).pipe(res);
+		return request.get(url).on('response', onResponse).pipe(res);
 	},
 
 	apiRequest: function(_url, req, onResponse) {
