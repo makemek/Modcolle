@@ -3,12 +3,12 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const settings = require('../settings');
+const settings = require('nconf');
 const moment = require('moment-timezone');
 
 router.get('/', function (req, res) {
 	res.render('index', {
-		API_TOKEN: settings.API_TOKEN,
+		API_TOKEN: settings.get('API_TOKEN'),
 		API_START_TIME: currentJapanUnixTime()
 	})
 });

@@ -2,7 +2,7 @@
 
 const inherit = require('inherit');
 const urljoin = require('url-join');
-const settings = require('../settings');
+const settings = require('nconf');
 
 var kancolleExternal = {
 	kcsResource: function(url) {
@@ -19,7 +19,7 @@ var kancolleExternal = {
 
 	host: function() {
 		const PROTOCOL = 'http';
-		return PROTOCOL + '://' + settings.MY_WORLD_SERVER;
+		return PROTOCOL + '://' + settings.get('MY_WORLD_SERVER');
 	}
 }
 

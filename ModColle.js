@@ -4,11 +4,13 @@ const inherit = require('inherit');
 const express = require('express');
 const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
+const settings = require('nconf');
 
 var Application = {
 
 	__constructor: function() {
 		this.app = express();
+		this.config = settings.argv().env().file('settings.json');
 
 		setupMiddleware(this.app);
 		setupTemplateEngine(this.app);

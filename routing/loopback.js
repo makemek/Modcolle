@@ -6,13 +6,13 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 
-var settings = require('../settings');
+var settings = require('nconf');
 var kancolleExternal = require('../model/kancolleExternal');
 var agent = require('../model/agent');
 
 router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
    var host = new RegExp(req.headers.host, 'gi');
-   var worldImageUrl = req.url.replace(host, settings.MY_WORLD_SERVER)
+   var worldImageUrl = req.url.replace(host, settings.get('MY_WORLD_SERVER'))
    .replace(/\./g, '_')
    .replace('_png', '.png');
 
