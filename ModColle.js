@@ -4,14 +4,16 @@ const inherit = require('inherit');
 const express = require('express');
 const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
-const settings = require('nconf');
+const nconf = require('nconf');
+const winston = require('winston');
 
 var Application = {
 
 	__constructor: function() {
 		this.app = express();
-		this.config = settings.argv().env().file('settings.json');
-
+		
+		loadConfig();
+		setupLogger();
 		setupMiddleware(this.app);
 		setupTemplateEngine(this.app);
 		setupDefaultLocalResponseHeader(this.app);
@@ -56,6 +58,19 @@ function setupTemplateEngine(app) {
 
 	app.engine(engineName, hbs.engine);
 	app.set('view engine', engineName);
+}
+
+function loadConfig() {
+	nconf.argv().env();
+	nconf.add('settings', {type: 'file', file: 'settings.json'});
+	nconf.add('logger', {type: 'file', file: 'loggerSettings.json'});
+}
+
+function setupLogger() {
+	var loggerConfig = nconf.get('logger');
+	Object.keys(loggerConfig).forEach(function(key) {
+	    winston.loggers.add(key, loggerConfig[key]);
+	});
 }
 
 module.exports = exports = inherit(Application);

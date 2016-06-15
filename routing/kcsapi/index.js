@@ -6,22 +6,27 @@ const zlib = require('zlib');
 
 const kancolleExternal = require('../../model/kancolleExternal');
 const agent = require('../../model/agent');
+const appLog = require('winston').loggers.get('app');
+const expressLog = require('winston').loggers.get('express');
 
 router.post('/*', function(req, res, next) {
+	expressLog.info('POST: ' + req.url);
 	var apiUrl = kancolleExternal.api(req.url);
-	console.log('----API REQUEST----');
-	console.log('POST API: ' + apiUrl);
-	console.log('Parameters: ' + JSON.stringify(req.body));
+	appLog.info('----API REQUEST----');
+	appLog.info('POST API: ' + apiUrl);
+	appLog.info('Parameters: ', req.body);
 
 	agent.apiRequest(apiUrl, req, function(error, httpResponse, body) {
-		if(error)
+		if(error) {
+			appLog.error(error);
 			return next(error);
+		}
 
 		decodeResponse(httpResponse, body, function(response) {
-			// uncomment this to view response from API
-			console.log('----API RESPONSE----');
-			console.log(response); 
-			console.log('----END RESPONSE----');
+			var jsonResponse = JSON.parse(response.replace('svdata=', ''));
+			appLog.info('----API RESPONSE----');
+			appLog.info(jsonResponse); 
+			appLog.info('----END RESPONSE----');
 			res.send(response);
 		});
 	});

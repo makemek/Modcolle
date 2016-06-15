@@ -4,6 +4,7 @@ const settings = require('nconf');
 const request = require('request');
 const path = require('path');
 const urljoin = require('url-join');
+const appLog = require('winston').loggers.get('app');
 
 const kancolleExternal = require('./kancolleExternal');
 
@@ -11,7 +12,7 @@ var agent = {
 
 	load: function(res, path2file, onError) {
 		var file = path.resolve(path.join(__SERVER_ROOT, settings.get('KANCOLLE_BASE_DIR'), path2file));
-		console.log('Load file: ' + file);
+		appLog.info('Load file: ' + file);
 		return res.sendFile(file, {}, onError);
 	},
 

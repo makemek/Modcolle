@@ -1,0 +1,20 @@
+{
+    "logger": {
+        "express": {
+            "console": {
+                "level": "info",
+                "colorize": true,
+                "timestamp": true,
+                "label": "express"
+            }
+        },
+        "app": {
+            "console": {
+                "level": "info",
+                "colorize": true,
+                "timestamp": true,
+                "label": "app"
+            }
+        }
+    }
+}
