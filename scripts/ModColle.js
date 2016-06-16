@@ -46,24 +46,26 @@ function setupMiddleware(app) {
 function setupTemplateEngine(app) {
 	var engineName = 'hbs';
 	var templateExtension = 'hbs';
+	var baseDirView = 'scripts/views';
 
 	var options = {
 		defaultLayout: 'defaultLayout', 
 		extname: templateExtension,
 
-		layoutDir: 'views/layout',
-		partialsDir: 'views/partial'
+		layoutsDir: baseDirView + '/layouts',
+		partialsDir: baseDirView + '/partials'
 	}
 	var hbs = expressHandlebars.create(options);
 
 	app.engine(engineName, hbs.engine);
+	app.set('views', baseDirView);
 	app.set('view engine', engineName);
 }
 
 function loadConfig() {
 	nconf.argv().env();
-	nconf.add('settings', {type: 'file', file: 'settings.json'});
-	nconf.add('logger', {type: 'file', file: 'loggerSettings.json'});
+	nconf.add('settings', {type: 'file', file: 'scripts/config/settings.json'});
+	nconf.add('logger', {type: 'file', file: 'scripts/config/loggerSettings.json'});
 }
 
 function setupLogger() {

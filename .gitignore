@@ -1,5 +1,5 @@
 # Project gitignore
-settings.json
+scripts/config/settings.json
 
 
 # Nodejs gitignore template
