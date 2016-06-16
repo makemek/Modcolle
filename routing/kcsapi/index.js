@@ -10,12 +10,13 @@ const appLog = require('winston').loggers.get('app');
 const expressLog = require('winston').loggers.get('express');
 
 router.post('/*', function(req, res, next) {
-	expressLog.info('POST: ' + req.url);
-	var apiUrl = kancolleExternal.api(req.url);
-	appLog.info('----API REQUEST----');
-	appLog.info('POST API: ' + apiUrl);
-	appLog.info('Parameters: ', req.body);
+	expressLog.info('POST: ' + req.originalUrl);
+	expressLog.verbose('Parameters: ', req.body);
 
+	var apiUrl = kancolleExternal.api(req.url);
+
+	appLog.info('Call Kancolle API: ' + apiUrl);
+	appLog.verbose('Parameters: ', req.body);
 	agent.apiRequest(apiUrl, req, function(error, httpResponse, body) {
 		if(error) {
 			appLog.error(error);
@@ -24,9 +25,11 @@ router.post('/*', function(req, res, next) {
 
 		decodeResponse(httpResponse, body, function(response) {
 			var jsonResponse = JSON.parse(response.replace('svdata=', ''));
-			appLog.info('----API RESPONSE----');
-			appLog.info(jsonResponse); 
-			appLog.info('----END RESPONSE----');
+			appLog.info('API response received from ' + apiUrl);
+			appLog.verbose('Send response back to ' + req.headers['referer']);
+			appLog.verbose('----API RESPONSE----');
+			appLog.verbose(jsonResponse); 
+			appLog.verbose('----END OF RESPONSE----');
 			res.json(jsonResponse);
 		});
 	});

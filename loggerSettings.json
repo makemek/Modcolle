@@ -5,6 +5,7 @@
                 "level": "info",
                 "colorize": true,
                 "timestamp": true,
+                "prettyPrint": true,
                 "label": "express"
             }
         },
@@ -13,6 +14,7 @@
                 "level": "info",
                 "colorize": true,
                 "timestamp": true,
+                "prettyPrint": true,
                 "label": "app"
             }
         }
