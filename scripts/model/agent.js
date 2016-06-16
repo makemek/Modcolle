@@ -52,6 +52,7 @@ function forgeKancolleHttpRequestHeader(httpHeader) {
 		headers['host'] = serverIp;
 		headers['origin'] = hostRoot;
 		headers['referer'] = httpHeader.referer.replace(httpHeader.host, serverIp);
+		headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36';
 	}
 }
 
