@@ -17,6 +17,15 @@
                 "prettyPrint": true,
                 "label": "app"
             }
+        },
+        "agent": {
+            "console": {
+                "level": "info",
+                "colorize": true,
+                "timestamp": true,
+                "prettyPrint": true,
+                "label": "agent"
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ const request = require('request');
 const path = require('path');
 const urljoin = require('url-join');
 const urlparse = require('url-parse');
-const appLog = require('winston').loggers.get('app');
+const agentLog = require('winston').loggers.get('agent');
 
 const kancolleExternal = require('./kancolleExternal');
 
@@ -13,18 +13,20 @@ var agent = {
 
 	load: function(res, path2file, onError) {
 		var file = path.resolve(path.join(__SERVER_ROOT, settings.get('KANCOLLE_BASE_DIR'), path2file));
-		appLog.info('Load file: ' + file);
+		agentLog.info('Load file: ' + file);
 		return res.sendFile(file, {}, onError);
 	},
 
 	download: function(res, url, onResponse) {
 		var parsedUrl = removeUrlParameterSensitiveData(url);
-		appLog.verbose('Remove sensitive data in URL parameters');
-		appLog.verbose('Parsed URL: ' + parsedUrl);
+		agentLog.info('Download: ' + parsedUrl);
+		agentLog.verbose('Remove sensitive data in URL parameters');
+		agentLog.verbose('Parsed URL: ' + parsedUrl);
 		return request.get(parsedUrl).on('response', onResponse).pipe(res);
 	},
 
 	apiRequest: function(_url, req, onResponse) {
+		agentLog.info('POST URL: ' + _url);
 		var returnResponseAsBuffer = null;
 		request.post({
 			url: _url, 
@@ -36,6 +38,7 @@ var agent = {
 }
 
 function forgeKancolleHttpRequestHeader(httpHeader) {
+	agentLog.verbose('Forge HTTP header to match with HTTP request from browser');
 	var headers = cloneHeader(httpHeader);
 	modifyHeader(settings.MY_WORLD_SERVER, kancolleExternal.host());
 	avoidSocketHangup();
