@@ -38,6 +38,10 @@ function handleFileNotFound(urlDownload, res, next) {
          appLog.info('File not found or not cached');
          appLog.info('Get resource from: ' + resource);
          return agent.download(res, resource, function(response) {
+            if(response.statusCode != 200) {
+               appLog.error(error);
+               return next(error);
+            }
             appLog.info('Download Completed');
             appLog.info('Source URL: ' + resource);
             appLog.debug('Return status code: ' + response.statusCode);
