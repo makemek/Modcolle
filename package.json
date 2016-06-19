@@ -19,6 +19,7 @@
     "request": "^2.72.0",
     "url-join": "^1.1.0",
     "url-parse": "^1.1.1",
+    "validator": "^5.4.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
