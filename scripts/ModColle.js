@@ -9,8 +9,9 @@ const winston = require('winston');
 
 var Application = {
 
-	__constructor: function() {
+	__constructor: function(port) {
 		this.app = express();
+		this.port = port;
 		
 		loadConfig();
 		setupLogger();
@@ -20,8 +21,8 @@ var Application = {
 		setupRouting(this.app);
 	},
 
-	start: function(port, afterStart) {
-		this.app.listen(port, afterStart);
+	start: function(afterStart) {
+		this.app.listen(this.port, afterStart);
 	}
 }
 

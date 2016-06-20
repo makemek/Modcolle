@@ -12,7 +12,7 @@ const kancolleExternal = require('./kancolleExternal');
 var agent = {
 
 	load: function(res, path2file, onError) {
-		var file = path.resolve(path.join(__SERVER_ROOT, settings.get('KANCOLLE_BASE_DIR'), path2file));
+		var file = path.resolve(path.join(settings.get('KANCOLLE_BASE_DIR'), path2file));
 		agentLog.info('Load file: ' + file);
 		return res.sendFile(file, {}, onError);
 	},
