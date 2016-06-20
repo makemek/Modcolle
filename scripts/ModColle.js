@@ -7,6 +7,8 @@ const expressHandlebars = require('express-handlebars');
 const nconf = require('nconf');
 const winston = require('winston');
 
+const router = require('./routing/');
+
 var Application = {
 
 	__constructor: function(port) {
@@ -32,9 +34,7 @@ function setupDefaultLocalResponseHeader(app) {
 }
 
 function setupRouting(app) {
-	app.use('/', require('./routing/index'));
-	app.use('/', require('./routing/loopback'));
-	app.use('/kcsapi', require('./routing/kcsapi'));
+	app.use('/', router);
 }
 
 function setupMiddleware(app) {
