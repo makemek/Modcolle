@@ -4,7 +4,7 @@ const nconf = require('nconf');
 const winston = require('winston');
 loadConfig();
 
-const App = require('./ModColle');
+const App = require('./modcolle');
 
 function startServer(port) {
 	var modColle = new App(port);
