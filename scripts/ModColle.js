@@ -13,8 +13,6 @@ var Application = {
 		this.app = express();
 		this.port = port;
 		
-		loadConfig();
-		setupLogger();
 		setupMiddleware(this.app);
 		setupTemplateEngine(this.app);
 		setupDefaultLocalResponseHeader(this.app);
@@ -63,17 +61,6 @@ function setupTemplateEngine(app) {
 	app.set('view engine', engineName);
 }
 
-function loadConfig() {
-	nconf.argv().env();
-	nconf.add('settings', {type: 'file', file: 'scripts/config/settings.json'});
-	nconf.add('logger', {type: 'file', file: 'scripts/config/loggerSettings.json'});
-}
 
-function setupLogger() {
-	var loggerConfig = nconf.get('logger');
-	Object.keys(loggerConfig).forEach(function(key) {
-	    winston.loggers.add(key, loggerConfig[key]);
-	});
-}
 
 module.exports = exports = inherit(Application);
