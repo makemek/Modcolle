@@ -1,6 +1,6 @@
 'use strict';
 
-const agent = require('../scripts/model/agent');
+const agent = require('../../scripts/model/agent');
 
 describe('kancolle agent', function() {
 
