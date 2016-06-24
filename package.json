@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha test/**/test*.js --reporter spec",
     "start": "nodemon index.js"
   },
   "author": "",
@@ -23,6 +23,8 @@
     "winston": "2.2.0"
   },
   "devDependencies": {
+    "chai": "3.5.0",
+    "mocha": "2.5.3",
     "nodemon": "^1.9.2"
   }
 }
