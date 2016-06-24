@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/**/test*.js --reporter spec",
+    "test": "./node_modules/.bin/mocha test/**/test*.js --reporter spec --require test/spec/helper/chai.js",
     "start": "nodemon index.js"
   },
   "author": "",
