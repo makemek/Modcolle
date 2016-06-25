@@ -8,9 +8,9 @@ var DmmAccount = {
 		this.password = password || '';
 	},
 
-	login: function(onSuccess, onFailure) {
-		if(!this.email.length) return onFailure('email is empty');
-		if(!this.password.length) return onFailure('password is empty');
+	login: function(cookieCallback) {
+		if(!this.email.length) return cookieCallback(new Error('email is empty'));
+		if(!this.password.length) return cookieCallback(new Error('password is empty'));
 	}
 }
 
