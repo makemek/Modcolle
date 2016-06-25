@@ -8,24 +8,24 @@ const kancolleExternal = require('../../scripts/model/kancolleExternal');
 
 describe('kancolle agent', function() {
 
-	var configMock;
+	var config, configBaseDir, configServer;
 	const KANCOLLE_CONFIG = {
 		baseDir: 'base',
 		serv: '0.0.0.0'
 	}
 
 	beforeEach(function() {
-		configMock = sinon.mock(nconf);
+		config = sinon.stub(nconf, 'get');
+		configBaseDir = config.withArgs('KANCOLLE_BASE_DIR').returns(KANCOLLE_CONFIG.baseDir);
+		configServer = config.withArgs('MY_WORLD_SERVER').returns(KANCOLLE_CONFIG.serv);
 	})
 
 	afterEach(function() {
-		configMock.restore();
+		config.restore();
 	})
 
 	it('load file locally', sinon.test(function() {
 		const FILE = 'someFile';
-
-		configMock.expects('get').withArgs('KANCOLLE_BASE_DIR').returns(KANCOLLE_CONFIG.baseDir);
 
 		var res = {
 			sendFile: function(file, arg, onError){}
@@ -46,8 +46,6 @@ describe('kancolle agent', function() {
 		var sensitiveParams = '?api_token=abc&api_starttime=1234'
 		var url = 'http://www.example.com';
 		const KCS_URL = 'http://www.kcs.com';
-
-		configMock.expects('get').withArgs('MY_WORLD_SERVER').returns(KANCOLLE_CONFIG.serv);
 
 		var res = sinon.spy();
 		var callback = sinon.spy();
@@ -72,11 +70,7 @@ describe('kancolle agent', function() {
 		expect(param.headers['x-requested-with']).to.match(/flash/i);
 	}))
 
-	it('call api with valid url', function() {
+	it('call API', function() {
 
-	})
-
-	it('call api with invalid url', function() {
-		
 	})
 })
