@@ -15,13 +15,10 @@ describe('DMM account', function() {
 		expectError(account);
 	}))
 
-	it.skip('login fail due to incorrect email or password', sinon.test(function() {
-		var cookieCallback = this.spy();
+	it('login fail due to incorrect email or password', sinon.test(function() {
 		var account = new DmmAccount('john@example.com', '1234');
-		account.login(cookieCallback);
-
-		sinon.assert.called(cookieCallback);
-		console.log(cookieCallback.args);
+		var error = expectError(account);
+		console.log(error);
 	}))
 
 	it.skip('login success', function() {
