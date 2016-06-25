@@ -31,8 +31,8 @@ describe('kancolle agent', function() {
 		var res = {
 			sendFile: function(){}
 		}
-		var sendFile = sinon.stub(res, 'sendFile');
-		var errorCallback = sinon.stub();
+		var sendFile = this.stub(res, 'sendFile');
+		var errorCallback = this.stub();
 
 		agent.load(res, FILE, errorCallback);
 		sinon.assert.calledOnce(sendFile);
@@ -49,8 +49,8 @@ describe('kancolle agent', function() {
 		var url = 'http://www.example.com';
 		const KCS_URL = 'http://www.kcs.com';
 
-		var res = sinon.spy();
-		var callback = sinon.spy();
+		var res = this.spy();
+		var callback = this.spy();
 		var mockRes = {
 			on: function() {
 				return this;
@@ -60,8 +60,8 @@ describe('kancolle agent', function() {
 				return this;
 			}
 		}
-		var httpGet = sinon.stub(request, 'get').returns(mockRes);
-		sinon.stub(kancolleExternal, 'host').returns(KCS_URL);
+		var httpGet = this.stub(request, 'get').returns(mockRes);
+		var kancolleHost = this.stub(kancolleExternal, 'host').returns(KCS_URL);
 
 		agent.download(res, url + sensitiveParams, callback);
 
@@ -72,7 +72,25 @@ describe('kancolle agent', function() {
 		expect(param.headers['x-requested-with']).to.match(/flash/i);
 	}))
 
-	it('call API', function() {
+	it('call API', sinon.test(function() {
+		var url = 'http://api.example.com';
+		var req = {
+			body: {},
+			headers: {someHeader: 'header'}
+		}
+		var reqStub = this.stub(req);
+		var httpPost = this.stub(request, 'post');
 
-	})
+		agent.apiRequest(url, reqStub, function(){});
+
+		sinon.assert.calledOnce(httpPost);
+		var postArgs = httpPost.firstCall.args[0];
+		expect(postArgs.url).to.equal(url);
+		expect(postArgs.headers.host).to.equal(KANCOLLE_CONFIG.serv);
+		expect(postArgs.headers.origin).to.include(KANCOLLE_CONFIG.serv);
+		expect(postArgs.headers['connection']).to.not.exist;
+		expect(postArgs.headers['content-length']).to.not.exist;
+		expect(postArgs.headers['content-type']).to.not.exist;
+		expect(postArgs.headers.someHeader).to.equal(req.headers.someHeader);
+	}))
 })
