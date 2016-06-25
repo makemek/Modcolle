@@ -13,8 +13,12 @@ describe('DMM account', function() {
 		sinon.assert.called(onFailureCallback);
 	})
 
-	it.skip('empty password', function() {
+	it('empty password', function() {
+		var onFailureCallback = sinon.spy();
+		var account = new DmmAccount('john@example.com', '');
+		account.login(function(){}, onFailureCallback);
 
+		sinon.assert.called(onFailureCallback);
 	})
 
 	it.skip('login fail due to incorrect email or password', function() {

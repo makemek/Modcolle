@@ -9,8 +9,8 @@ var DmmAccount = {
 	},
 
 	login: function(onSuccess, onFailure) {
-		if(!this.email.length)
-			return onFailure('email is empty');
+		if(!this.email.length) return onFailure('email is empty');
+		if(!this.password.length) return onFailure('password is empty');
 	}
 }
 
