@@ -5,6 +5,7 @@ const sinon = require('sinon');
 const nconf = require('nconf');
 const request = require('request');
 const kancolleExternal = require('../../scripts/model/kancolleExternal');
+const path = require('path');
 
 describe('kancolle agent', function() {
 
@@ -25,21 +26,22 @@ describe('kancolle agent', function() {
 	})
 
 	it('load file locally', sinon.test(function() {
-		const FILE = 'someFile';
+		const FILE = 'somefile.somthing';
 
 		var res = {
-			sendFile: function(file, arg, onError){}
+			sendFile: function(){}
 		}
 		var sendFile = sinon.stub(res, 'sendFile');
 		var errorCallback = sinon.stub();
 
-		agent.load(res, 'someFile', errorCallback);
+		agent.load(res, FILE, errorCallback);
 		sinon.assert.calledOnce(sendFile);
 
 		var args = sendFile.firstCall.args;
 		assert.include(args, errorCallback, 'error callback not include');
-		assert.include(args[0], KANCOLLE_CONFIG.baseDir);
-		assert.include(args[0], FILE);
+		assert.include(args[0], KANCOLLE_CONFIG.baseDir, 'no kancolle base directory');
+		assert.equal(path.basename(args[0]), FILE, 'load a different filename from what expected');
+		assert.isTrue(path.isAbsolute(args[0]), 'path is relative');
 	}))
 
 	it('download from network', sinon.test(function() {
