@@ -1,7 +1,7 @@
 'use strict';
 
 const inherit = require('inherit');
-const request = require('request');
+const rp = require('request-promise');
 const async = require('async');
 
 var DmmAccount = {
@@ -16,21 +16,21 @@ var DmmAccount = {
 
 		async.waterfall([
 			scrapeToken()
-			])
+		], cookieCallback);
 	}
 }
 
 function scrapeToken() {
 	return function(done) {
-		request.get({
+		rp.get({
 			uri: 'https://www.dmm.com/my/-/login/=/path=Sg9VTQFXDFcXFl5bWlcKGAAVRlpZWgVNCw1ZSR9KU1URAFlVSQtOU0gVblFXC14CVV0DAh9XC00LBF4FUxFeXwtcARYLTwBCSFgAF1JVEgoIC0VCUVUIFg__',
-		}, function(err, response) {
-			var tokens = response.body.match(/[a-f0-9]{32}/g);
+		}).then(function(htmlBody) {
+			var tokens = htmlBody.match(/[a-f0-9]{32}/g);
 			const DMM_TOKEN = tokens[1];
 			const DATA_TOKEN = tokens[2];
-
-			done(err, DMM_TOKEN, DATA_TOKEN);	
-		});
+			console.log("dmm token: %s DATA_TOKEN: %s", DMM_TOKEN, DATA_TOKEN);
+			done(null, DMM_TOKEN, DATA_TOKEN);	
+		}).catch(done);
 	}
 }
 

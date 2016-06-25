@@ -2,6 +2,7 @@
 
 const DmmAccount = require('../../scripts/model/dmmAccount');
 const sinon = require('sinon');
+const rp = require('request-promise');
 
 describe('DMM account', function() {
 
@@ -15,10 +16,15 @@ describe('DMM account', function() {
 		expectError(account);
 	}))
 
-	it('login fail due to incorrect email or password', sinon.test(function() {
+	it('login fail due to incorrect email or password', sinon.test(function(done) {
 		var account = new DmmAccount('john@example.com', '1234');
-		var error = expectError(account);
-		console.log(error);
+		var server = this.fakeServer.create();
+		server.respondWith('GET', 'https://www.dmm.com/my/-/login')
+
+		account.login(function(err, cookie) {
+			done(err);
+		});
+		console.log(httpGet.firstCall.args);
 	}))
 
 	it.skip('login success', function() {
