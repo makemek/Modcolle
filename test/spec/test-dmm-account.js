@@ -85,3 +85,21 @@ function srapeLoginPageTokenMock() {
 
 	return data;
 }
+
+function ajaxAuthorizeDmmTokenMock() {
+	var fakeToken = {};
+	fakeToken['token'] = '0123456789abcdef3333333333333333';
+	fakeToken['login_id'] = '0123456789abcdef4444444444444444';
+	fakeToken['password'] = '0123456789abcdef5555555555555555';
+
+	return {
+		fakeToken: fakeToken,
+		response: {
+			then: function(resultCallback) {
+				resultCallback(fakeToken);
+				return this;
+			},
+			catch: function(err) {return this;}
+		}
+	}
+}

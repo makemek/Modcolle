@@ -33,4 +33,21 @@ function scrapeToken() {
 	}
 }
 
+function authorizeToken() {
+	return function(DMM_TOKEN, DATA_TOKEN, done) {
+		rp.post({
+			uri: 'https://www.dmm.com/my/-/login/ajax-get-token/',
+			headers: {
+				'DMM_TOKEN': DMM_TOKEN,
+				'X-Requested-With': 'XMLHttpRequest'
+			},
+			form: {
+				token: DATA_TOKEN
+			}
+		}).then(function(tokens) {
+			done(null, tokens);
+		}).catch(done)
+	}
+}
+
 module.exports = exports = inherit(DmmAccount);
