@@ -11,10 +11,15 @@ describe('DMM account', function() {
 	it('empty email', sinon.test(function() {
 		var account = new DmmAccount('', '1234');
 		expectError(account);
+		account = new DmmAccount('     ', '1234');
+		expectError(account);
 	}))
 
 	it('empty password', sinon.test(function() {
-		var account = new DmmAccount('john@example.com', '');
+		var email = 'john@example.com';
+		var account = new DmmAccount(email, '');
+		expectError(account);
+		account = new DmmAccount(email, '      ');
 		expectError(account);
 	}))
 
@@ -94,8 +99,6 @@ function expectError(account) {
 	sinon.assert.calledOnce(cookieCallback);
 	var error = cookieCallback.args[0][0];
 	expect(error).to.be.an('error');
-
-	sinon.restore();
 
 	return error;
 }

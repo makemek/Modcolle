@@ -6,8 +6,8 @@ const async = require('async');
 
 var DmmAccount = {
 	__constructor: function(email, password) {
-		this.email = email || '';
-		this.password = password || '';
+		this.email = (email || '').trim();
+		this.password = (password || '').trim();
 	},
 
 	login: function(cookieCallback) {
