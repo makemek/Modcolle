@@ -74,21 +74,57 @@ describe('DMM account', function() {
 		assert.equal(httpParam.form['token'], fake_data_token);
 	}))
 
-	it.skip('login fail due to incorrect email or password', sinon.test(function() {
-		var account = new DmmAccount('john@example.com', '1234');
+	it('authentication', sinon.test(function() {
+		var procedure = this.stub(async, 'waterfall');
+		
+		var email = 'john@example.com', password = '1234';
+		var account = new DmmAccount(email, password);
+		account.login();
+		
+		var task = procedure.firstCall.args[0][2];
+		var auth = mockAuthentication();
+		var httpRequest = this.stub(rp, 'post').returns(auth.response);
 
-		var authorizeToken = mockAuthorizeDmmToken();
-		var ajaxRequest = this.stub(rp, 'post').onFirstCall().returns(authorizeToken.response);
+		var spyDone = this.spy();
+		var tokenJson = {
+			token: 'a',
+			login_id: 'b',
+			password: 'c'
+		}
+		task(JSON.stringify(tokenJson), spyDone);
+		assert.isTrue(spyDone.calledOnce);
 
-		account.login(function(err, cookie) {
-			done(err);
-		});
+		var returnVal = spyDone.firstCall.args;
+		assert.isNull(returnVal[0]);
+		assert.equal(returnVal[1], auth.fakeCookie);
+
+		var httpParam = httpRequest.firstCall.args[0];
+		assert.startsWith(httpParam.uri, 'https://www.dmm.com/my/-/login/auth');
+		assertRememberMe();
+		assertToken();
+
+
+		function assertRememberMe() {
+			['save_login_id', 'save_password', 'use_auto_login'].forEach(function(prop) {
+				var msg = sprintf('inside http POST form should have property "%s" with integer either 0 or 1', prop);
+				assert.isTrue(httpParam.form.hasOwnProperty(prop), msg);
+				assert.isAtLeast(httpParam.form[prop], 0);
+				assert.isAtMost(httpParam.form[prop], 1);
+			});
+		}
+
+		function assertToken() {
+			assert.equal(httpParam.form.token, tokenJson.token);
+			assert.equal(httpParam.form.login_id, email);
+			assert.equal(httpParam.form.password, password);
+
+			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.login_id));
+			assert.equal(httpParam.form[tokenJson.login_id], email);
+
+			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.password));
+			assert.equal(httpParam.form[tokenJson.password], password);
+		}	
 	}))
-
-	it.skip('login success', function() {
-
-	})
-
 })
 
 function expectError(account) {
@@ -144,6 +180,35 @@ function mockAuthorizeDmmToken() {
 		response: {
 			then: function(resultCallback) {
 				resultCallback(fakeToken);
+				return this;
+			},
+			catch: function(err) {return this;}
+		}
+	}
+}
+
+function mockAuthentication(success) {
+	var fakeCookie = [
+	'INT_SESID=blahblahblah',
+	'ckcy=2',
+	'check_done_login=1'
+	];
+
+	var fakeResponse = {};
+	fakeResponse.headers = {};
+	
+	if(success)
+		fakeResponse.statusCode = 302;
+	else
+		fakeResponse.statusCode = 200;
+
+	fakeResponse.headers['set-cookie'] = fakeCookie;
+
+	return {
+		fakeCookie: fakeCookie,
+		response: {
+			then: function(resultCallback) {
+				resultCallback(fakeResponse);
 				return this;
 			},
 			catch: function(err) {return this;}

@@ -1,4 +1,5 @@
 var chai = require('chai');
+chai.use(require('chai-string'));
 
 chai.config.includeStack = true;
 

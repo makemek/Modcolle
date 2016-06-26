@@ -16,7 +16,8 @@ var DmmAccount = {
 
 		async.waterfall([
 			scrapeToken(),
-			authorizeToken()
+			authorizeToken(),
+			authenticate(this.email, this.password)
 		], cookieCallback);
 	}
 }
@@ -47,6 +48,36 @@ function authorizeToken() {
 			}
 		}).then(function(tokens) {
 			done(null, tokens);
+		}).catch(done)
+	}
+}
+
+function authenticate(email, password) {
+	return function(tokenJson, done) {
+		var dmmAjaxToken = JSON.parse(tokenJson);
+
+		var payload = {
+			token: dmmAjaxToken.token,
+			login_id: email,
+			save_login_id: 0,
+			password: password,
+			save_password: 0,
+			use_auto_login: 1,
+			path: 'Sg__',
+			prompt: '',
+			client_id: '',
+			display: ''
+		}
+		payload[dmmAjaxToken.login_id] = email;
+		payload[dmmAjaxToken.password] = password;
+
+		rp.post({
+			uri: 'https://www.dmm.com/my/-/login/auth/',
+			headers: {'Upgrade-Insecure-Requests': 1},
+			form: payload,
+			resolveWithFullResponse: true
+		}).then(function(response) {
+			done(null, response.headers['set-cookie']);
 		}).catch(done)
 	}
 }
