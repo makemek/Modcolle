@@ -38,7 +38,35 @@ describe('DMM account', function() {
 		assert.equal(returnVal[2], loginToken.fakeToken.dataToken);
 
 		var httpParam = httpRequest.firstCall.args[0];
-		assert.match(httpParam.uri, new RegExp('https://www.dmm.com/my/-/login/*'));
+		assert.include(httpParam.uri, 'https://www.dmm.com/my/-/login');
+	}))
+
+	it('authroize token', sinon.test(function() {
+		var procedure = this.stub(async, 'waterfall');
+		
+		var account = new DmmAccount('john@example.com', '1234');
+		account.login();
+		
+		var task = procedure.firstCall.args[0][1];
+		var authroizedToken = mockAuthorizeDmmToken();
+		var httpRequest = this.stub(rp, 'post').returns(authroizedToken.response);
+
+		var spyDone = this.spy();
+		var fake_dmm_token = 'dmm_token', fake_data_token = 'data_token';
+		task(fake_dmm_token, fake_data_token, spyDone);
+		assert.isTrue(spyDone.calledOnce);
+
+		var returnVal = spyDone.firstCall.args;
+		assert.isNull(returnVal[0]);
+		assert.equal(returnVal[1].token, authroizedToken.fakeToken.token);
+		assert.equal(returnVal[1].login_id, authroizedToken.fakeToken.login_id);
+		assert.equal(returnVal[1].password, authroizedToken.fakeToken.password);
+
+		var httpParam = httpRequest.firstCall.args[0];
+		assert.include(httpParam.uri, 'https://www.dmm.com/my/-/login/ajax-get-token');
+		assert.equal(httpParam.headers['DMM_TOKEN'], fake_dmm_token);
+		assert.match(httpParam.headers['x-requested-with'], /XMLHttpRequest/i);
+		assert.equal(httpParam.form['token'], fake_data_token);
 	}))
 
 	it.skip('login fail due to incorrect email or password', sinon.test(function() {

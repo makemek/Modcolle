@@ -15,7 +15,8 @@ var DmmAccount = {
 		if(!this.password.length) return cookieCallback(new Error('password is empty'));
 
 		async.waterfall([
-			scrapeToken()
+			scrapeToken(),
+			authorizeToken()
 		], cookieCallback);
 	}
 }
@@ -39,7 +40,7 @@ function authorizeToken() {
 			uri: 'https://www.dmm.com/my/-/login/ajax-get-token/',
 			headers: {
 				'DMM_TOKEN': DMM_TOKEN,
-				'X-Requested-With': 'XMLHttpRequest'
+				'x-requested-with': 'XMLHttpRequest'
 			},
 			form: {
 				token: DATA_TOKEN
