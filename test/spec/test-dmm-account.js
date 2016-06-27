@@ -74,7 +74,7 @@ describe('DMM account', function() {
 		assert.equal(httpParam.form['token'], fake_data_token);
 	}))
 
-	it('authentication', sinon.test(function() {
+	it('authentication success', sinon.test(function() {
 		var procedure = this.stub(async, 'waterfall');
 		
 		var email = 'john@example.com', password = '1234';
@@ -95,8 +95,8 @@ describe('DMM account', function() {
 		assert.isTrue(spyDone.calledOnce);
 
 		var returnVal = spyDone.firstCall.args;
-		assert.isNull(returnVal[0]);
-		assert.equal(returnVal[1], auth.fakeCookie);
+		assert.isNull(returnVal[0], 'should have no errors (be null)');
+		assert.equal(returnVal[2], auth.fakeCookie, 'cookie should match and not altered');
 
 		var httpParam = httpRequest.firstCall.args[0];
 		assert.startsWith(httpParam.uri, 'https://www.dmm.com/my/-/login/auth');
@@ -114,15 +114,15 @@ describe('DMM account', function() {
 		}
 
 		function assertToken() {
-			assert.equal(httpParam.form.token, tokenJson.token);
-			assert.equal(httpParam.form.login_id, email);
-			assert.equal(httpParam.form.password, password);
+			assert.equal(httpParam.form.token, tokenJson.token, 'token should be put into form.token');
+			assert.equal(httpParam.form.login_id, email, 'email should be put into form.login_id');
+			assert.equal(httpParam.form.password, password, 'password should be put into form.password');
 
-			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.login_id));
-			assert.equal(httpParam.form[tokenJson.login_id], email);
+			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.login_id), 'should have property named from token.login_id');
+			assert.equal(httpParam.form[tokenJson.login_id], email, 'should have the same value as email address');
 
-			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.password));
-			assert.equal(httpParam.form[tokenJson.password], password);
+			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.password), 'should have property named from token.password');
+			assert.equal(httpParam.form[tokenJson.password], password, 'should have the same value as password');
 		}	
 	}))
 })
@@ -196,22 +196,25 @@ function mockAuthentication(success) {
 
 	var fakeResponse = {};
 	fakeResponse.headers = {};
-	
-	if(success)
-		fakeResponse.statusCode = 302;
-	else
-		fakeResponse.statusCode = 200;
-
 	fakeResponse.headers['set-cookie'] = fakeCookie;
+	
+	var thenFunc, catchFunc;
+	if(success) {
+		fakeResponse.statusCode = 302;
+		thenFunc = function() {return this};
+		catchFunc = function(errorCallback) {errorCallback(fakeResponse)}
+	}
+	else {
+		fakeResponse.statusCode = 200;
+		thenFunc = function(resultCallback) {resultCallback(fakeResponse); return this;}
+		catchFunc = function(err) {}
+	}
 
 	return {
 		fakeCookie: fakeCookie,
 		response: {
-			then: function(resultCallback) {
-				resultCallback(fakeResponse);
-				return this;
-			},
-			catch: function(err) {return this;}
+			then: thenFunc,
+			catch: catchFunc
 		}
 	}
 }
