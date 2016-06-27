@@ -8,6 +8,14 @@ const async = require('async');
 
 describe('DMM account', function() {
 
+	var taskList, fakeAccount;
+	beforeEach(sinon.test(function() {
+		var procedure = this.stub(async, 'waterfall');
+		fakeAccount = new DmmAccount('jon@example.com', '1234');
+		fakeAccount.login();
+		taskList = procedure.firstCall.args[0];
+	}))
+
 	it('empty email', sinon.test(function() {
 		var account = new DmmAccount('', '1234');
 		expectError(account);
@@ -24,17 +32,13 @@ describe('DMM account', function() {
 	}))
 
 	it('scrape login token from DMM login page', sinon.test(function() {
-		var procedure = this.stub(async, 'waterfall');
 		
-		var account = new DmmAccount('john@example.com', '1234');
-		account.login();
-		
-		var task = procedure.firstCall.args[0][0];
+		var scrpeTask = taskList[0];
 		var loginToken = mockSrapeLoginPageToken();
 		var httpRequest = this.stub(rp, 'get').returns(loginToken.response);
 
 		var spyDone = this.spy();
-		task(spyDone);
+		scrpeTask(spyDone);
 		assert.isTrue(spyDone.calledOnce);
 
 		var returnVal = spyDone.firstCall.args;
@@ -47,18 +51,13 @@ describe('DMM account', function() {
 	}))
 
 	it('authroize token', sinon.test(function() {
-		var procedure = this.stub(async, 'waterfall');
-		
-		var account = new DmmAccount('john@example.com', '1234');
-		account.login();
-		
-		var task = procedure.firstCall.args[0][1];
+		var taskAuthorize = taskList[1];
 		var authroizedToken = mockAuthorizeDmmToken();
 		var httpRequest = this.stub(rp, 'post').returns(authroizedToken.response);
 
 		var spyDone = this.spy();
 		var fake_dmm_token = 'dmm_token', fake_data_token = 'data_token';
-		task(fake_dmm_token, fake_data_token, spyDone);
+		taskAuthorize(fake_dmm_token, fake_data_token, spyDone);
 		assert.isTrue(spyDone.calledOnce);
 
 		var returnVal = spyDone.firstCall.args;
@@ -75,13 +74,7 @@ describe('DMM account', function() {
 	}))
 
 	it('authentication success', sinon.test(function() {
-		var procedure = this.stub(async, 'waterfall');
-		
-		var email = 'john@example.com', password = '1234';
-		var account = new DmmAccount(email, password);
-		account.login();
-		
-		var task = procedure.firstCall.args[0][2];
+		var taskAuthenticate = taskList[2];
 		var auth = mockAuthentication(true);
 		var httpRequest = this.stub(rp, 'post').returns(auth.response);
 
@@ -91,7 +84,7 @@ describe('DMM account', function() {
 			login_id: 'b',
 			password: 'c'
 		}
-		task(JSON.stringify(tokenJson), spyDone);
+		taskAuthenticate(JSON.stringify(tokenJson), spyDone);
 		assert.isTrue(spyDone.calledOnce);
 
 		var returnVal = spyDone.firstCall.args;
@@ -117,14 +110,14 @@ describe('DMM account', function() {
 
 		function assertToken() {
 			assert.equal(httpParam.form.token, tokenJson.token, 'token should be put into form.token');
-			assert.equal(httpParam.form.login_id, email, 'email should be put into form.login_id');
-			assert.equal(httpParam.form.password, password, 'password should be put into form.password');
+			assert.equal(httpParam.form.login_id, fakeAccount.email, 'email should be put into form.login_id');
+			assert.equal(httpParam.form.password, fakeAccount.password, 'password should be put into form.password');
 
 			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.login_id), 'should have property named from token.login_id');
-			assert.equal(httpParam.form[tokenJson.login_id], email, 'should have the same value as email address');
+			assert.equal(httpParam.form[tokenJson.login_id], fakeAccount.email, 'should have the same value as email address');
 
 			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.password), 'should have property named from token.password');
-			assert.equal(httpParam.form[tokenJson.password], password, 'should have the same value as password');
+			assert.equal(httpParam.form[tokenJson.password], fakeAccount.password, 'should have the same value as password');
 		}	
 	})) 
 })
