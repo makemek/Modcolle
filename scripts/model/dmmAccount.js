@@ -77,8 +77,15 @@ function authenticate(email, password) {
 			form: payload,
 			resolveWithFullResponse: true
 		}).then(function(response) {
-			done(null, response.headers['set-cookie']);
-		}).catch(done)
+			// incorrect email or password will return statusCode 200 with empty body
+			done(null, false, response.headers['set-cookie']);
+		}).catch(function(error) {
+			var loginGranted = error.statusCode == 302 && error.response.headers.hasOwnProperty('set-cookie');
+			if(loginGranted)
+				done(null, true, error.response.headers['set-cookie']);
+			else
+				done(error);
+		})
 	}
 }
 

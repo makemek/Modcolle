@@ -82,7 +82,7 @@ describe('DMM account', function() {
 		account.login();
 		
 		var task = procedure.firstCall.args[0][2];
-		var auth = mockAuthentication();
+		var auth = mockAuthentication(true);
 		var httpRequest = this.stub(rp, 'post').returns(auth.response);
 
 		var spyDone = this.spy();
@@ -96,6 +96,8 @@ describe('DMM account', function() {
 
 		var returnVal = spyDone.firstCall.args;
 		assert.isNull(returnVal[0], 'should have no errors (be null)');
+		assert.isBoolean(returnVal[1], 'should indicate whether the login is success (email and password are correct)');
+		assert.isTrue(returnVal[1], 'success should be true');
 		assert.equal(returnVal[2], auth.fakeCookie, 'cookie should match and not altered');
 
 		var httpParam = httpRequest.firstCall.args[0];
@@ -124,7 +126,7 @@ describe('DMM account', function() {
 			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.password), 'should have property named from token.password');
 			assert.equal(httpParam.form[tokenJson.password], password, 'should have the same value as password');
 		}	
-	}))
+	})) 
 })
 
 function expectError(account) {
@@ -196,11 +198,14 @@ function mockAuthentication(success) {
 
 	var fakeResponse = {};
 	fakeResponse.headers = {};
-	fakeResponse.headers['set-cookie'] = fakeCookie;
 	
 	var thenFunc, catchFunc;
 	if(success) {
 		fakeResponse.statusCode = 302;
+		fakeResponse.response = {
+			headers: {}
+		};
+		fakeResponse.response.headers['set-cookie'] = fakeCookie;
 		thenFunc = function() {return this};
 		catchFunc = function(errorCallback) {errorCallback(fakeResponse)}
 	}
