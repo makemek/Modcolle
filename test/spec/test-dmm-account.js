@@ -92,6 +92,7 @@ describe('DMM account', function() {
 		assert.isBoolean(returnVal[1], 'should indicate whether the login is success (email and password are correct)');
 		assert.isTrue(returnVal[1], 'success should be true');
 		assert.equal(returnVal[2], auth.fakeCookie, 'cookie should match and not altered');
+		assert.include(returnVal[2], auth.session, 'session cookie should be included');
 
 		var httpParam = httpRequest.firstCall.args[0];
 		assert.startsWith(httpParam.uri, 'https://www.dmm.com/my/-/login/auth');
@@ -120,6 +121,22 @@ describe('DMM account', function() {
 			assert.equal(httpParam.form[tokenJson.password], fakeAccount.password, 'should have the same value as password');
 		}	
 	})) 
+
+	it('authentication fail due to incorrect email or password', sinon.test(function() {
+		var taskAuthenticate = taskList[2];
+		var auth = mockAuthentication(false);
+		var httpRequest = this.stub(rp, 'post').returns(auth.response);
+
+		var spyDone = this.spy();
+		taskAuthenticate(JSON.stringify({}), spyDone);
+		assert.isTrue(spyDone.calledOnce);
+
+		var returnVal = spyDone.firstCall.args;
+		assert.isNull(returnVal[0]);
+		assert.isFalse(returnVal[1]);
+		assert.equal(returnVal[2], auth.fakeCookie);
+		assert.notInclude(returnVal[2], auth.session);
+	}));
 })
 
 function expectError(account) {
@@ -184,31 +201,32 @@ function mockAuthorizeDmmToken() {
 
 function mockAuthentication(success) {
 	var fakeCookie = [
-	'INT_SESID=blahblahblah',
 	'ckcy=2',
 	'check_done_login=1'
 	];
+	var sessionCookie = 'INT_SESID=blahblahblah';
+	var headers = {};
+	headers['set-cookie'] = fakeCookie;
 
-	var fakeResponse = {};
-	fakeResponse.headers = {};
-	
 	var thenFunc, catchFunc;
 	if(success) {
-		fakeResponse.statusCode = 302;
-		fakeResponse.response = {
-			headers: {}
-		};
-		fakeResponse.response.headers['set-cookie'] = fakeCookie;
+		var errorResponse = {
+			response: { headers: headers }
+		}
+		errorResponse.response.headers['set-cookie'].push(sessionCookie);
+		errorResponse.statusCode = 302
 		thenFunc = function() {return this};
-		catchFunc = function(errorCallback) {errorCallback(fakeResponse)}
+		catchFunc = function(errorCallback) {errorCallback(errorResponse)}
 	}
 	else {
+		var fakeResponse = { headers: headers };
 		fakeResponse.statusCode = 200;
 		thenFunc = function(resultCallback) {resultCallback(fakeResponse); return this;}
 		catchFunc = function(err) {}
 	}
 
 	return {
+		session: sessionCookie,
 		fakeCookie: fakeCookie,
 		response: {
 			then: thenFunc,
