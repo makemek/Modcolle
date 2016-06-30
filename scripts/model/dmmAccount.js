@@ -3,16 +3,26 @@
 const inherit = require('inherit');
 const rp = require('request-promise');
 const async = require('async');
+const appLog = require('winston').loggers.get('app');
 
 var DmmAccount = {
 	__constructor: function(email, password) {
 		this.email = (email || '').trim();
 		this.password = (password || '').trim();
+		appLog.verbose('create an account object');
+		appLog.debug('email: ' + this.email);
+		appLog.debug('password: ' + this.password);
 	},
 
 	login: function(cookieCallback) {
-		if(!this.email.length) return cookieCallback(new Error('email is empty'));
-		if(!this.password.length) return cookieCallback(new Error('password is empty'));
+		if(!this.email.length) {
+			appLog.error('email is empty');
+			return cookieCallback(new Error('email is empty'));
+		}
+		if(!this.password.length) {
+			appLog.error('password is empty');
+			return cookieCallback(new Error('password is empty'));
+		}
 
 		async.waterfall([
 			scrapeToken(),
@@ -24,20 +34,33 @@ var DmmAccount = {
 
 function scrapeToken() {
 	return function(done) {
-		rp.get({
-			uri: 'https://www.dmm.com/my/-/login/=/path=Sg__/',
-		}).then(function(htmlBody) {
+		var options = {
+			uri: 'https://www.dmm.com/my/-/login/=/path=Sg__/'
+		}
+		appLog.info('scrape login token from ' + options.uri);
+		appLog.debug('options to module request');
+		appLog.debug(options);
+
+		rp.get(options).then(function(htmlBody) {
 			var tokens = htmlBody.match(/[a-f0-9]{32}/g);
 			const DMM_TOKEN = tokens[1];
 			const DATA_TOKEN = tokens[2];
+
+			appLog.debug('token from scraping');
+			appLog.debug(tokens);
+			appLog.debug('DMM_TOKEN: ' + DMM_TOKEN);
+			appLog.debug('DATA_TOKEN: ' + DATA_TOKEN);
 			return done(null, DMM_TOKEN, DATA_TOKEN);	
-		}).catch(done);
+		}).catch(function(error) {
+			appLog.error(error);
+			done(error);
+		});
 	}
 }
 
 function authorizeToken() {
 	return function(DMM_TOKEN, DATA_TOKEN, done) {
-		rp.post({
+		var options = {
 			uri: 'https://www.dmm.com/my/-/login/ajax-get-token/',
 			headers: {
 				'DMM_TOKEN': DMM_TOKEN,
@@ -46,16 +69,33 @@ function authorizeToken() {
 			form: {
 				token: DATA_TOKEN
 			}
-		}).then(function(tokens) {
+		}
+		appLog.debug('DMM_TOKEN: ' + DMM_TOKEN);
+		appLog.debug('DATA_TOKEN: ' + DATA_TOKEN);
+		appLog.info('authorize DMM Token and Data Token at ' + options.uri);
+		appLog.debug('options to module request');
+		appLog.debug(options);
+
+		rp.post(options).then(function(tokens) {
+			appLog.verbose('token received from ' + options.uri);
+			appLog.debug(tokens);
 			done(null, tokens);
-		}).catch(done)
+		}).catch(function(error) {
+			appLog.error(error);
+			done(error);
+		})
 	}
 }
 
 function authenticate(email, password) {
 	return function(tokenJson, done) {
+		appLog.debug('JSON token: ' + tokenJson);
+		appLog.debug('email: ' + email);
+		appLog.debug('password: ' + password);
+
 		var dmmAjaxToken = JSON.parse(tokenJson);
 
+		appLog.verbose('prepare POST parameters');
 		var payload = {
 			token: dmmAjaxToken.token,
 			login_id: email,
@@ -71,20 +111,41 @@ function authenticate(email, password) {
 		payload[dmmAjaxToken.login_id] = email;
 		payload[dmmAjaxToken.password] = password;
 
-		rp.post({
+		var options = {
 			uri: 'https://www.dmm.com/my/-/login/auth/',
 			headers: {'Upgrade-Insecure-Requests': 1},
 			form: payload,
 			resolveWithFullResponse: true
-		}).then(function(response) {
+		}
+
+		appLog.info('authenticate email and password to ' + options.uri);
+		appLog.debug('options to module request');
+		appLog.debug(options);
+
+		rp.post(options).then(function(response) {
 			// incorrect email or password will return statusCode 200 with empty body
+			appLog.verbose('response retrieved from ' + options.uri);
+			appLog.debug('status code: ' + response.statusCode);
+			appLog.debug(response.headers);
+			appLog.warn('login rejected');
+
 			done(null, false, response.headers['set-cookie']);
 		}).catch(function(error) {
-			var loginGranted = error.statusCode == 302 && error.response.headers.hasOwnProperty('set-cookie');
-			if(loginGranted)
-				done(null, true, error.response.headers['set-cookie']);
-			else
+			var response = error.response;
+			var loginGranted = error.statusCode == 302 && response.headers.hasOwnProperty('set-cookie');
+
+			appLog.debug('status code: ' + error.statusCode);
+			appLog.debug(response.headers);
+			appLog.debug('login granted: ' + loginGranted);
+
+			if(loginGranted) {
+				appLog.info('login success');
+				done(null, true, response.headers['set-cookie']);
+			}
+			else {
+				appLog.error(error);
 				done(error);
+			}
 		})
 	}
 }
