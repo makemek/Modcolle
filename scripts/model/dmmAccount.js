@@ -9,26 +9,35 @@ var DmmAccount = {
 	__constructor: function(email, password) {
 		this.email = (email || '').trim();
 		this.password = (password || '').trim();
+		this.cookie = [];
 		appLog.verbose('create an account object');
 		appLog.debug('email: ' + this.email);
 		appLog.debug('password: ' + this.password);
 	},
 
-	login: function(cookieCallback) {
+	login: function(accountCallback) {
 		if(!this.email.length) {
 			appLog.error('email is empty');
-			return cookieCallback(new Error('email is empty'));
+			return accountCallback(new Error('email is empty'));
 		}
 		if(!this.password.length) {
 			appLog.error('password is empty');
-			return cookieCallback(new Error('password is empty'));
+			return accountCallback(new Error('password is empty'));
 		}
 
 		async.waterfall([
 			scrapeToken(),
 			authorizeToken(),
 			authenticate(this.email, this.password)
-		], cookieCallback);
+		], function(error, isSuccess, cookie) {
+			if(!error)
+				this.cookie = cookie;
+			accountCallback(error, isSuccess, this);
+		});
+	},
+
+	getCookie: function() {
+		return this.cookie;
 	}
 }
 

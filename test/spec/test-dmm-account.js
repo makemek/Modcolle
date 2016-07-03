@@ -140,12 +140,12 @@ describe('DMM account', function() {
 })
 
 function expectError(account) {
-	var cookieCallback = sinon.spy();
+	var accountCallback = sinon.spy();
 
-	account.login(cookieCallback);
+	account.login(accountCallback);
 
-	sinon.assert.calledOnce(cookieCallback);
-	var error = cookieCallback.args[0][0];
+	sinon.assert.calledOnce(accountCallback);
+	var error = accountCallback.args[0][0];
 	expect(error).to.be.an('error');
 
 	return error;
