@@ -7,7 +7,6 @@ const sprintf = require('sprintf-js').sprintf;
 const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
 
-const NETGAME_LINK = 'www.dmm.com/netgame/social/-/gadgets/=/app_id=';
 var DmmGameAbstract = {
 
 	__constructor: function(account) {
@@ -28,6 +27,10 @@ var DmmGameAbstract = {
 	}
 }
 
+var staticProperty = {
+	rootUrl: 'www.dmm.com/netgame/social/-/gadgets/=/app_id='
+}
+
 function getAppInfo(cookie, appId) {
 	return function(done) {
 		appLog.verbose('Get game metadata');
@@ -39,7 +42,7 @@ function getAppInfo(cookie, appId) {
 			appLog.warn('Japan cookie region not set. DMM may reject the access');
 
 		rp.get({
-			uri: NETGAME_LINK + appId,
+			uri: staticProperty.rootUrl + appId,
 			headers: {cookie: cookie}
 		}).then(function(htmlBody) {
 			done(null, getGadgetInfo(htmlBody));
@@ -51,4 +54,4 @@ function getAppInfo(cookie, appId) {
 	}
 }
 
-module.exports = exports = inherit(DmmGameAbstract);
+module.exports = exports = inherit(DmmGameAbstract, staticProperty);
