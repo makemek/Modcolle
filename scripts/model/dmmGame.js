@@ -4,17 +4,20 @@ const request = require('request');
 const inherit = require('inherit');
 
 const NETGAME_LINK = 'www.dmm.com/netgame/social/-/gadgets/=/app_id=';
-var DmmGame = {
+var DmmGameAbstract = {
 
 	__constructor: function(account) {
 		this.account = account;
 		this.gadgetInfo = {};
+		this.appId;
 	},
 
-	preload: function() {},
+	getAppId: function() {},
+
+	preload: function(onDone) {},
 
 	start: function(onDone) {
-		getAppInfo(this.account.getCookie(), function(error, gadget) {
+		getAppInfo(this.account.getCookie(), this.getAppId(), function(error, gadget) {
 			this.gadgetInfo = gadget;
 			this.preload();
 			onDone();
@@ -22,14 +25,8 @@ var DmmGame = {
 	}
 }
 
-var staticProperties = {
-	id: {
-		kancolle: 854854
-	}
-}
-
-function getAppInfo(sessionCookie, resultCallback) {
+function getAppInfo(sessionCookie, appId, resultCallback) {
 
 }
 
-module.exports = exports = inherit(DmmGame, staticProperties);
+module.exports = exports = inherit(DmmGameAbstract);
