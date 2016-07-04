@@ -24,12 +24,16 @@ describe.only('DMM game abstract class', function() {
 
 		dmmGame.start();
 
+		assert.isTrue(procedure.called);
 		var task = procedure.firstCall.args[0];
 		var taskAppInfo = task[0];
 		var spyDone = this.spy();
 		var httpRequest = this.stub(rp, 'get').returns(getFakeResponse());
 
 		taskAppInfo(spyDone);
+
+		assert.isTrue(stubCookie.called);
+		assert.isTrue(stubAppId.called);
 
 		var rpParam = httpRequest.firstCall.args[0];
 		assert.isTrue(spyDone.called, 'http GET should be called');
