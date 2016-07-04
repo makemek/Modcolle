@@ -21,7 +21,7 @@ var DmmGameAbstract = {
 	start: function(onDone) {
 		appLog.info(sprintf('start the game (DMM Game ID: %d)', this._getAppId()));
 		async.waterfall([
-			getAppInfo(this.account.getCookie(), this.getUrl()),
+			getAppInfo(this),
 			this._preload
 			], onDone)
 	},
@@ -32,9 +32,11 @@ var DmmGameAbstract = {
 	}
 }
 
-function getAppInfo(cookie, url) {
+function getAppInfo(dmmGame) {
 	return function(done) {
 		appLog.verbose('Get game metadata');
+		var url = dmmGame.getUrl();
+		var cookie = dmmGame.account.getCookie();
 
 		if(typeof(cookie) == 'object')
 			cookie = cookie.join('; ');
