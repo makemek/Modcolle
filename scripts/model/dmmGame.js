@@ -21,17 +21,18 @@ var DmmGameAbstract = {
 	start: function(onDone) {
 		appLog.info(sprintf('start the game (DMM Game ID: %d)', this._getAppId()));
 		async.waterfall([
-			getAppInfo(this.account.getCookie(), this._getAppId()),
+			getAppInfo(this.account.getCookie(), this.getUrl()),
 			this._preload
 			], onDone)
+	},
+
+	getUrl: function() {
+		const ROOT_URL = 'www.dmm.com/netgame/social/-/gadgets/=/app_id=';
+		return ROOT_URL.concat(this._getAppId());
 	}
 }
 
-var staticProperty = {
-	rootUrl: 'www.dmm.com/netgame/social/-/gadgets/=/app_id='
-}
-
-function getAppInfo(cookie, appId) {
+function getAppInfo(cookie, url) {
 	return function(done) {
 		appLog.verbose('Get game metadata');
 
@@ -42,7 +43,7 @@ function getAppInfo(cookie, appId) {
 			appLog.warn('Japan cookie region not set. DMM may reject the access');
 
 		var options = {
-			uri: staticProperty.rootUrl + appId,
+			uri: url,
 			headers: {cookie: cookie}
 		}
 		appLog.verbose('request page ' + options.uri);
@@ -77,4 +78,4 @@ function getAppInfo(cookie, appId) {
 	}
 }
 
-module.exports = exports = inherit(DmmGameAbstract, staticProperty);
+module.exports = exports = inherit(DmmGameAbstract);
