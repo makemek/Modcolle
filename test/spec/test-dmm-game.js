@@ -40,7 +40,8 @@ function getFakeResponse() {
 	var htmlBody =
 `
 //<![CDATA[
-var lang_path = "";
+var foo = {};
+var bar = {a:1, b:2, c:3}
 
 var gadgetInfo = {
     VIEWER_ID : 123,
