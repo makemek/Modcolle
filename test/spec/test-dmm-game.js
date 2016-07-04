@@ -32,7 +32,26 @@ describe.only('DMM game abstract class', function() {
 		taskAppInfo(spyDone);
 
 		var rpParam = httpRequest.firstCall.args[0];
-		assert.isTrue(spyDone.calledOnce);
+		assert.isTrue(spyDone.called, 'http GET should be called');
+		assert.equal(rpParam.uri, DmmGame.rootUrl + fakeAppId, 'http url should match');
+		assert.equal(rpParam.headers.cookie, fakeCookie, 'cookie should not be altered');
+
+		var doneArgs = spyDone.firstCall.args;
+		assert.isNull(doneArgs[0], 'there should be no error');
+		var gadgetInfo = doneArgs[1];
+		var expectedParsedGadget = {
+		    VIEWER_ID : 123,
+		    OWNER_ID  : 123,
+		    APP_ID    : 456,
+		    URL       : "http://www.example.com",
+		    FRAME_ID  : "game_frame",
+		    ST        : "0123456789abcdefghijklmnopqrstuvwxyz",
+		    TIME      : 1467570034,
+		    TYPE      : "",
+		    SV_CD     : "xx_xxxxxx"
+		};
+
+		assert.deepEqual(gadgetInfo, expectedParsedGadget, 'gadgetInfo should have the same expected properties and values');
 	}))
 })
 
