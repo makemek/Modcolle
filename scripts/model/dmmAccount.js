@@ -28,12 +28,8 @@ var DmmAccount = {
 		async.waterfall([
 			scrapeToken(),
 			authorizeToken(),
-			authenticate(this.email, this.password)
-		], function(error, isSuccess, cookie) {
-			if(!error)
-				this.cookie = cookie;
-			accountCallback(error, isSuccess, this);
-		});
+			authenticate(this)
+		], accountCallback);
 	},
 
 	getCookie: function() {
@@ -96,20 +92,20 @@ function authorizeToken() {
 	}
 }
 
-function authenticate(email, password) {
+function authenticate(self) {
 	return function(tokenJson, done) {
 		appLog.debug('JSON token: ' + tokenJson);
-		appLog.debug('email: ' + email);
-		appLog.debug('password: ' + password);
+		appLog.debug('email: ' + self.email);
+		appLog.debug('password: ' + self.password);
 
 		var dmmAjaxToken = JSON.parse(tokenJson);
 
 		appLog.verbose('prepare POST parameters');
 		var payload = {
 			token: dmmAjaxToken.token,
-			login_id: email,
+			login_id: self.email,
 			save_login_id: 0,
-			password: password,
+			password: self.password,
 			save_password: 0,
 			use_auto_login: 1,
 			path: 'Sg__',
@@ -117,8 +113,8 @@ function authenticate(email, password) {
 			client_id: '',
 			display: ''
 		}
-		payload[dmmAjaxToken.login_id] = email;
-		payload[dmmAjaxToken.password] = password;
+		payload[dmmAjaxToken.login_id] = self.email;
+		payload[dmmAjaxToken.password] = self.password;
 
 		var options = {
 			uri: 'https://www.dmm.com/my/-/login/auth/',
@@ -138,7 +134,8 @@ function authenticate(email, password) {
 			appLog.debug(response.headers);
 			appLog.warn('login rejected');
 
-			done(null, false, response.headers['set-cookie']);
+			self.cookie = response.headers['set-cookie'];
+			done(null, false);
 		}).catch(function(error) {
 			var response = error.response;
 			var loginGranted = error.statusCode == 302 && response.headers.hasOwnProperty('set-cookie');
@@ -149,7 +146,8 @@ function authenticate(email, password) {
 
 			if(loginGranted) {
 				appLog.info('login success');
-				done(null, true, response.headers['set-cookie']);
+				self.cookie = response.headers['set-cookie'];
+				done(null, true);
 			}
 			else {
 				appLog.error(error);

@@ -91,8 +91,10 @@ describe('DMM account', function() {
 		assert.isNull(returnVal[0], 'should have no errors (be null)');
 		assert.isBoolean(returnVal[1], 'should indicate whether the login is success (email and password are correct)');
 		assert.isTrue(returnVal[1], 'success should be true');
-		assert.equal(returnVal[2], auth.fakeCookie, 'cookie should match and not altered');
-		assert.include(returnVal[2], auth.session, 'session cookie should be included');
+
+		var cookie = fakeAccount.getCookie();
+		assert.equal(cookie, auth.fakeCookie, 'cookie should match and not altered');
+		assert.include(cookie, auth.session, 'session cookie should be included');
 
 		var httpParam = httpRequest.firstCall.args[0];
 		assert.startsWith(httpParam.uri, 'https://www.dmm.com/my/-/login/auth');
@@ -134,8 +136,10 @@ describe('DMM account', function() {
 		var returnVal = spyDone.firstCall.args;
 		assert.isNull(returnVal[0]);
 		assert.isFalse(returnVal[1]);
-		assert.equal(returnVal[2], auth.fakeCookie);
-		assert.notInclude(returnVal[2], auth.session);
+
+		var cookie = fakeAccount.getCookie();
+		assert.equal(cookie, auth.fakeCookie);
+		assert.notInclude(cookie, auth.session);
 	}));
 })
 
