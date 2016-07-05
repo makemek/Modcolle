@@ -37,7 +37,7 @@ describe('DMM game abstract class', function() {
 
 		var rpParam = httpRequest.firstCall.args[0];
 		assert.isTrue(spyDone.called, 'http GET should be called');
-		assert.equal(rpParam.uri, dmmGame.getUrl(), 'http url should match');
+		assert.equal(rpParam.uri, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeAppId, 'http url should match');
 		assert.equal(rpParam.headers.cookie, fakeCookie, 'cookie should not be altered');
 
 		var doneArgs = spyDone.firstCall.args;

@@ -27,7 +27,7 @@ var DmmGameAbstract = {
 	},
 
 	getUrl: function() {
-		const ROOT_URL = 'www.dmm.com/netgame/social/-/gadgets/=/app_id=';
+		const ROOT_URL = 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=';
 		return ROOT_URL.concat(this._getAppId());
 	}
 }
