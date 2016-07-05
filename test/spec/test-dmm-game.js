@@ -6,7 +6,7 @@ const sinon = require('sinon');
 const async = require('async');
 const rp = require('request-promise');
 
-describe.only('DMM game abstract class', function() {
+describe('DMM game abstract class', function() {
 
 	var dmmGame, account;
 
