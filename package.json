@@ -11,7 +11,6 @@
   "description": "",
   "dependencies": {
     "body-parser": "1.15.2",
-    "cookie": "0.3.1",
     "express": "4.14.0",
     "express-handlebars": "3.0.0",
     "inherit": "2.2.3",
@@ -20,6 +19,7 @@
     "request": "2.72.0",
     "request-promise": "3.0.0",
     "sprintf-js": "1.0.3",
+    "tough-cookie": "2.2.2",
     "url-join": "1.1.0",
     "url-parse": "1.1.1",
     "validator": "5.4.0",

@@ -1,28 +1,35 @@
 'use strict';
 
-const regionCookieInjector = require('../../scripts/model/regionCookieInjector');
-const cookie = require('cookie');
+const regionCookieGenerator = require('../../scripts/model/regionCookieGenerator');
+const Cookie = require('tough-cookie').Cookie;
+const sprintf = require('sprintf-js').sprintf
 
-describe('Region cookie injector', function() {
+describe('Region cookie generator', function() {
 
 	[
-		[],
-		['fake1=fakeValue1', 'fake2=fakeValue2'],
-		['ckcy=1', 'cklg=ja']
-	].forEach(function(param) {
-		it('has injected the right cookie given by array of cookies ' + param, function() {
-			var injectedCookie = regionCookieInjector.inject(param);
-			assert.isString(injectedCookie);
-			var cookieJson = cookie.parse(injectedCookie);
+	{key: 'ckcy', val: '1'}, 
+	{key: 'cklg', val: 'welcome'}
+	].forEach(function(expectedCookie) {
+		var expectName = expectedCookie.key;
+		var expectVal = expectedCookie.val;
 
-			param.forEach(function(fakeCookie) {
-				var parsedCookie = cookie.parse(fakeCookie);
-				assert.include(cookieJson, parsedCookie);
+		it('has generate cookie: ' + expectName, function() {
+			var regionCookies = regionCookieGenerator.generate();
+
+			var targetCookie = regionCookies.filter(function(cookie) {
+				return Cookie.parse(cookie).key == expectName;
 			})
-			assert.isTrue(cookieJson.hasOwnProperty('ckcy'), 'should have cookie "ckcy"');
-			assert.equal(cookieJson.ckcy, 1, '"ckcy" should be set to "1"');
-			assert.isTrue(cookieJson.hasOwnProperty('cklg'), 'should have cookie "cklg"');
-			assert.equal(cookieJson.cklg, 'ja', '"cklg" should be set to "ja" (japan)');
+
+			var dmmDomainPath = ['/', '/netgame/', '/netgame_s/'];
+			targetCookie.forEach(function(cookie) {
+				cookie = Cookie.parse(cookie);
+
+				assert.equal(cookie.key, expectName, sprintf('should have cookie %s', expectName));
+				assert.include(expectVal, cookie.value, sprintf('%s should be set to %s', expectName, expectVal));
+				assert.equal(cookie.domain, 'dmm.com', sprintf('%s should include domain DMM', expectName));
+				assert.include(dmmDomainPath, cookie.path, sprintf('%s should include path', expectName));
+				
+			})
 		})
 	})
 
