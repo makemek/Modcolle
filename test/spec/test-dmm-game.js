@@ -20,10 +20,9 @@ describe('DMM game abstract class', function() {
 		var fakeAppId = -1;
 		var stubCookie = this.stub(account, 'getCookie').returns(fakeCookie);
 		var stubAppId = this.stub(dmmGame, '_getAppId').returns(fakeAppId);
-		var stubPreload = this.stub(dmmGame, '_preload', function() {done()});
 		var httpRequest = this.stub(rp, 'get').returns(getFakeResponse());
 
-		dmmGame.start(function(gadgetInfo) {
+		dmmGame.start(function(error, gadgetInfo) {
 			var rpParam = httpRequest.firstCall.args[0];
 			assert.equal(rpParam.uri, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeAppId, 'http url should match');
 			assert.equal(rpParam.headers.cookie, fakeCookie, 'cookie should not be altered');
@@ -40,6 +39,7 @@ describe('DMM game abstract class', function() {
 			    SV_CD     : "xx_xxxxxx"
 			};
 
+			assert.isNull(error);
 			assert.deepEqual(gadgetInfo, expectedParsedGadget, 'gadgetInfo should have the same expected properties and values');	
 			done();
 		});

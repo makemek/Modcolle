@@ -16,7 +16,7 @@ var DmmGameAbstract = {
 
 	_getAppId: function() {appLog.warn('this method should be override by subclass')},
 
-	_preload: function(onDone, gadgetInfo) {appLog.warn('this method should be override by subclass')},
+	_preload: function(gadgetInfo, done) { done(null, gadgetInfo) },
 
 	start: function(onDone) {
 		appLog.info(sprintf('start the game (DMM Game ID: %d)', this._getAppId()));
