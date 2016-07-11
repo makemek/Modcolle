@@ -52,15 +52,31 @@ function getAppInfo(dmmGame) {
 		appLog.debug(options);
 
 		rp.get(options).then(function(htmlBody) {
-			done(null, getGadgetInfo(htmlBody));
+			var gadgetInfo = getGadgetInfo(htmlBody);
+
+			if(!gadgetInfo) {
+				var error = new Error('gadget info not found')
+				appLog.error(error.message);
+				return done(error);
+			}
+			else
+				return done(null, gadgetInfo);
+
 		}).catch(done)
 	}
 
 	function getGadgetInfo(htmlString) {
 		appLog.verbose('get unparsed json from variable gadgetInfo');
 		var varName = 'gadgetInfo = ';
-		var gadgetInfo = htmlString.match(new RegExp(varName + '{([^}]*)}', 'g'))[0];
+		var gadgetInfo = htmlString.match(new RegExp(varName + '{([^}]*)}', 'g'));
+		if(!gadgetInfo)
+			return null;
+		else
+			gadgetInfo = gadgetInfo[0];
+
+		appLog.debug(sprintf('remove prefix "%s"', varName));
 		gadgetInfo = gadgetInfo.replace(varName, '');
+		appLog.debug(gadgetInfo);
 
 		appLog.debug('get variable name');
 		var varList = gadgetInfo.match(/\w+ /g);
@@ -71,6 +87,7 @@ function getAppInfo(dmmGame) {
 			property = property.trim();
 			gadgetInfo = gadgetInfo.replace(property, sprintf('"%s"', property))
 		})
+		appLog.debug(gadgetInfo);
 		
 		appLog.debug('convert to json');
 		gadgetInfo = JSON.parse(gadgetInfo);
