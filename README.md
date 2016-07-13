@@ -13,6 +13,7 @@ Thus, it can do something before and after the game makes API calls to the serve
 
 ## Installation
 Please follows steps below to run Modcolle
+
 1. Download and install [Node.js](https://nodejs.org/en/) version >= 5.0.0 (preferably 6)
 2. Download and extract Modcolle
 3. Go scripts/config copy ``settings.json.template``. Paste it in the same directory and rename it to ``settings.json``
