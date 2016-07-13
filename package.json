@@ -1,0 +1,28 @@
+{
+  "name": "modcolle",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "MakeMEK",
+  "license": "MIT",
+  "description": "A proxy server for playing Kancolle",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
+    "inherit": "^2.2.3",
+    "moment-timezone": "^0.5.4",
+    "nconf": "^0.8.4",
+    "request": "^2.72.0",
+    "url-join": "^1.1.0",
+    "url-parse": "^1.1.1",
+    "validator": "^5.4.0",
+    "winston": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.2"
+  }
+}
