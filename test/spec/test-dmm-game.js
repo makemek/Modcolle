@@ -1,7 +1,7 @@
 'use strict';
 
-const DmmGame = require('../../scripts/model/dmmGame');
-const Account = require('../../scripts/model/dmmAccount');
+const DmmGame = require('../../scripts/dmm/game');
+const Account = require('../../scripts/dmm/account');
 const sinon = require('sinon');
 const async = require('async');
 const rp = require('request-promise');

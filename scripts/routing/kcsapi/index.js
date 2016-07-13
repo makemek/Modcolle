@@ -4,8 +4,8 @@ const express = require('express');
 const router = express.Router();
 const zlib = require('zlib');
 
-const kancolleExternal = require('../../model/kancolleExternal');
-const agent = require('../../model/agent');
+const kancolleExternal = require('../../kancolle/external');
+const agent = require('../../kancolle/agent');
 const appLog = require('winston').loggers.get('app');
 const expressLog = require('winston').loggers.get('express');
 

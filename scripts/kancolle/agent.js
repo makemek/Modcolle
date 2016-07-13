@@ -7,7 +7,7 @@ const urljoin = require('url-join');
 const urlparse = require('url-parse');
 const agentLog = require('winston').loggers.get('agent');
 
-const kancolleExternal = require('./kancolleExternal');
+const kancolleExternal = require('./external');
 
 var agent = {
 

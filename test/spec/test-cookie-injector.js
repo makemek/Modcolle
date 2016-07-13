@@ -1,6 +1,6 @@
 'use strict';
 
-const regionCookieGenerator = require('../../scripts/model/regionCookieGenerator');
+const regionCookieGenerator = require('../../scripts/dmm/region-cookie-generator');
 const Cookie = require('tough-cookie').Cookie;
 const sprintf = require('sprintf-js').sprintf
 

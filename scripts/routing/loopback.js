@@ -8,9 +8,9 @@ var path = require('path');
 const validator = require('validator');
 
 var settings = require('nconf');
-var kancolleExternal = require('../model/kancolleExternal');
-var agent = require('../model/agent');
-const appLog = require('winston').loggers.get('app');
+var kancolleExternal = require('../kancolle/external');
+var agent = require('../kancolle/agent');
+const appLog = require('winston').loggers.get('app')
 const expressLog = require('winston').loggers.get('express');
 
 router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
