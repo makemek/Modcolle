@@ -1,7 +1,8 @@
 'use strcit';
 
-const Account = require('../../scripts/dmm/account');
-const Kancolle = require('../../scripts/kancolle/game');
+const Account = require('../../src/dmm/account');
+const Kancolle = require('../../src/kancolle/game');
+
 
 describe('Kancolle game', function() {
 
