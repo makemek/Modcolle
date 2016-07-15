@@ -1,10 +1,10 @@
 'use strict';
 
-const agent = require('../../scripts/kancolle/agent');
+const agent = require('../../src/kancolle/agent');
 const sinon = require('sinon');
 const nconf = require('nconf');
 const request = require('request');
-const kancolleExternal = require('../../scripts/kancolle/external');
+const kancolleExternal = require('../../src/kancolle/external');
 const path = require('path');
 
 describe('kancolle agent', function() {

@@ -1,6 +1,6 @@
 'use strict';
 
-const DmmAccount = require('../../scripts/dmm/account');
+const DmmAccount = require('../../src/dmm/account');
 const sinon = require('sinon');
 const rp = require('request-promise');
 const sprintf = require("sprintf-js").sprintf
