@@ -2,14 +2,21 @@
   "name": "modcolle",
   "version": "0.1.0",
   "main": "index.js",
-  "scripts": {
-    "test": "./node_modules/.bin/mocha test/**/test*.js --reporter spec --require test/spec/helper/chai.js",
-    "start": "nodemon index.js",
-    "test-travis": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- test/**/test*.js --reporter spec --require test/spec/helper/chai.js"
-  },
   "author": "MakeMEK",
   "license": "MIT",
   "description": "A proxy server for playing Kancolle",
+
+  "bin": {
+    "mocha": "./node_modules/mocha/bin/mocha",
+    "istanbul": "./node_modules/.bin/istanbul"
+  },
+
+  "scripts": {
+    "test": "mocha test/**/test*.js --reporter spec --require test/spec/helper/chai.js",
+    "start": "nodemon index.js",
+    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- test/**/test*.js --reporter spec --require test/spec/helper/chai.js"
+  },
+
   "dependencies": {
     "body-parser": "1.15.2",
     "express": "4.14.0",
