@@ -3,6 +3,8 @@
 const inherit = require('inherit');
 const DmmGameAbstrct = require('../dmm/game');
 const rp = require('request-promise');
+const appLog = require('winston').loggers.get('app');
+const Sandbox = require('sandbox');
 
 var Kancolle = {
 
@@ -10,32 +12,36 @@ var Kancolle = {
 		return 854854;
 	},
 
-	isOnMaintenance(done) {
+	fetchConfig: function(done) {
 		var options = {
 			url: 'http://203.104.209.7/gadget/js/kcs_const.js'
 		}
-		rp.get(options).then(function(body) {
-			var infoPlainText = body.match(/MaintenanceInfo\..*/g);
-			var infoJson = asJson(infoPlainText, 'MaintenanceInfo');
-			done(null, infoJson)
+
+		appLog.info('load scripts from ' + options.url);
+		rp.get(options).then(function(jsCode) {
+			appLog.verbose('append js code to output variable value');
+			jsCode += '; JSON.stringify({ConstServerInfo, ConstURLInfo, MaintenanceInfo})';
+
+			appLog.info('emulate javascript ' + options.url + ' inside a sandbox environment');
+			var sandbox = new Sandbox();
+			sandbox.run(jsCode, function(output) {
+				var result = output.result;
+				result = result.substring(1, result.length - 1);
+				appLog.debug('output result');
+				appLog.debug(result);
+				
+				done(null, JSON.parse(result));
+			})
 		}).catch(done)
+	},
+
+	isOnMaintenance(done) {
+		this.fetchConfig(function(error, kcs_config) {
+			var maintenanceInfo = kcs_config.MaintenanceInfo;
+			var isMaintain = Boolean(maintenanceInfo.IsDoing) || Boolean(maintenanceInfo.IsEmergency);
+			done(error, isMaintain);
+		})
 	}
-}
-
-function asJson(setterAssignmentLines, setterVarName) {
-	var infoJsonPlain = '{' + 
-			setterAssignmentLines.replace(setterVarName + '.', '')
-			.replace(';', '')
-			.replace('=', ':') +
-		'}';
-
-	varList = setterAssignmentLines.match(/\w+ /g);
-	varList.forEach(function(property) {
-		property = property.trim();
-		setterAssignmentLines.replace(property, '"' + property + '"');
-	})
-
-	return JSON.parse(setterAssignmentLines);
 }
 
 module.exports = exports = inherit(DmmGameAbstrct, Kancolle);
