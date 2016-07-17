@@ -22,7 +22,7 @@ describe('Kancolle game', function() {
 	it('is NOT on maintenance', function(done) {
 		var sourceText = 
 		`
-		var ConstServerInfo = {}, ConstURLInfo = {};
+		var ConstServerInfo = {servFoo:"servBar"}, ConstURLInfo = {urlFoo:"urlBar"};
 		var MaintenanceInfo = {};
 		MaintenanceInfo.IsDoing       = 0;
 		MaintenanceInfo.IsEmergency   = 0;
@@ -35,9 +35,9 @@ describe('Kancolle game', function() {
 			catch: function() {}
 		})
 
-		kancolle.isOnMaintenance(function(error, isMaintain) {
+		kancolle.isOnMaintenance(function(error, maintenanceInfo) {
 			assert.isNull(error);
-			assert.isFalse(isMaintain);
+			assert.isFalse(maintenanceInfo.isMaintain);
 
 			httpRequest.restore();
 			done();

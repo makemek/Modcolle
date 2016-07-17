@@ -23,7 +23,6 @@
     "nconf": "0.8.4",
     "request": "2.72.0",
     "request-promise": "3.0.0",
-    "sandbox": "^0.8.6",
     "sprintf-js": "1.0.3",
     "tough-cookie": "2.2.2",
     "url-join": "1.1.0",
