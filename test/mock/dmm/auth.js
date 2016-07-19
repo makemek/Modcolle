@@ -15,6 +15,7 @@ const TOKEN = {
 		password: '0123456789abcdef5555555555555555',
 	}
 }
+const SESSION_COOKIE = 'login session cookie';
 
 nock(HOST)
 .get('/my/-/login/=/path=Sg__/')
@@ -35,4 +36,20 @@ nock(HOST, {
 .post('/my/-/login/ajax-get-token/', {token: TOKEN.data})
 .reply(200, TOKEN.auth)
 
-module.exports = exports = {token: TOKEN};
+nock(HOST)
+.post('/my/-/login/auth/', function() {
+	var payload = {
+		token: TOKEN.auth.token,
+		login_id: /.+@.+/g,
+		password: /.*/g,
+	}
+	payload[TOKEN.auth.login_id] = payload.login_id;
+	payload[TOKEN.auth.password] = payload.password;
+
+	return payload;
+})
+.reply(302, '', {
+	'set-cookie': [SESSION_COOKIE]
+})
+
+module.exports = exports = {token: TOKEN, session: SESSION_COOKIE};

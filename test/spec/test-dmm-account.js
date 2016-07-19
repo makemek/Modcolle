@@ -55,56 +55,18 @@ describe('DMM account', function() {
 		});
 	})
 
-	it('authentication success', sinon.test(function() {
+	it('authentication success', function(done) {
 		var taskAuthenticate = taskList[2];
-		var auth = mockAuthentication(true);
-		var httpRequest = this.stub(rp, 'post').returns(auth.response);
+		taskAuthenticate(dmmAuth.token.auth, function(error, isSuccess) {
+			assert.isNull(error, 'there should be no error');
+			assert.isBoolean(isSuccess, 'should indicate whether the login is success (email and password are correct)');
+			assert.isTrue(isSuccess, 'authentication should success');
 
-		var spyDone = this.spy();
-		var tokenJson = {
-			token: 'a',
-			login_id: 'b',
-			password: 'c'
-		}
-		taskAuthenticate(tokenJson, spyDone);
-		assert.isTrue(spyDone.calledOnce);
-
-		var returnVal = spyDone.firstCall.args;
-		assert.isNull(returnVal[0], 'should have no errors (be null)');
-		assert.isBoolean(returnVal[1], 'should indicate whether the login is success (email and password are correct)');
-		assert.isTrue(returnVal[1], 'success should be true');
-
-		var cookie = fakeAccount.getCookie();
-		assert.equal(cookie, auth.fakeCookie, 'cookie should match and not altered');
-		assert.include(cookie, auth.session, 'session cookie should be included');
-
-		var httpParam = httpRequest.firstCall.args[0];
-		assert.startsWith(httpParam.uri, 'https://www.dmm.com/my/-/login/auth');
-		assertRememberMe();
-		assertToken();
-
-
-		function assertRememberMe() {
-			['save_login_id', 'save_password', 'use_auto_login'].forEach(function(prop) {
-				var msg = sprintf('inside http POST form should have property "%s" with integer either 0 or 1', prop);
-				assert.isTrue(httpParam.form.hasOwnProperty(prop), msg);
-				assert.isAtLeast(httpParam.form[prop], 0);
-				assert.isAtMost(httpParam.form[prop], 1);
-			});
-		}
-
-		function assertToken() {
-			assert.equal(httpParam.form.token, tokenJson.token, 'token should be put into form.token');
-			assert.equal(httpParam.form.login_id, fakeAccount.email, 'email should be put into form.login_id');
-			assert.equal(httpParam.form.password, fakeAccount.password, 'password should be put into form.password');
-
-			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.login_id), 'should have property named from token.login_id');
-			assert.equal(httpParam.form[tokenJson.login_id], fakeAccount.email, 'should have the same value as email address');
-
-			assert.isTrue(httpParam.form.hasOwnProperty(tokenJson.password), 'should have property named from token.password');
-			assert.equal(httpParam.form[tokenJson.password], fakeAccount.password, 'should have the same value as password');
-		}	
-	})) 
+			var sessionCookie = fakeAccount.getCookie();
+			assert.equal(sessionCookie, dmmAuth.session);
+			done();
+		});
+	})
 
 	it('authentication fail due to incorrect email or password', sinon.test(function() {
 		var taskAuthenticate = taskList[2];
