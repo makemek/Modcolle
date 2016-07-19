@@ -68,22 +68,17 @@ describe('DMM account', function() {
 		});
 	})
 
-	it('authentication fail due to incorrect email or password', sinon.test(function() {
-		var taskAuthenticate = taskList[2];
-		var auth = mockAuthentication(false);
-		var httpRequest = this.stub(rp, 'post').returns(auth.response);
+	it('authentication fail due to incorrect email or password', sinon.test(function(done) {
+		var badAccount = new DmmAccount(dmmAuth.badAccount.email, dmmAuth.badAccount.password);
+		var procedure = this.stub(async, 'waterfall');
+		badAccount.login();
 
-		var spyDone = this.spy();
-		taskAuthenticate(JSON.stringify({}), spyDone);
-		assert.isTrue(spyDone.calledOnce);
-
-		var returnVal = spyDone.firstCall.args;
-		assert.isNull(returnVal[0]);
-		assert.isFalse(returnVal[1]);
-
-		var cookie = fakeAccount.getCookie();
-		assert.equal(cookie, auth.fakeCookie);
-		assert.notInclude(cookie, auth.session);
+		var taskAuthenticate = procedure.firstCall.args[0][2];
+		taskAuthenticate(dmmAuth.token.auth, function(error, isSuccess) {
+			assert.isNull(error, 'there should be no error');
+			assert.isFalse(isSuccess, 'login should fail');
+			done();
+		})
 	}));
 })
 
@@ -97,40 +92,4 @@ function expectError(account) {
 	expect(error).to.be.an('error');
 
 	return error;
-}
-
-function mockAuthentication(success) {
-	var fakeCookie = [
-	'ckcy=2',
-	'check_done_login=1'
-	];
-	var sessionCookie = 'INT_SESID=blahblahblah';
-	var headers = {};
-	headers['set-cookie'] = fakeCookie;
-
-	var thenFunc, catchFunc;
-	if(success) {
-		var errorResponse = {
-			response: { headers: headers }
-		}
-		errorResponse.response.headers['set-cookie'].push(sessionCookie);
-		errorResponse.statusCode = 302
-		thenFunc = function() {return this};
-		catchFunc = function(errorCallback) {errorCallback(errorResponse)}
-	}
-	else {
-		var fakeResponse = { headers: headers };
-		fakeResponse.statusCode = 200;
-		thenFunc = function(resultCallback) {resultCallback(fakeResponse); return this;}
-		catchFunc = function(err) {}
-	}
-
-	return {
-		session: sessionCookie,
-		fakeCookie: fakeCookie,
-		response: {
-			then: thenFunc,
-			catch: catchFunc
-		}
-	}
 }
