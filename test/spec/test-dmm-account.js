@@ -5,6 +5,7 @@ const sinon = require('sinon');
 const rp = require('request-promise');
 const sprintf = require("sprintf-js").sprintf
 const async = require('async');
+const dmmAuth = require('../mock/dmm/auth');
 
 describe('DMM account', function() {
 
@@ -31,24 +32,16 @@ describe('DMM account', function() {
 		expectError(account);
 	}))
 
-	it('scrape login token from DMM login page', sinon.test(function() {
-		
+	it('scrape login token from DMM login page', function(done) {		
 		var scrpeTask = taskList[0];
-		var loginToken = mockSrapeLoginPageToken();
-		var httpRequest = this.stub(rp, 'get').returns(loginToken.response);
 
-		var spyDone = this.spy();
-		scrpeTask(spyDone);
-		assert.isTrue(spyDone.calledOnce);
-
-		var returnVal = spyDone.firstCall.args;
-		assert.isNull(returnVal[0]);
-		assert.equal(returnVal[1], loginToken.fakeToken.dmmToken);
-		assert.equal(returnVal[2], loginToken.fakeToken.dataToken);
-
-		var httpParam = httpRequest.firstCall.args[0];
-		assert.include(httpParam.uri, 'https://www.dmm.com/my/-/login');
-	}))
+		scrpeTask(function(error, DMM_TOKEN, DATA_TOKEN) {
+			assert.isNull(error, 'should have no error');
+			assert.equal(DMM_TOKEN, dmmAuth.token.dmm, 'DMM token should be equal');
+			assert.equal(DATA_TOKEN, dmmAuth.token.data, 'data token should be equal');
+			done();
+		});
+	})
 
 	it('authroize token', sinon.test(function() {
 		var taskAuthorize = taskList[1];
@@ -153,36 +146,6 @@ function expectError(account) {
 	expect(error).to.be.an('error');
 
 	return error;
-}
-
-function mockSrapeLoginPageToken() {
-	var fakeToken = {
-		formToken: '0123456789abcdef0000000000000000',
-		dmmToken: '0123456789abcdef1111111111111111',
-		dataToken: '0123456789abcdef2222222222222222'
-	}
-	
-	var data = {
-		fakeToken: fakeToken,
-		fakeHtml: getFakeHtml(),
-		response: {
-			then: function(htmlBodyCallback) {
-				htmlBodyCallback(getFakeHtml());
-				return this;
-			},
-			catch: function(error) {return this;}
-		}
-	}
-
-	function getFakeHtml() {
-		var htmlForm = sprintf('<input type="hidden" name="token" value="%s" id="id_token">', fakeToken.formToken);
-		var ajaxDmmToken = sprintf('xhr.setRequestHeader("DMM_TOKEN", "%s");', fakeToken.dmmToken);
-		var ajaxDataToken = sprintf('"token": "%s"', fakeToken.dataToken);
-
-		return htmlForm + ajaxDmmToken + ajaxDataToken;
-	}
-
-	return data;
 }
 
 function mockAuthorizeDmmToken() {
