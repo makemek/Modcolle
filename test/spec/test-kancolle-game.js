@@ -44,7 +44,7 @@ describe('Kancolle game', function() {
 				catch: function() {}
 			})
 
-			kancolle.isOnMaintenance(function(error, maintenanceInfo) {
+			kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
 				assert.isNull(error);
 				assert.isFalse(maintenanceInfo.isMaintain);
 
@@ -64,7 +64,7 @@ describe('Kancolle game', function() {
 					catch: function() {}
 				})
 
-				kancolle.isOnMaintenance(function(error, maintenanceInfo) {
+				kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
 					assert.isNull(error);
 					assert.isTrue(maintenanceInfo.isMaintain);
 

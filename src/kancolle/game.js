@@ -32,7 +32,7 @@ var Kancolle = {
 		}).catch(done)
 	},
 
-	isOnMaintenance(done) {
+	getMaintenanceInfo(done) {
 		this.fetchConfig(function(error, kcs_config) {
 			var maintenanceInfo = kcs_config.MaintenanceInfo;
 			var isMaintain = Boolean(maintenanceInfo.IsDoing) || Boolean(maintenanceInfo.IsEmergency);
