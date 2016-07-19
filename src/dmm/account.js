@@ -84,7 +84,7 @@ function authorizeToken() {
 		rp.post(options).then(function(tokens) {
 			appLog.verbose('token received from ' + options.uri);
 			appLog.debug(tokens);
-			done(null, tokens);
+			done(null, JSON.parse(tokens));
 		}).catch(function(error) {
 			appLog.error(error);
 			done(error);
@@ -93,12 +93,11 @@ function authorizeToken() {
 }
 
 function authenticate(self) {
-	return function(tokenJson, done) {
-		appLog.debug('JSON token: ' + tokenJson);
+	return function(dmmAjaxToken, done) {
+		appLog.debug('JSON token');
+		appLog.debug(dmmAjaxToken);
 		appLog.debug('email: ' + self.email);
 		appLog.debug('password: ' + self.password);
-
-		var dmmAjaxToken = JSON.parse(tokenJson);
 
 		appLog.verbose('prepare POST parameters');
 		var payload = {

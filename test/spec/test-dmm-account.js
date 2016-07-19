@@ -43,28 +43,17 @@ describe('DMM account', function() {
 		});
 	})
 
-	it('authroize token', sinon.test(function() {
+	it('authroize token', function(done) {
 		var taskAuthorize = taskList[1];
-		var authroizedToken = mockAuthorizeDmmToken();
-		var httpRequest = this.stub(rp, 'post').returns(authroizedToken.response);
-
-		var spyDone = this.spy();
-		var fake_dmm_token = 'dmm_token', fake_data_token = 'data_token';
-		taskAuthorize(fake_dmm_token, fake_data_token, spyDone);
-		assert.isTrue(spyDone.calledOnce);
-
-		var returnVal = spyDone.firstCall.args;
-		assert.isNull(returnVal[0]);
-		assert.equal(returnVal[1].token, authroizedToken.fakeToken.token);
-		assert.equal(returnVal[1].login_id, authroizedToken.fakeToken.login_id);
-		assert.equal(returnVal[1].password, authroizedToken.fakeToken.password);
-
-		var httpParam = httpRequest.firstCall.args[0];
-		assert.include(httpParam.uri, 'https://www.dmm.com/my/-/login/ajax-get-token');
-		assert.equal(httpParam.headers['DMM_TOKEN'], fake_dmm_token);
-		assert.match(httpParam.headers['x-requested-with'], /XMLHttpRequest/i);
-		assert.equal(httpParam.form['token'], fake_data_token);
-	}))
+		
+		taskAuthorize(dmmAuth.token.dmm, dmmAuth.token.data, function(error, authToken) {
+			assert.isNull(error);
+			assert.equal(authToken.token, dmmAuth.token.auth.token);
+			assert.equal(authToken.login_id, dmmAuth.token.auth.login_id);
+			assert.equal(authToken.password, dmmAuth.token.auth.password);
+			done();
+		});
+	})
 
 	it('authentication success', sinon.test(function() {
 		var taskAuthenticate = taskList[2];
@@ -77,7 +66,7 @@ describe('DMM account', function() {
 			login_id: 'b',
 			password: 'c'
 		}
-		taskAuthenticate(JSON.stringify(tokenJson), spyDone);
+		taskAuthenticate(tokenJson, spyDone);
 		assert.isTrue(spyDone.calledOnce);
 
 		var returnVal = spyDone.firstCall.args;
@@ -146,24 +135,6 @@ function expectError(account) {
 	expect(error).to.be.an('error');
 
 	return error;
-}
-
-function mockAuthorizeDmmToken() {
-	var fakeToken = {};
-	fakeToken['token'] = '0123456789abcdef3333333333333333';
-	fakeToken['login_id'] = '0123456789abcdef4444444444444444';
-	fakeToken['password'] = '0123456789abcdef5555555555555555';
-
-	return {
-		fakeToken: fakeToken,
-		response: {
-			then: function(resultCallback) {
-				resultCallback(fakeToken);
-				return this;
-			},
-			catch: function(err) {return this;}
-		}
-	}
 }
 
 function mockAuthentication(success) {
