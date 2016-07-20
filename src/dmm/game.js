@@ -48,10 +48,11 @@ function getAppInfo(dmmGame) {
 			uri: url,
 			headers: {cookie: cookie}
 		}
-		appLog.verbose('request page ' + options.uri);
+		appLog.info('request page ' + options.uri);
 		appLog.debug(options);
 
 		rp.get(options).then(function(htmlBody) {
+			appLog.info('response received from ' + options.uri);
 			var gadgetInfo = getGadgetInfo(htmlBody);
 
 			if(!gadgetInfo) {
@@ -66,7 +67,7 @@ function getAppInfo(dmmGame) {
 	}
 
 	function getGadgetInfo(htmlString) {
-		appLog.verbose('get unparsed json from variable gadgetInfo');
+		appLog.info('get unparsed json from variable gadgetInfo');
 		var varName = 'gadgetInfo = ';
 		var gadgetInfo = htmlString.match(new RegExp(varName + '{([^}]*)}', 'g'));
 		if(!gadgetInfo)

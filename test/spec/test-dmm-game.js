@@ -5,6 +5,7 @@ const Account = require('../../src/dmm/account');
 const sinon = require('sinon');
 const async = require('async');
 const rp = require('request-promise');
+const netGame = require('../mock/dmm/net-game');
 
 describe('DMM game abstract class', function() {
 
@@ -15,8 +16,8 @@ describe('DMM game abstract class', function() {
 		account = new Account('poi@poi.com', 'poipoi');
 		dmmGame = new DmmGame(account);
 
-		var fakeCookie = 'ccky=1; a=1; b=2;';
-		var fakeAppId = -1;
+		var fakeCookie = 'INT_SESID=abcd; ccky=1; cklg=ja; a=1; b=2;';
+		var fakeAppId = 0;
 		stubCookie = sinon.stub(account, 'getCookie').returns(fakeCookie);
 		stubAppId = sinon.stub(dmmGame, '_getAppId').returns(fakeAppId);
 	})
@@ -27,26 +28,8 @@ describe('DMM game abstract class', function() {
 	})
 
 	it('get expected gadget information', sinon.test(function(done) {
-		var response = 
-		`
-		//<![CDATA[
-		var foo = {};
-		var bar = {a:1, b:2, c:3}
 
-		var gadgetInfo = {
-		    VIEWER_ID : 123,
-		    OWNER_ID  : 123,
-		    APP_ID    : 456,
-		    URL       : "http://www.example.com",
-		    FRAME_ID  : "game_frame",
-		    ST        : "0123456789abcdefghijklmnopqrstuvwxyz",
-		    TIME      : 1467570034,
-		    TYPE      : "",
-		    SV_CD     : "xx_xxxxxx"
-		};
-		//]]>
-		`
-		var httpRequest = this.stub(rp, 'get').returns(getFakeResponse(response));
+		var httpRequest = this.spy(rp, 'get');
 
 		dmmGame.start(function(error, gadgetInfo) {
 			var rpParam = httpRequest.firstCall.args[0];
