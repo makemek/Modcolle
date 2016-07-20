@@ -11,13 +11,14 @@ describe('DMM game abstract class', function() {
 
 	var dmmGame, account;
 	var stubCookie, stubAppId;
+	var fakeAppId, fakeCookie;
 
 	beforeEach(function() {
 		account = new Account('poi@poi.com', 'poipoi');
 		dmmGame = new DmmGame(account);
 
-		var fakeCookie = 'INT_SESID=abcd; ccky=1; cklg=ja; a=1; b=2;';
-		var fakeAppId = 0;
+		fakeCookie = 'INT_SESID=abcd; ccky=1; cklg=ja; a=1; b=2;';
+		fakeAppId = 0;
 		stubCookie = sinon.stub(account, 'getCookie').returns(fakeCookie);
 		stubAppId = sinon.stub(dmmGame, '_getAppId').returns(fakeAppId);
 	})
@@ -62,6 +63,11 @@ describe('DMM game abstract class', function() {
 			assert.isDefined(error, 'error should be defined');
 		})
 	}))
+
+	it('return correct game url', function() {
+		var url = dmmGame.getUrl();
+		assert.equal(url, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeAppId);
+	})
 })
 
 function getFakeResponse(htmlBody) {
