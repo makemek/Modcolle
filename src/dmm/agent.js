@@ -1,6 +1,5 @@
 'use strict';
 
-const inherit = require('inherit');
 const rp = require('request-promise');
 const async = require('async');
 const appLog = require('winston').loggers.get('app');
@@ -141,4 +140,4 @@ var DmmAgent = {
 	}
 }
 
-module.exports = exports = inherit(DmmAgent);
+module.exports = exports = DmmAgent;

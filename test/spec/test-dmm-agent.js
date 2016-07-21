@@ -1,19 +1,13 @@
 'use strict';
 
-const Agent = require('../../src/dmm/agent');
+const agent = require('../../src/dmm/agent');
 const async = require('async');
 const dmmAuth = require('../mock/dmm/auth');
 
 describe('DMM agent', function() {
 
-	var taskList, agent;
-	beforeEach(function() {
-		agent = new Agent();
-	})
-
 	it('login with empty email', function(done) {
 		async.each(['', '      '], function(email, callback) {
-			var agent = new Agent();
 			var password = '1234';
 			agent.login(email, password, function(error, isSuccess) {
 				assert.isNotNull(error);
@@ -24,7 +18,6 @@ describe('DMM agent', function() {
 
 	it('login with empty password', function(done) {
 		async.each(['', '      '], function(password, callback) {
-			var agent = new Agent();
 			var email = 'poi@poi.com';
 			agent.login(email, password, function(error, isSuccess) {
 				assert.isNotNull(error);
