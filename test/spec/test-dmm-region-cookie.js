@@ -1,6 +1,6 @@
 'use strict';
 
-const regionCookieGenerator = require('../../src/dmm/region-cookie-generator');
+const regionCookie = require('../../src/dmm/cookie/region-cookie');
 const Cookie = require('tough-cookie').Cookie;
 const sprintf = require('sprintf-js').sprintf
 
@@ -14,7 +14,7 @@ describe('Region cookie generator', function() {
 		var expectVal = expectedCookie.val;
 
 		it('has generate cookie: ' + expectName, function() {
-			var regionCookies = regionCookieGenerator.generate();
+			var regionCookies = regionCookie.generate();
 
 			var targetCookie = regionCookies.filter(function(cookie) {
 				return Cookie.parse(cookie).key == expectName;

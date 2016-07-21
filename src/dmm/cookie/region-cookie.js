@@ -4,7 +4,7 @@ const tough = require('tough-cookie');
 const Cookie = tough.Cookie;
 const appLog = require('winston').loggers.get('app');
 
-var injector = {
+var regionCookie = {
 	generate: function() {
 		var cookieArray = [];
 
@@ -25,4 +25,4 @@ var injector = {
 
 }
 
-module.exports = exports = injector;
+module.exports = exports = regionCookie;
