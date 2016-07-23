@@ -31,42 +31,14 @@ var Injector = {
 
 	revokeRegionRestriction: function() {
 		var targetCookie = {key: 'ckcy', value: 1};
-		var self = this;
-		appLog.verbose('push async task');
-		this.tasks.push(function(done) {
-			appLog.verbose('remove cookies that has value ' + targetCookie.key);
-			self.cookies = self.cookies.filter(function(cookie) {
-				return cookie.key != targetCookie.key;
-			})
-			appLog.debug(self.cookies);
-
-			appLog.verbose('merge generated cookies');
-			self.cookies = self.cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains));
-			appLog.debug(self.cookies);
-			done();
-		});
-
+		createCookieTask(this, targetCookie);
 		return this;
 	},
 
 	language: function(language) {
 		language = language || languagePreset.japan;
 		var targetCookie = {key: 'cklg', value: language};
-		var self = this;
-		appLog.verbose('push async task');
-		this.tasks.push(function(done) {
-			appLog.verbose('remove cookies that has value ' + targetCookie.key);
-			self.cookies = self.cookies.filter(function(cookie) {
-				return cookie.key != targetCookie.key;
-			})
-			appLog.debug(self.cookies);
-
-			appLog.verbose('merge generated cookies');
-			self.cookies = self.cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains));
-			appLog.debug(self.cookies);
-			done();
-		});
-
+		createCookieTask(this, targetCookie);
 		return this;
 	},
 
@@ -77,6 +49,22 @@ var Injector = {
 			done(error, self.cookies);
 		});
 	}
+}
+
+function createCookieTask(self, targetCookie) {
+	appLog.verbose('push async task');
+	self.tasks.push(function(done) {
+		appLog.verbose('remove cookies that has value ' + targetCookie.key);
+		self.cookies = self.cookies.filter(function(cookie) {
+			return cookie.key != targetCookie.key;
+		})
+		appLog.debug(self.cookies);
+
+		appLog.verbose('merge generated cookies');
+		self.cookies = self.cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains));
+		appLog.debug(self.cookies);
+		done();
+	});
 }
 
 function generateCookies(keyVal, domains, paths) {
