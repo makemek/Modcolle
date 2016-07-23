@@ -59,5 +59,26 @@ describe('Region cookie generator', function() {
 			});
 		})
 	})
+
+	async.forEach(['ja', 'en'], function(lang) {
+		it('set language cookie to ' + lang, function(done) {
+			var injector = new Injector([new Cookie({key: 'cklg', value: lang}).toString()]);
+			injector.language(lang)
+			.end(function(error, cookies) {
+				assert.isNull(error, 'there should be no error');
+				var cklg = cookies.filter(function(cookie) { return cookie.key == 'cklg' });
+				var dmmDomainPath = ['/', '/netgame/', '/netgame_s/'];
+				assert.equal(cklg.length, dmmDomainPath.length);
+
+				cklg.forEach(function(cookie) {
+					assert.equal(cookie.key, 'cklg');
+					assert.equal(cookie.value, lang);
+					assert.equal(cookie.domain, 'dmm.com');
+					assert.include(dmmDomainPath, cookie.path);
+				})
+				done();
+			});
+		})
+	})
 	
 })

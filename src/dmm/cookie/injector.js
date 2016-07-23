@@ -5,6 +5,13 @@ const async = require('async');
 const tough = require('tough-cookie');
 const Cookie = tough.Cookie;
 
+var languagePreset = {
+	language: {
+		japan: 'ja',
+		english: 'en'
+	}
+}
+
 var Injector = {
 
 	__constructor: function(cookies) {
@@ -21,6 +28,22 @@ var Injector = {
 
 	revokeRegionRestriction: function() {
 		var targetCookie = {key: 'ckcy', value: 1};
+		var self = this;
+		this.tasks.push(function(done) {
+			self.cookies = self.cookies.filter(function(cookie) {
+				return cookie.key != targetCookie.key;
+			})
+
+			self.cookies = self.cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains));
+			done();
+		});
+
+		return this;
+	},
+
+	language: function(language) {
+		language = language || languagePreset.japan;
+		var targetCookie = {key: 'cklg', value: language};
 		var self = this;
 		this.tasks.push(function(done) {
 			self.cookies = self.cookies.filter(function(cookie) {
@@ -58,4 +81,4 @@ function generateCookies(keyVal, domains, paths) {
 	return cookies;
 }
 
-module.exports = exports = inherit(Injector);
+module.exports = exports = inherit(Injector, languagePreset);
