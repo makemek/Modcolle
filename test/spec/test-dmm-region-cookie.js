@@ -41,12 +41,12 @@ describe('Region cookie generator', function() {
 	[new Cookie({key: 'ckcy', value: 9999}).toString()]
 	], function(item) {
 		it('cookie ckcy is set to 1 with given cookie ' + item, function(done) {
-			var injector = new Injector(item);
+			var dmmDomainPath = ['/', '/netgame/', '/netgame_s/'];
+			var injector = new Injector(dmmDomainPath, item);
 			injector.revokeRegionRestriction()
 			.end(function(error, cookies) {
 				assert.isNull(error, 'there should be no error');
 				var ckcy = cookies.filter(function(cookie) { return cookie.key == 'ckcy' });
-				var dmmDomainPath = ['/', '/netgame/', '/netgame_s/'];
 				assert.equal(ckcy.length, dmmDomainPath.length);
 
 				ckcy.forEach(function(cookie) {
@@ -62,12 +62,12 @@ describe('Region cookie generator', function() {
 
 	async.forEach(['ja', 'en'], function(lang) {
 		it('set language cookie to ' + lang, function(done) {
-			var injector = new Injector([new Cookie({key: 'cklg', value: lang}).toString()]);
+			var dmmDomainPath = ['/', '/netgame/', '/netgame_s/'];
+			var injector = new Injector(dmmDomainPath, [new Cookie({key: 'cklg', value: lang}).toString()]);
 			injector.language(lang)
 			.end(function(error, cookies) {
 				assert.isNull(error, 'there should be no error');
 				var cklg = cookies.filter(function(cookie) { return cookie.key == 'cklg' });
-				var dmmDomainPath = ['/', '/netgame/', '/netgame_s/'];
 				assert.equal(cklg.length, dmmDomainPath.length);
 
 				cklg.forEach(function(cookie) {

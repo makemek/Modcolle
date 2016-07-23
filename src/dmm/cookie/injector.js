@@ -14,7 +14,7 @@ var languagePreset = {
 
 var Injector = {
 
-	__constructor: function(cookies) {
+	__constructor: function(subdomains, cookies) {
 		if (cookies instanceof Array)
 		  cookies = cookies.map(Cookie.parse);
 		else
@@ -22,7 +22,7 @@ var Injector = {
 
 		this.cookies = cookies;
 		this.tasks = [];
-		this.subdomains = ['/', '/netgame/', '/netgame_s/'];
+		this.subdomains = subdomains || ['/'];
 		this.domain = 'dmm.com';
 	},
 
