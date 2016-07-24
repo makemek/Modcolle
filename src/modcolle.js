@@ -45,7 +45,7 @@ function setupMiddleware(app) {
 function setupTemplateEngine(app) {
 	var engineName = 'hbs';
 	var templateExtension = 'hbs';
-	var baseDirView = 'scripts/views';
+	var baseDirView = 'src/views';
 
 	var options = {
 		defaultLayout: 'defaultLayout', 

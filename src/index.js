@@ -15,8 +15,8 @@ function startServer(port) {
 
 function loadConfig() {
 	nconf.argv().env();
-	nconf.add('settings', {type: 'file', file: 'scripts/config/settings.json'});
-	nconf.add('logger', {type: 'file', file: 'scripts/config/loggerSettings.json'});
+	nconf.add('settings', {type: 'file', file: 'src/config/settings.json'});
+	nconf.add('logger', {type: 'file', file: 'src/config/loggerSettings.json'});
 
 	setupLogger();
 }
