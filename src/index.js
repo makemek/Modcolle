@@ -7,8 +7,8 @@ loadConfig();
 const App = require('./modcolle');
 
 function startServer(port) {
-	var modColle = new App(port);
-	modColle.start(function() {
+	var modColle = new App();
+	modColle.start(port, function() {
 		winston.loggers.get('app').info('ModColle is ready!');
 	})
 }

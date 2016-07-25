@@ -11,9 +11,8 @@ const router = require('./routing/');
 
 var Application = {
 
-	__constructor: function(port) {
+	__constructor: function() {
 		this.app = express();
-		this.port = port;
 		
 		setupMiddleware(this.app);
 		setupTemplateEngine(this.app);
@@ -21,8 +20,8 @@ var Application = {
 		setupRouting(this.app);
 	},
 
-	start: function(afterStart) {
-		this.app.listen(this.port, afterStart);
+	start: function(port, afterStart) {
+		this.app.listen(port, afterStart);
 	}
 }
 
