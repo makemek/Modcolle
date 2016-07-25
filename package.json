@@ -5,18 +5,15 @@
   "author": "MakeMEK",
   "license": "MIT",
   "description": "A proxy server for playing Kancolle",
-
   "bin": {
     "mocha": "./node_modules/mocha/bin/mocha",
     "istanbul": "./node_modules/.bin/istanbul"
   },
-
   "scripts": {
     "test": "mocha test/**/test*.js --reporter spec --require test/spec/helper/chai.js",
     "start": "nodemon index.js",
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- test/**/test*.js --reporter spec --require test/spec/helper/chai.js"
   },
-
   "dependencies": {
     "body-parser": "1.15.2",
     "express": "4.14.0",
@@ -41,6 +38,8 @@
     "mocha": "2.5.3",
     "nock": "8.0.0",
     "nodemon": "^1.9.2",
-    "sinon": "^1.17.4"
+    "sinon": "^1.17.4",
+    "supertest": "1.2.0",
+    "supertest-as-promised": "3.2.0"
   }
 }

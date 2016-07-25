@@ -1,0 +1,77 @@
+'use strict';
+
+const async = require('async');
+const request = require('supertest-as-promised');
+const sprintf = require('sprintf-js').sprintf;
+const modcolle = require('../../../src/modcolle');
+const nconf = require('nconf');
+const sinon = require('sinon');
+const nock = require('nock');
+const agent = require('../../../src/kancolle/agent');
+const path = require('path');
+
+/**
+ * When kancolle request for server image
+ * It requests the following format http://<server>/resources/image/world/<world>_t.png
+ * <server> is the player's server host name or ip address
+ * <world> is a file name generated from <server> string
+ *
+ * If <server> is an ip address, <world> replace '.' with '_' and include 3 zerofills.
+ * For example, 1.1.11.111 will be 001_001_011_111, 1.2.3.4 will be 001_002_003_004
+ * If <server> is a host name, <world> replace '.' with '_' only
+**/
+describe('Request world server image', function() {
+
+	var serverIp = ipPattern();
+	var app;
+
+	before(function() {
+		app = new modcolle().app;
+	})
+
+	async.forEach(serverIp, function(ipAddress) {
+		it('by ip address ' + ipAddress, sinon.test(function(done) {
+			nockServerImage(ipAddress);
+
+			var config = this.stub(nconf, 'get');
+			var loadSpy = this.spy(agent, 'load');
+
+			config.withArgs('MY_WORLD_SERVER').returns(ipAddress);
+			config.withArgs('KANCOLLE_BASE_DIR').returns('*no_where*');
+
+			var uri = sprintf('/resources/image/world/%s_t.png', '001_002_003_004');
+			request(app)
+			.get(uri)
+			.expect(200)
+			.then(function(res) {
+				var imageNamePattern = /\d{3}_\d{3}_\d{3}_\d{3}_t\.png/
+				var imagePath = loadSpy.firstCall.args[1];
+				var imageName = path.basename(imagePath);
+
+				assert.startsWith(imagePath, '/resources/image/world');
+				assert.match(imageName, imageNamePattern);
+
+				var resultIp = imageName.replace('_t.png', '').split('_').map(Number);
+				var expectIp = ipAddress.split('.').map(Number);
+				assert.deepEqual(resultIp, expectIp);
+				done();
+			})
+			.catch(done)
+		}))
+	})
+	
+	function ipPattern() {
+		return [
+		'1.1.1.1', '11.1.1.1', '111.1.1.1',
+		'1.11.1.1', '1.111.1.1',
+		'1.1.11.1', '1.1.111.1',
+		'1.1.1.11', '1.1.1.111'
+		]
+	}
+
+	function nockServerImage(ip) {
+		nock('http://' + ip)
+		.get(/\/resources\/image\/world\/.*\_t\.png/)
+		.reply(200)
+	}
+})
