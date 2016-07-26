@@ -20,7 +20,7 @@ router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
    var host = req.headers.host;
 
    appLog.info('convert image name ' + imageName + '_t.png' + ' to acceptable format with target server ' + settings.get('MY_WORLD_SERVER'));
-   var worldServerImageName = convertToWorldImageFilename(imageName, host, settings.get('MY_WORLD_SERVER'));
+   var worldServerImageName = convertToWorldImageFilename(imageName, settings.get('MY_WORLD_SERVER'));
    var worldImageUrl = req.url.replace(imageName, worldServerImageName);
 
    appLog.debug('Image name: ' + imageName);
@@ -63,11 +63,10 @@ function handleFileNotFound(urlDownload, res, next) {
    }
 }
 
-function convertToWorldImageFilename(imageName, thisHostName, worldServerIp) {
-   var isHostName = imageName == thisHostName;
+function convertToWorldImageFilename(imageName, worldServerIp) {
    var isIpAddress = validator.isIP(imageName.split('_').map(Number).join('.'));
    var worldServerImageName;
-   if(isHostName || isIpAddress) {
+   if(isIpAddress) {
       var ip = worldServerIp.split('.');
       appLog.verbose('include 3 zerofills');
       appLog.debug(ip);
@@ -78,8 +77,9 @@ function convertToWorldImageFilename(imageName, thisHostName, worldServerIp) {
       worldServerImageName = ip.join('_');
    }
    else {
-      appLog.warn(imageName + ' is neither a host name nor ip address');
-      worldServerImageName = imageName;
+      appLog.verbose(imageName + ' is not an ip address, treated as host name');
+      appLog.verbose("replace '_' with '.'");
+      worldServerImageName = imageName.replace(/\./g, '_');
    }
 
    return worldServerImageName;
