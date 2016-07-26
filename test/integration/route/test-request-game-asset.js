@@ -59,7 +59,33 @@ describe('Request world server image', function() {
 			.catch(done)
 		}))
 	})
-	
+
+	it('by host name', sinon.test(function(done) {
+		var hostname = 'www.example.com';
+		var expectedImageName = 'www_example_com_t.png';
+
+		var config = this.stub(nconf, 'get');
+		var loadSpy = this.spy(agent, 'load');
+
+		config.withArgs('MY_WORLD_SERVER').returns(hostname);
+		config.withArgs('KANCOLLE_BASE_DIR').returns('*no_where*');
+
+		var uri = sprintf('/resources/image/world/%s_t.png', hostname);
+		nockServerImage(hostname);
+		request(app)
+		.get(uri)
+		.expect(200)
+		.then(function(res) {
+			var imagePath = loadSpy.firstCall.args[1];
+			var imageName = path.basename(imagePath);
+
+			assert.startsWith(imagePath, '/resources/image/world');
+			assert.equal(imageName, expectedImageName)
+			done();
+		})
+		.catch(done);
+	}))
+
 	function ipPattern() {
 		return [
 		'1.1.1.1', '11.1.1.1', '111.1.1.1',
@@ -69,8 +95,8 @@ describe('Request world server image', function() {
 		]
 	}
 
-	function nockServerImage(ip) {
-		nock('http://' + ip)
+	function nockServerImage(host) {
+		nock('http://' + host)
 		.get(/\/resources\/image\/world\/.*\_t\.png/)
 		.reply(200)
 	}
