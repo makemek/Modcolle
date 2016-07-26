@@ -16,12 +16,15 @@ const expressLog = require('winston').loggers.get('express');
 router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
    expressLog.info('GET: ' + req.originalUrl);
 
-   var imageName = req.params.worldImg.replace('_t', '');
-   var worldServerImageName = convertToWorldImageFilename(imageName, req.headers.host, settings.get('MY_WORLD_SERVER'));
+   var imageName = path.basename(req.params.worldImg, '_t');
+   var host = req.headers.host;
+
+   appLog.info('convert image name ' + imageName + '_t.png' + ' to acceptable format with target server ' + settings.get('MY_WORLD_SERVER'));
+   var worldServerImageName = convertToWorldImageFilename(imageName, host, settings.get('MY_WORLD_SERVER'));
    var worldImageUrl = req.url.replace(imageName, worldServerImageName);
 
-   appLog.debug('Image name: ' + req.params.worldImg);
-   appLog.debug('Host name: ' + req.headers.host);
+   appLog.debug('Image name: ' + imageName);
+   appLog.debug('Host name: ' + host);
    appLog.debug('World image filename: ' + worldServerImageName);
    appLog.debug('World image URL: ' + worldImageUrl);
 
@@ -51,7 +54,6 @@ function handleFileNotFound(urlDownload, res, next) {
             appLog.info('Download Completed');
             appLog.info('Source URL: ' + resource);
             appLog.debug('Return status code: ' + response.statusCode);
-            appLog.debug('Response header: ' + response.headers);
          });
       }
       else if(error) {
@@ -67,9 +69,12 @@ function convertToWorldImageFilename(imageName, thisHostName, worldServerIp) {
    var worldServerImageName;
    if(isHostName || isIpAddress) {
       var ip = worldServerIp.split('.');
+      appLog.verbose('include 3 zerofills');
+      appLog.debug(ip);
       for(var n = 0; n < ip.length; ++n)
          ip[n] = ("000" + ip[n]).substr(-3,3);
 
+      appLog.debug(ip);
       worldServerImageName = ip.join('_');
    }
    else {
