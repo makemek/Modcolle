@@ -1,6 +1,5 @@
 'use strcit';
 
-const Account = require('../../src/dmm/account');
 const Kancolle = require('../../src/kancolle/game');
 const rp = require('request-promise');
 const sinon = require('sinon');
@@ -9,17 +8,9 @@ const sprintf = require('sprintf-js').sprintf;
 
 describe('Kancolle game', function() {
 
-	var kancolle;
-
-	beforeEach(function() {
-		var account = new Account('poi@poi.com', 'poipoi');
-		kancolle = new Kancolle(account);
-
-	})
-
 	it('return correcct game ID', function() {
 		const ID = 854854;
-		assert.equal(kancolle._getAppId(), ID, 'Kancolle app id should be ' + ID);
+		assert.equal(Kancolle._getAppId(), ID, 'Kancolle app id should be ' + ID);
 	})
 
 	describe('Maintenance test', function() {
@@ -44,7 +35,7 @@ describe('Kancolle game', function() {
 				catch: function() {}
 			})
 
-			kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
+			Kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
 				assert.isNull(error);
 				assert.isFalse(maintenanceInfo.isMaintain);
 
@@ -64,7 +55,7 @@ describe('Kancolle game', function() {
 					catch: function() {}
 				})
 
-				kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
+				Kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
 					assert.isNull(error);
 					assert.isTrue(maintenanceInfo.isMaintain);
 

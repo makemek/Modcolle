@@ -1,7 +1,5 @@
 'use strict';
 
-const inherit = require('inherit');
-const DmmGameAbstrct = require('../dmm/game');
 const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
 const sprintf = require('sprintf-js').sprintf
@@ -44,4 +42,4 @@ var Kancolle = {
 	}
 }
 
-module.exports = exports = inherit(DmmGameAbstrct, Kancolle);
+module.exports = exports = Kancolle;
