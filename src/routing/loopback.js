@@ -11,7 +11,7 @@ const validator = require('validator');
 
 var settings = require('nconf');
 var kancolleExternal = require('../kancolle/external');
-var agent = require('../kancolle/agent');
+const Agent = require('../kancolle/server/server');
 const appLog = require('winston').loggers.get('app')
 const expressLog = require('winston').loggers.get('express');
 
@@ -33,12 +33,13 @@ const expressLog = require('winston').loggers.get('express');
  **/
 router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
    expressLog.info('GET: ' + req.originalUrl);
+   var agent = new Agent(settings.get('MY_WORLD_SERVER'));
 
    var imageName = path.basename(req.params.worldImg, '_t');
    var host = req.headers.host;
 
-   appLog.info('convert image name ' + imageName + '_t.png' + ' to acceptable format with target server ' + settings.get('MY_WORLD_SERVER'));
-   var worldServerImageName = convertToWorldImageFilename(imageName, settings.get('MY_WORLD_SERVER'));
+   appLog.info('convert image name ' + imageName + '_t.png' + ' to acceptable format with target server ' + agent.host);
+   var worldServerImageName = convertToWorldImageFilename(imageName, agent.host);
    var worldImageUrl = req.url.replace(imageName, worldServerImageName);
 
    appLog.debug('Image name: ' + imageName);
@@ -46,7 +47,7 @@ router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
    appLog.debug('World image filename: ' + worldServerImageName);
    appLog.debug('World image URL: ' + worldImageUrl);
 
-   agent.load(res, worldImageUrl, handleFileNotFound(worldImageUrl, res, next));
+   Agent.load(res, worldImageUrl, handleFileNotFound(agent, worldImageUrl, res, next));
 })
 
 
@@ -58,12 +59,13 @@ router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
 var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i;
 router.get(urlEndWithFileType, function(req, res, next) {
    expressLog.info('GET: ' + req.originalUrl);
+   var agent = new Agent(settings.get('MY_WORLD_SERVER'));
    var path2file = path.join(req.baseUrl, req.path);
 
-   agent.load(res, path2file, handleFileNotFound(req.originalUrl, res, next));
+   Agent.load(res, path2file, handleFileNotFound(agent, req.originalUrl, res, next));
 });
 
-function handleFileNotFound(urlDownload, res, next) {
+function handleFileNotFound(agent, urlDownload, res, next) {
    return function(error) {
       var fileNotFound = error && error.status === 404;
       if(fileNotFound) {

@@ -3,16 +3,17 @@
 const express = require('express');
 const router = express.Router();
 const zlib = require('zlib');
-
 const kancolleExternal = require('../../kancolle/external');
-const agent = require('../../kancolle/agent');
+const Agent = require('../../kancolle/server/server');
 const appLog = require('winston').loggers.get('app');
 const expressLog = require('winston').loggers.get('express');
+const settings = require('nconf');
 
 router.post('/*', function(req, res, next) {
 	expressLog.info('POST: ' + req.originalUrl);
 	expressLog.verbose('Parameters: ', req.body);
 
+	var agent = new Agent(settings.get('MY_WORLD_SERVER'));
 	var apiUrl = kancolleExternal.api(req.url);
 
 	appLog.info('Call Kancolle API: ' + apiUrl);

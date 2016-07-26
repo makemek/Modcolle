@@ -1,15 +1,16 @@
 'use strict';
 
-const agent = require('../../src/kancolle/agent');
+const Agent = require('../../src/kancolle/server/server');
 const sinon = require('sinon');
 const nconf = require('nconf');
 const request = require('request');
 const kancolleExternal = require('../../src/kancolle/external');
 const path = require('path');
 
-describe('kancolle agent', function() {
+describe('kancolle server', function() {
 
 	var config, configBaseDir, configServer;
+	var agent;
 	const KANCOLLE_CONFIG = {
 		baseDir: 'base',
 		serv: '0.0.0.0'
@@ -18,7 +19,8 @@ describe('kancolle agent', function() {
 	beforeEach(function() {
 		config = sinon.stub(nconf, 'get');
 		configBaseDir = config.withArgs('KANCOLLE_BASE_DIR').returns(KANCOLLE_CONFIG.baseDir);
-		configServer = config.withArgs('MY_WORLD_SERVER').returns(KANCOLLE_CONFIG.serv);
+		
+		agent = new Agent(KANCOLLE_CONFIG.serv);
 	})
 
 	afterEach(function() {
@@ -34,7 +36,7 @@ describe('kancolle agent', function() {
 		var sendFile = this.stub(res, 'sendFile');
 		var errorCallback = this.stub();
 
-		agent.load(res, FILE, errorCallback);
+		Agent.load(res, FILE, errorCallback);
 		sinon.assert.calledOnce(sendFile);
 
 		var args = sendFile.firstCall.args;
@@ -80,6 +82,7 @@ describe('kancolle agent', function() {
 		}
 		var reqStub = this.stub(req);
 		var httpPost = this.stub(request, 'post');
+		this.stub(kancolleExternal, 'host').returns(KANCOLLE_CONFIG.serv);
 
 		agent.apiRequest(url, reqStub, function(){});
 

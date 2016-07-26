@@ -6,15 +6,14 @@ const path = require('path');
 const urljoin = require('url-join');
 const urlparse = require('url-parse');
 const agentLog = require('winston').loggers.get('agent');
+const inherit = require('inherit');
 
-const kancolleExternal = require('./external');
+const kancolleExternal = require('../external');
 
-var agent = {
+var KancolleServer = {
 
-	load: function(res, path2file, onError) {
-		var file = path.resolve(path.join(settings.get('KANCOLLE_BASE_DIR'), path2file));
-		agentLog.info('Load file: ' + file);
-		return res.sendFile(file, {}, onError);
+	__constructor: function(host) {
+		this.host = host;
 	},
 
 	download: function(res, url, onResponse) {
@@ -24,7 +23,7 @@ var agent = {
 		agentLog.verbose('Remove sensitive data in URL parameters');
 		agentLog.verbose('Parsed URL: ' + parsedUrl);
 
-		var forgeHeader = forgeKancolleHttpRequestHeader();
+		var forgeHeader = forgeKancolleHttpRequestHeader(this);
 		delete forgeHeader['origin'];
 		delete forgeHeader['referer'];
 		forgeHeader['x-requested-with'] = 'ShockwaveFlash/22.0.0.192';
@@ -42,16 +41,26 @@ var agent = {
 		request.post({
 			url: _url, 
 			form: req.body,
-			headers: forgeKancolleHttpRequestHeader(req.headers),
+			headers: forgeKancolleHttpRequestHeader(this, req.headers),
 			encoding: returnResponseAsBuffer
 		}, onResponse);
 	}
 }
 
-function forgeKancolleHttpRequestHeader(httpHeader) {
+var staticMethods = {
+	load: function(res, path2file, onError) {
+		var file = path.resolve(path.join(settings.get('KANCOLLE_BASE_DIR'), path2file));
+		agentLog.debug('resolve path: %s', file);
+		agentLog.info('Load file: ' + file);
+		return res.sendFile(file, {}, onError);
+	}
+}
+
+function forgeKancolleHttpRequestHeader(self, httpHeader) {
 	agentLog.verbose('Forge HTTP header to match with HTTP request from browser');
+	agentLog.debug(self.host)
 	var headers = httpHeader || {};
-	modifyHeader(settings.get('MY_WORLD_SERVER'), kancolleExternal.host());
+	modifyHeader(self.host, kancolleExternal.host());
 	avoidSocketHangup();
 
 	return headers;
@@ -74,6 +83,7 @@ function forgeKancolleHttpRequestHeader(httpHeader) {
 			headers.referer = headers.referer.replace(headers.host, serverIp);
 
 		headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36';
+		agentLog.debug(headers);
 	}
 }
 
@@ -85,4 +95,4 @@ function removeUrlParameterSensitiveData(url) {
 	return url.toString();
 }
 
-module.exports = exports = agent;
+module.exports = exports = inherit(KancolleServer, staticMethods);
