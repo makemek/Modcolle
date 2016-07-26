@@ -20,7 +20,7 @@ const path = require('path');
  * For example, 1.1.11.111 will be 001_001_011_111, 1.2.3.4 will be 001_002_003_004
  * If <server> is a host name, <world> replace '.' with '_' only
 **/
-describe('Request world server image', function() {
+describe('request kancolle world server image', function() {
 
 	var serverIp = ipPattern();
 	var app;
@@ -98,6 +98,40 @@ describe('Request world server image', function() {
 	function nockServerImage(host) {
 		nock('http://' + host)
 		.get(/\/resources\/image\/world\/.*\_t\.png/)
+		.reply(200)
+	}
+})
+
+describe('request resource from kancolle server', function() {
+
+	var app;
+
+	before(function() {
+		app = new modcolle().app;
+	})
+
+	async.forEach(['file.swf', 'sound/file.mp3', 'file.png'], function(file) {
+
+		it('request ' + file, sinon.test(function(done) {
+			var fakeKancolleServerIp = '1.1.1.1';
+			var config = this.stub(nconf, 'get');
+			config.withArgs('MY_WORLD_SERVER').returns(fakeKancolleServerIp);
+			config.withArgs('KANCOLLE_BASE_DIR').returns('*no_where*');
+
+			nockKancolleResource(fakeKancolleServerIp, file);
+			
+			request(app)
+			.get('/' + file)
+			.then(function(res) {
+				done();
+			})
+			.catch(done)
+		}))
+	})
+
+	function nockKancolleResource(host, file) {
+		nock('http://' + host)
+		.get('/kcs/' + file)
 		.reply(200)
 	}
 })
