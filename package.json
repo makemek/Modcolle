@@ -10,9 +10,9 @@
     "istanbul": "./node_modules/.bin/istanbul"
   },
   "scripts": {
-    "test": "mocha test/**/test*.js --reporter spec --require test/spec/helper/chai.js",
+    "test": "mocha test/**/test*.js --reporter spec --require test/helper/",
     "start": "nodemon index.js",
-    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- test/**/test*.js --reporter spec --require test/spec/helper/chai.js"
+    "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- test/**/test*.js --reporter spec --require test/helper/"
   },
   "dependencies": {
     "body-parser": "1.15.2",

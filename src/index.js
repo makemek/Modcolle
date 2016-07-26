@@ -3,6 +3,7 @@
 const nconf = require('nconf');
 const winston = require('winston');
 loadConfig();
+setupLogger();
 
 const App = require('./modcolle');
 
@@ -17,8 +18,6 @@ function loadConfig() {
 	nconf.argv().env();
 	nconf.add('settings', {type: 'file', file: 'src/config/settings.json'});
 	nconf.add('logger', {type: 'file', file: 'src/config/loggerSettings.json'});
-
-	setupLogger();
 }
 
 function setupLogger() {
