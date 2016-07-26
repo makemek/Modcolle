@@ -10,16 +10,6 @@ const nock = require('nock');
 const agent = require('../../../src/kancolle/agent');
 const path = require('path');
 
-/**
- * When kancolle request for server image
- * It requests the following format http://<server>/resources/image/world/<world>_t.png
- * <server> is the player's server host name or ip address
- * <world> is a file name generated from <server> string
- *
- * If <server> is an ip address, <world> replace '.' with '_' and include 3 zerofills.
- * For example, 1.1.11.111 will be 001_001_011_111, 1.2.3.4 will be 001_002_003_004
- * If <server> is a host name, <world> replace '.' with '_' only
-**/
 describe('request kancolle world server image', function() {
 
 	var serverIp = ipPattern();

@@ -1,7 +1,9 @@
 'use strict';
-/*
- * Handle Kancolle's request to external resources
- */
+
+/**
+ * Handle Kancolle requests to external resources
+ **/
+
 var express = require('express');
 var router = express.Router();
 var path = require('path');
@@ -13,6 +15,22 @@ var agent = require('../kancolle/agent');
 const appLog = require('winston').loggers.get('app')
 const expressLog = require('winston').loggers.get('express');
 
+
+/**
+ * Handle http GET request to server flag image
+ * First, it will look file in a directory reflected by its uri
+ * If file is not found, it will request the file from kancolle server
+ *
+ * When kancolle request for server image
+ * It requests the following format http://<server>/resources/image/world/<world>_t.png
+ * <server> is the player's server host name or ip address
+ * <world> is a file name generated from <server> string
+ *
+ * If <server> is an ip address, <world> replace '.' with '_' and include 3 zerofills.
+ * For example, 1.1.11.111 will be 001_001_011_111, 1.2.3.4 will be 001_002_003_004
+ * If <server> is a host name, <world> replace '.' with '_' only
+ * For example, www.example.com becomes www_example_com
+ **/
 router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
    expressLog.info('GET: ' + req.originalUrl);
 
@@ -31,6 +49,12 @@ router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
    agent.load(res, worldImageUrl, handleFileNotFound(worldImageUrl, res, next));
 })
 
+
+/**
+ * Handle any http GET for any file that have the extension of swf, mp3, or png
+ * First, it will look file in a directory reflected by its uri
+ * If file is not found, it will request the file from kancolle server
+ **/
 var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i;
 router.get(urlEndWithFileType, function(req, res, next) {
    expressLog.info('GET: ' + req.originalUrl);
