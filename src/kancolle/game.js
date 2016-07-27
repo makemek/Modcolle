@@ -2,17 +2,17 @@
 
 const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
-const sprintf = require('sprintf-js').sprintf
+const sprintf = require('sprintf-js').sprintf;
+const childServer = require('./server/');
 
 var Kancolle = {
 
-	_getAppId: function() {
-		return 854854;
-	},
+	ENTRY_IP: '203.104.209.7',
+	appId: 854854,
 
 	fetchConfig: function(done) {
 		var options = {
-			url: 'http://203.104.209.7/gadget/js/kcs_const.js'
+			url: 'http://' + this.ENTRY_IP + '/gadget/js/kcs_const.js'
 		}
 
 		appLog.info('load scripts from ' + options.url);
@@ -39,6 +39,44 @@ var Kancolle = {
 			delete maintenanceInfo.IsEmergency;
 			done(error, maintenanceInfo);
 		})
+	},
+
+	getWorldServer: function(gadgetInfo, done) {
+		var self = this;
+		var options = {
+			uri: sprintf('http://%s/kcsapi/api_world/get_id/%s/1/%d', self.ENTRY_IP, gadgetInfo.VIEWER_ID, Date.now()),
+		}
+		appLog.verbose('request to %s', options.uri);
+		appLog.debug('options', options);
+		rp.get(options).then(function(response) {
+			appLog.verbose('response received from %s', options.uri);
+			appLog.debug('response', response);
+
+			appLog.verbose('remove "svndata=" and parse JSON');
+			response = response.replace('svdata=', '');
+			response = JSON.parse(response);
+			appLog.debug('parsed result', response);
+
+			if(response.api_result != 1) {
+				var error = new Error('Internal error at target server %s', self.ENTRY_IP);
+				appLog.error(error.message);
+				return done(error);
+			}
+
+			var worldId = response.api_data.api_world_id;
+			if(!worldId) {
+				appLog.verbose('new player (world ID = %d)', worldId);
+				return done(null, true, self);
+			}
+			else {
+				appLog.verbose('old player (world ID = %d)', worldId);
+
+				var associatedServer = childServer['World_' + worldId];
+				appLog.verbose('get associated server host %s', associatedServer.host);
+				return done(null, false, associatedServer);
+			}
+		})
+		.catch(done)
 	}
 }
 
