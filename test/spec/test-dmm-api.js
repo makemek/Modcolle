@@ -9,13 +9,12 @@ const netGame = require('../mock/dmm/net-game');
 
 describe('DMM API (OSAPI)', function() {
 
-	var osapi, account;
+	var account;
 	var stubCookie;
 	var fakeGameId, fakeCookie;
 
 	beforeEach(function() {
 		account = new Account('poi@poi.com', 'poipoi');
-		osapi = new DmmApi(account);
 
 		fakeGameId = 0;
 		fakeCookie = 'INT_SESID=abcd; ccky=1; cklg=ja; a=1; b=2;';
@@ -30,7 +29,7 @@ describe('DMM API (OSAPI)', function() {
 
 		var httpRequest = this.spy(rp, 'get');
 
-		osapi.getGameInfo(fakeGameId, function(error, gadgetInfo) {
+		DmmApi.getGameInfo(fakeGameId, account, function(error, gadgetInfo) {
 			var rpParam = httpRequest.firstCall.args[0];
 			assert.equal(rpParam.uri, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeGameId, 'http url should match');
 			assert.equal(rpParam.headers.cookie, account.getCookie(), 'cookie should not be altered');
@@ -55,7 +54,7 @@ describe('DMM API (OSAPI)', function() {
 
 	it('should return error when there is no gadgetInfo variable', sinon.test(function() {
 		var httpRequest = this.stub(rp, 'get').returns(getFakeResponse(''));
-		osapi.getGameInfo(fakeGameId, function(error, gadgetInfo) {
+		DmmApi.getGameInfo(fakeGameId, account, function(error, gadgetInfo) {
 			assert.isUndefined(gadgetInfo, 'gadget info should not have any value');
 			assert.isNotNull(error, 'there should be an error');
 			assert.isDefined(error, 'error should be defined');

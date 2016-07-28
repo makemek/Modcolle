@@ -8,16 +8,10 @@ const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
 
 var API = {
-
-	__constructor: function(account) {
-		this.account = account;
-		appLog.debug('create OSAPI object');
-	},
-
-	getGameInfo(gameId, done) {
+	getGameInfo(gameId, dmmAccount, done) {
 		appLog.verbose('Get game metadata');
 		var url = createGameUrl(gameId);
-		var cookie = this.account.getCookie();
+		var cookie = dmmAccount.getCookie();
 
 		if(typeof(cookie) == 'object')
 			cookie = cookie.join('; ');
@@ -84,4 +78,4 @@ function getGadgetInfo(htmlString) {
 	return gadgetInfo;
 }
 
-module.exports = exports = inherit(API);
+module.exports = exports = API;
