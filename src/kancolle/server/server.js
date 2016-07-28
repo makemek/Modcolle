@@ -7,6 +7,8 @@ const urljoin = require('url-join');
 const urlparse = require('url-parse');
 const agentLog = require('winston').loggers.get('agent');
 const inherit = require('inherit');
+const osapi = require('../../dmm/osapi');
+const sprintf = require('sprintf-js').sprintf;
 
 const kancolleExternal = require('../external');
 
@@ -44,6 +46,25 @@ var KancolleServer = {
 			headers: forgeKancolleHttpRequestHeader(this, req.headers),
 			encoding: returnResponseAsBuffer
 		}, onResponse);
+	},
+
+	generateApiToken: function(gadgetInfo, done) {
+		const url = sprintf('http://%s/kcsapi/api_auth_member/dmmlogin/%s/1/%d', this.host, gadgetInfo.VIEWER_ID, Date.now());
+		osapi.proxyRequest(url, gadgetInfo, function(error, response) {
+			if(error)
+				return done(error);
+
+			var body = response.body;
+			body = body.replace('svdata=', '');
+			body = body.replace(/\\/g, '');
+			var apiResponse = JSON.parse(body);
+			var isBan = apiResponse.api_result == 301;
+
+			if(isBan)
+				return done(null, isBan);
+
+			return done(null, isBan, apiResponse.api_token, apiResponse.api_starttime);
+		})
 	}
 }
 

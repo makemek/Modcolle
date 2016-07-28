@@ -96,4 +96,13 @@ describe('kancolle server', function() {
 		expect(postArgs.headers['content-type']).to.not.exist;
 		expect(postArgs.headers.someHeader).to.equal(req.headers.someHeader);
 	}))
+
+	it('generate api token for not-banned player', function(done) {
+		agent.generateApiToken({VIEWER_ID: 12345678, ST: 'xxxxxxxxx'}, function(error, isBan, token, starttime) {
+			if(error)
+				return done(error);
+			assert.isFalse(isBan, 'should not get banned');
+			done();
+		})
+	})
 })

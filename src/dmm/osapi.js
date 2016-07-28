@@ -100,9 +100,9 @@ var API = {
 
 			appLog.verbose('convert to JSON format');
 			var jsonDmmResponse = JSON.parse(dmmResponse);
-			appLog.verbose('unwrap JSON property %s', targetUrl);
-			var targetResponse = jsonDmmResponse[targetUrl];
-			appLog.debug(targetResponse);
+			var urlWrapperKeyName = Object.keys(jsonDmmResponse)[0];
+			appLog.verbose('unwrap JSON property %s', urlWrapperKeyName);
+			var targetResponse = jsonDmmResponse[urlWrapperKeyName];
 
 			appLog.verbose('unescape body');
 			targetResponse.body = unescape(targetResponse.body);
