@@ -6,6 +6,7 @@ const sinon = require('sinon');
 const async = require('async');
 const rp = require('request-promise');
 const netGame = require('../mock/dmm/net-game');
+const osapiNock = require('../mock/dmm/osapi');
 
 describe('DMM API (OSAPI)', function() {
 
@@ -60,6 +61,22 @@ describe('DMM API (OSAPI)', function() {
 			assert.isDefined(error, 'error should be defined');
 		})
 	}))
+
+	it('should make proxy request to the target url', function(done) {
+		var securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy';
+		DmmApi.proxyRequest('http://www.example.com', {ST: securityToken}, function(error, response) {
+			if(error)
+				done(error);
+
+			assert.isObject(response, 'response should be an object');
+			assert.isTrue(response.hasOwnProperty('body'), 'should have a body (.body) property');
+			assert.isDefined(response.hasOwnProperty('headers'), 'should have a headers (.headers) property');
+			assert.isDefined(response.hasOwnProperty('rc'), 'should have http status (.rc) property');
+			assert.isNumber(response.rc, 'http status value (.rc) should be a number');
+
+			done();
+		})
+	})
 })
 
 function getFakeResponse(htmlBody) {
