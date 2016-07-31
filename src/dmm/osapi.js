@@ -92,7 +92,7 @@ var API = {
 
 			appLog.verbose('extract raw body');
 			var startBody = '"body":"', endBody = '","headers":{';
-			var rawBody = dmmResponse.slice(dmmResponse.search('"body":"') + startBody.length, dmmResponse.search('","headers":{', -1));
+			var rawBody = dmmResponse.slice(dmmResponse.search('"body":"') + startBody.length, dmmResponse.search('","headers":', -1));
 			appLog.debug('rawbody', rawBody);
 
 			appLog.verbose('replace body with escape strings');
@@ -102,6 +102,7 @@ var API = {
 			var jsonDmmResponse = JSON.parse(dmmResponse);
 			appLog.verbose('unwrap JSON property %s', targetUrl);
 			var targetResponse = jsonDmmResponse[targetUrl];
+			appLog.debug(targetResponse);
 
 			appLog.verbose('unescape body');
 			targetResponse.body = unescape(targetResponse.body);
