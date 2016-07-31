@@ -24,3 +24,11 @@ nock(HOST)
 	signOwner: 'true'
 })
 .reply(200, DONT_BE_EVIL + `{"http:\/\/invlidUrl":{"rc":500,"body":"request error","headers":[]}}`);
+
+nock(HOST)
+.post('/gadgets/makeRequest', {
+	st: '',
+	authz: 'signed',
+	signOwner: 'true'
+})
+.reply(500, '<html><body><h1>Internal server error</h1><p>INVALID_GADGET_TOKEN</p></body></html>');

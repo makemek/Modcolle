@@ -89,6 +89,14 @@ describe('DMM API (OSAPI)', function() {
 				done();
 			})
 		})
+
+		it('invalid security token', function(done) {
+			DmmApi.proxyRequest('', {ST: ''}, function(error, response) {
+				assert.isNotNull(error, 'there should be error');
+				assert.equal(error.statusCode, 500, 'http status code should be internal server error (500)');
+				done();
+			})
+		})
 	})
 
 })
