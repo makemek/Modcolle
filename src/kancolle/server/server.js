@@ -60,9 +60,6 @@ var KancolleServer = {
 			var apiResponse = JSON.parse(body);
 			var isBan = apiResponse.api_result == 301;
 
-			if(isBan)
-				return done(null, isBan);
-
 			return done(null, isBan, apiResponse.api_token, apiResponse.api_starttime);
 		})
 	}

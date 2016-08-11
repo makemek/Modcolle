@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const request = require('request');
 const kancolleExternal = require('../../src/kancolle/external');
 const path = require('path');
+const osapi = require('../../src/dmm/osapi');
 
 describe('kancolle server', function() {
 
@@ -97,7 +98,7 @@ describe('kancolle server', function() {
 		expect(postArgs.headers.someHeader).to.equal(req.headers.someHeader);
 	}))
 
-	it('generate api token for not-banned player', function(done) {
+	it('generate api token for non-banned player', function(done) {
 		agent.generateApiToken({VIEWER_ID: 12345678, ST: 'xxxxxxxxx'}, function(error, isBan, token, starttime) {
 			if(error)
 				return done(error);
@@ -105,4 +106,23 @@ describe('kancolle server', function() {
 			done();
 		})
 	})
+
+	it('NOT generate api token for banned player', sinon.test(function(done) {
+		var stub = this.stub(osapi, 'proxyRequest');
+		agent.generateApiToken({}, function(error, isBan, token, starttime) {
+			if(error)
+				done(error);
+
+			assert.isNull(error, 'there should be no error');
+			assert.isTrue(isBan, 'this player should be banned');
+			assert.isUndefined(token, 'no api token should be given');
+			assert.isUndefined(starttime, 'no api start time should be given');
+			done();
+		});
+
+		var callback = stub.firstCall.args[2];
+		var body = JSON.stringify({api_result: 301})
+		callback(null, {body: 'svdata=' + body});
+	}))
+
 })
