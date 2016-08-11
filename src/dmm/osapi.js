@@ -8,10 +8,10 @@ const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
 
 var API = {
-	getGameInfo(gameId, dmmAccount, done) {
+	getGameInfo(gameId, dmmCookie, done) {
 		appLog.verbose('Get game metadata');
 		var url = createGameUrl(gameId);
-		var cookie = dmmAccount.getCookie();
+		var cookie = dmmCookie;
 
 		if(typeof(cookie) == 'object')
 			cookie = cookie.join('; ');
