@@ -1,3 +1,4 @@
-test/**/test*.js
+test/spec/**/test*.js
+test/integration/**/test*.js
 --reporter spec
 --require test/helper/
