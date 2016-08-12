@@ -6,8 +6,9 @@ const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
 const nconf = require('nconf');
 const winston = require('winston');
-
 const router = require('./routing/');
+const passport = require('passport');
+const session = require('express-session');
 
 var Application = {
 
@@ -39,6 +40,13 @@ function setupRouting(app) {
 function setupMiddleware(app) {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(passport.initialize());
+	app.use(passport.session());
+	app.use(session({
+		secret: 'shhhh',
+		resave: true,
+		saveUnintialized: false
+	}))
 }
 
 function setupTemplateEngine(app) {
