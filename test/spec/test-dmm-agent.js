@@ -46,11 +46,8 @@ describe('DMM agent', function() {
 	})
 
 	it('authentication using token success', function(done) {
-		agent.authenticate('some@one.com', 'password', dmmAuth.token.auth, function(error, isSuccess, cookie) {
+		agent.authenticate('some@one.com', 'password', dmmAuth.token.auth, function(error, cookie) {
 			assert.isNull(error, 'there should be no error');
-			assert.isBoolean(isSuccess, 'should indicate whether the login is success (email and password are correct)');
-			assert.isTrue(isSuccess, 'authentication should success');
-
 			assert.equal(cookie, dmmAuth.session);
 			done();
 		});
@@ -65,19 +62,18 @@ describe('DMM agent', function() {
 	});
 
 	it('login success', function(done) {
-		agent.login('some@one.com', 'password', function(error, isSuccess, cookie) {
+		agent.login('some@one.com', 'password', function(error, cookie) {
 			assert.isNull(error, 'there should be no error');
-			assert.isTrue(isSuccess, 'login should success');
 			assert.equal(cookie, dmmAuth.session);
 			done();
 		})
 	})
 
 	it('login fail', function(done) {
-		agent.login(dmmAuth.badAccount.email, dmmAuth.badAccount.password, function(error, isSuccess, cookie) {
+		agent.login(dmmAuth.badAccount.email, dmmAuth.badAccount.password, function(error, cookie) {
 			assert.isNull(error, 'there should be no error');
-			assert.isFalse(isSuccess, 'login should fail');
-			assert.isUndefined(cookie);
+			assert.isBoolean(cookie, 'should be boolean');
+			assert.isFalse(cookie, 'login should fail');
 			done();
 		})
 	})

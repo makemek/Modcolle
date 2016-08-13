@@ -130,7 +130,7 @@ var DmmAgent = {
 
 			if(loginGranted) {
 				appLog.info('login success');
-				done(null, true, response.headers['set-cookie']);
+				done(null, response.headers['set-cookie']);
 			}
 			else {
 				appLog.error(error);
