@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
 const nconf = require('nconf');
 const winston = require('winston');
-const expressLog = winston.loggers.get('express');
+const routerLogger = winston.loggers.get('router');
 const router = require('./routing/');
 const passport = require('passport');
 const session = require('express-session');
@@ -55,12 +55,12 @@ function setupMiddleware(app) {
 	passport.serializeUser(dmmAuthenticator.serialize);
 	passport.deserializeUser(dmmAuthenticator.deserialize);
 
-	expressLog.stream = {
+	routerLogger.stream = {
 	    write: function(message, encoding){
-	        expressLog.info(message);
+	        routerLogger.info(message);
 	    }
 	};
-	app.use(morgan('combined', {stream: expressLog.stream}))
+	app.use(morgan('combined', {stream: routerLogger.stream}))
 }
 
 function setupTemplateEngine(app) {

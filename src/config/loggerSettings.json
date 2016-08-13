@@ -1,12 +1,12 @@
 {
     "logger": {
-        "express": {
+        "router": {
             "console": {
                 "level": "info",
                 "colorize": true,
                 "timestamp": true,
                 "prettyPrint": true,
-                "label": "express"
+                "label": "router"
             }
         },
         "app": {

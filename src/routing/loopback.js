@@ -13,8 +13,6 @@ var settings = require('nconf');
 var kancolleExternal = require('../kancolle/external');
 const Agent = require('../kancolle/server/server');
 const appLog = require('winston').loggers.get('app')
-const expressLog = require('winston').loggers.get('express');
-
 
 /**
  * Handle http GET request to server flag image
@@ -32,7 +30,6 @@ const expressLog = require('winston').loggers.get('express');
  * For example, www.example.com becomes www_example_com
  **/
 router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
-   expressLog.info('GET: ' + req.originalUrl);
    var agent = new Agent(settings.get('MY_WORLD_SERVER'));
 
    var imageName = path.basename(req.params.worldImg, '_t');
@@ -58,7 +55,6 @@ router.get('/resources/image/world/:worldImg.png', function(req, res, next) {
  **/
 var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i;
 router.get(urlEndWithFileType, function(req, res, next) {
-   expressLog.info('GET: ' + req.originalUrl);
    var agent = new Agent(settings.get('MY_WORLD_SERVER'));
    var path2file = path.join(req.baseUrl, req.path);
 
