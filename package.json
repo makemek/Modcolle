@@ -21,6 +21,7 @@
     "express-session": "1.14.0",
     "inherit": "2.2.3",
     "moment-timezone": "0.5.4",
+    "morgan": "1.7.0",
     "nconf": "0.8.4",
     "passport": "0.3.2",
     "passport-local": "1.0.0",

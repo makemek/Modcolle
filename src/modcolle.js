@@ -6,11 +6,13 @@ const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
 const nconf = require('nconf');
 const winston = require('winston');
+const expressLog = winston.loggers.get('express');
 const router = require('./routing/');
 const passport = require('passport');
 const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
 const dmmAuthenticator = require('./middleware/dmm-passport');
+const morgan = require('morgan');
 
 var Application = {
 
@@ -52,6 +54,13 @@ function setupMiddleware(app) {
 	passport.use(new LocalStrategy(dmmAuthenticator.authenticate));
 	passport.serializeUser(dmmAuthenticator.serialize);
 	passport.deserializeUser(dmmAuthenticator.deserialize);
+
+	expressLog.stream = {
+	    write: function(message, encoding){
+	        expressLog.info(message);
+	    }
+	};
+	app.use(morgan('combined', {stream: expressLog.stream}))
 }
 
 function setupTemplateEngine(app) {
