@@ -9,6 +9,8 @@ const winston = require('winston');
 const router = require('./routing/');
 const passport = require('passport');
 const session = require('express-session');
+const LocalStrategy = require('passport-local').Strategy;
+const dmmAuthenticator = require('./middleware/dmm-passport');
 
 var Application = {
 
@@ -40,13 +42,16 @@ function setupRouting(app) {
 function setupMiddleware(app) {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
-	app.use(passport.initialize());
-	app.use(passport.session());
 	app.use(session({
 		secret: 'shhhh',
 		resave: true,
-		saveUnintialized: false
-	}))
+		saveUninitialized: false
+	}));
+	app.use(passport.initialize());
+	app.use(passport.session());
+	passport.use(new LocalStrategy(dmmAuthenticator.authenticate));
+	passport.serializeUser(dmmAuthenticator.serialize);
+	passport.deserializeUser(dmmAuthenticator.deserialize);
 }
 
 function setupTemplateEngine(app) {
