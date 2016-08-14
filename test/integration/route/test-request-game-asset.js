@@ -3,7 +3,7 @@
 const async = require('async');
 const request = require('supertest-as-promised');
 const sprintf = require('sprintf-js').sprintf;
-const modcolle = require('../../../src/modcolle');
+const app = require('../../../src/');
 const nconf = require('nconf');
 const sinon = require('sinon');
 const nock = require('nock');
@@ -13,11 +13,6 @@ const path = require('path');
 describe('request kancolle world server image', function() {
 
 	var serverIp = ipPattern();
-	var app;
-
-	before(function() {
-		app = new modcolle().app;
-	})
 
 	async.forEach(serverIp, function(ipAddress) {
 		it('by ip address ' + ipAddress, sinon.test(function(done) {
@@ -95,11 +90,9 @@ describe('request kancolle world server image', function() {
 
 describe('request resource from kancolle server', function() {
 
-	var app;
 	var agent;
 
 	before(function() {
-		app = new modcolle().app;
 		agent = new Agent('1.1.1.1');
 	})
 

@@ -4,11 +4,10 @@ const nconf = require('nconf');
 const winston = require('winston');
 loadConfig();
 setupLogger();
-const App = require('./src/');
+const modcolle = require('./src/');
 
 function startServer(port) {
-	var modColle = new App();
-	modColle.start(port, function() {
+	modcolle.listen(port, function() {
 		winston.loggers.get('app').info('ModColle is ready!');
 	})
 }
