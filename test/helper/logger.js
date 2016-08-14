@@ -1,6 +1,5 @@
 'use strict';
 
-const app = require('../../src/modcolle');
 const winston = require('winston');
 
 var loggers = winston.loggers.loggers;
