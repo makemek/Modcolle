@@ -6,10 +6,10 @@ const zlib = require('zlib');
 const kancolleExternal = require('../../kancolle/external');
 const Agent = require('../../kancolle/server/server');
 const appLog = require('winston').loggers.get('app');
-const settings = require('nconf');
+const MY_WORLD_SERVER = process.env.MY_WORLD_SERVER;
 
 router.post('/*', function(req, res, next) {
-	var agent = new Agent(settings.get('MY_WORLD_SERVER'));
+	var agent = new Agent(MY_WORLD_SERVER);
 	var apiUrl = kancolleExternal.api(req.url);
 
 	appLog.info('Call Kancolle API: ' + apiUrl);

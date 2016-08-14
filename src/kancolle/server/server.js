@@ -1,6 +1,6 @@
 'use strict';
 
-const settings = require('nconf');
+const KANCOLLE_BASE_DIR = process.env.KANCOLLE_BASE_DIR;
 const request = require('request');
 const path = require('path');
 const urljoin = require('url-join');
@@ -67,7 +67,7 @@ var KancolleServer = {
 
 var staticMethods = {
 	load: function(res, path2file, onError) {
-		var file = path.resolve(path.join(settings.get('KANCOLLE_BASE_DIR'), path2file));
+		var file = path.resolve(path.join(KANCOLLE_BASE_DIR, path2file));
 		agentLog.debug('resolve path: %s', file);
 		agentLog.info('Load file: ' + file);
 		return res.sendFile(file, {}, onError);

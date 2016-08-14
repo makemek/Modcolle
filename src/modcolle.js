@@ -3,9 +3,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
-const winston = require('winston');
-const routerLogger = winston.loggers.get('router');
-const router = require('./routing/');
 const passport = require('passport');
 const session = require('express-session');
 const LocalStrategy = require('passport-local').Strategy;
@@ -13,11 +10,22 @@ const dmmAuthenticator = require('./middleware/dmm-passport');
 const morgan = require('morgan');
 const app = express();
 
+const winston = require('winston');
+const loggerConfig = require('./config/loggerSettings.json');
+setupLogger();
+const routerLogger = winston.loggers.get('router');
+const router = require('./routing/');
+
 setupMiddleware();
 setupTemplateEngine();
 setupDefaultLocalResponseHeader();
 setupRouting();
 
+function setupLogger() {
+  Object.keys(loggerConfig).forEach(function(key) {
+      winston.loggers.add(key, loggerConfig[key]);
+  });
+}
 
 function setupDefaultLocalResponseHeader() {
 	app.use(function(req, res, next) {
@@ -34,7 +42,7 @@ function setupMiddleware() {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(session({
-		secret: 'shhhh',
+		secret: process.env.SESSION_SECRET,
 		resave: true,
 		saveUninitialized: false
 	}));

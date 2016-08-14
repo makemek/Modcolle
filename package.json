@@ -10,10 +10,10 @@
     "istanbul": "./node_modules/.bin/istanbul"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "nf run mocha",
     "start": "nf start",
-    "dev": "nodemon ./bin/www",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha"
+    "dev": "nf run nodemon ./bin/www",
+    "coverage": "nf run istanbul cover ./node_modules/mocha/bin/_mocha"
   },
   "dependencies": {
     "body-parser": "1.15.2",
@@ -24,7 +24,6 @@
     "inherit": "2.2.3",
     "moment-timezone": "0.5.4",
     "morgan": "1.7.0",
-    "nconf": "0.8.4",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
     "request": "2.72.0",

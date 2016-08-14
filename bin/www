@@ -1,25 +1,8 @@
 #!/usr/bin/env node
 
 const winston = require('winston');
-const nconf = require('nconf');
-loadConfig();
-setupLogger();
 const app = require('../src/');
 const http = require('http');
-
-function loadConfig() {
-  nconf.argv().env();
-  nconf.add('settings', {type: 'file', file: 'src/config/settings.json'});
-  nconf.add('logger', {type: 'file', file: 'src/config/loggerSettings.json'});
-}
-
-function setupLogger() {
-  var loggerConfig = nconf.get('logger');
-  Object.keys(loggerConfig).forEach(function(key) {
-      winston.loggers.add(key, loggerConfig[key]);
-  });
-}
-
 
 /**
  * Get port from environment and store in Express.

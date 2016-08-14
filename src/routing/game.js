@@ -3,14 +3,14 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const settings = require('nconf');
+const API_TOKEN = process.env.API_TOKEN;
 const moment = require('moment-timezone');
 const passport = require('passport');
 const dmmAuthenticator = require('../middleware/dmm-passport');
 
 router.get('/', function (req, res) {
 	res.render('index', {
-		API_TOKEN: settings.get('API_TOKEN'),
+		API_TOKEN: API_TOKEN,
 		API_START_TIME: currentJapanUnixTime()
 	})
 });

@@ -2,7 +2,6 @@
 
 const Agent = require('../../src/kancolle/server/server');
 const sinon = require('sinon');
-const nconf = require('nconf');
 const request = require('request');
 const kancolleExternal = require('../../src/kancolle/external');
 const path = require('path');
@@ -10,7 +9,6 @@ const osapi = require('../../src/dmm/osapi');
 
 describe('kancolle server', function() {
 
-	var config, configBaseDir, configServer;
 	var agent;
 	const KANCOLLE_CONFIG = {
 		baseDir: 'base',
@@ -18,14 +16,7 @@ describe('kancolle server', function() {
 	}
 
 	beforeEach(function() {
-		config = sinon.stub(nconf, 'get');
-		configBaseDir = config.withArgs('KANCOLLE_BASE_DIR').returns(KANCOLLE_CONFIG.baseDir);
-		
 		agent = new Agent(KANCOLLE_CONFIG.serv);
-	})
-
-	afterEach(function() {
-		config.restore();
 	})
 
 	it('load file locally', sinon.test(function() {
@@ -42,7 +33,7 @@ describe('kancolle server', function() {
 
 		var args = sendFile.firstCall.args;
 		assert.include(args, errorCallback, 'error callback not include');
-		assert.include(args[0], KANCOLLE_CONFIG.baseDir, 'no kancolle base directory');
+		assert.include(args[0], process.env.KANCOLLE_BASE_DIR, 'no kancolle base directory');
 		assert.equal(path.basename(args[0]), FILE, 'load a different filename from what expected');
 		assert.isTrue(path.isAbsolute(args[0]), 'path is relative');
 	}))
