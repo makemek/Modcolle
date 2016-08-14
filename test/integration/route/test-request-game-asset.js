@@ -87,22 +87,21 @@ describe('request resource from kancolle server', function() {
 
 	async.forEach(['file.swf', 'sound/file.mp3', 'file.png'], function(file) {
 
-		it('request ' + file, function(done) {
+		it('request ' + file, sinon.test(function(done) {
 			var host = agent.host;
-			nockKancolleResource(agent.host, file);
 			
+			var loadStub = this.stub(Agent, 'load', function(res) {
+				res.sendStatus(200);
+			});
+
 			request(app)
 			.get('/' + file)
 			.then(function(res) {
+				var filepath = loadStub.firstCall.args[1];
+				assert.include(path.normalize(filepath), path.normalize(file), 'should load the correct file');
 				done();
 			})
 			.catch(done)
-		})
+		}))
 	})
-
-	function nockKancolleResource(host, file) {
-		nock('http://' + host)
-		.get('/kcs/' + file)
-		.reply(200)
-	}
 })
