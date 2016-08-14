@@ -18,6 +18,7 @@ setupTemplateEngine();
 setupDefaultLocalResponseHeader();
 setupRouting();
 
+
 function setupDefaultLocalResponseHeader() {
 	app.use(function(req, res, next) {
 	   res.set('X-Powered-By', 'ModColle');
