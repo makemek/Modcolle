@@ -3,7 +3,6 @@
 const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
 const sprintf = require('sprintf-js').sprintf;
-const childServer = require('./server/');
 
 var Kancolle = {
 
@@ -41,7 +40,7 @@ var Kancolle = {
 		})
 	},
 
-	getWorldServer: function(gadgetInfo, done) {
+	getWorldServerId: function(gadgetInfo, done) {
 		var self = this;
 		var options = {
 			uri: sprintf('http://%s/kcsapi/api_world/get_id/%s/1/%d', self.ENTRY_IP, gadgetInfo.VIEWER_ID, Date.now()),
@@ -64,17 +63,8 @@ var Kancolle = {
 			}
 
 			var worldId = response.api_data.api_world_id;
-			if(!worldId) {
-				appLog.verbose('new player (world ID = %d)', worldId);
-				return done(null, true, self);
-			}
-			else {
-				appLog.verbose('old player (world ID = %d)', worldId);
-
-				var associatedServer = childServer['World_' + worldId];
-				appLog.verbose('get associated server host %s', associatedServer.host);
-				return done(null, false, associatedServer);
-			}
+			appLog.verbose('player id %d resides in world id %d', gadgetInfo.VIEWER_ID, worldId);
+			done(null, worldId);
 		})
 		.catch(done)
 	}

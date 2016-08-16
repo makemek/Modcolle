@@ -78,24 +78,23 @@ describe('Kancolle game', function() {
 			Object.keys(KancolleChildServers).map(function(key) {kancolleServerIpArray.push(KancolleChildServers[key].host)})
 		})
 
-		it('return main kancolle server if player is new', function(done) {
+		it('return world id 0 if player is new', function(done) {
 			var gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer};
-			Kancolle.getWorldServer(gadgetInfo, function(error, isNewPlayer, server) {
-				assert.isNull(error, 'there should be no error');
-				assert.isTrue(isNewPlayer, 'should indicate that this player does not exist in the server');
-				assert.deepEqual(server, Kancolle, 'should return the game itself');
+			Kancolle.getWorldServerId(gadgetInfo, function(error, worldId) {
+				if(error)
+					return done(error);
+				assert.equal(worldId, 0, 'world id should be 0');
 				done();
 			});
 		})
 
-		it('return associated child server if player is old', function(done) {
+		it('return world id greater than 0 if player is old', function(done) {
 			var gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer};
-			Kancolle.getWorldServer(gadgetInfo, function(error, isNewPlayer, server) {
-				if(error) done(error);
+			Kancolle.getWorldServerId(gadgetInfo, function(error, worldId) {
+				if(error)
+					done(error);
 
-				assert.isNull(error, 'there should be no error');
-				assert.isFalse(isNewPlayer, 'should indicate that this player does not exist in the server');
-				assert.include(kancolleServerIpArray, server.host, 'should be in one of the Kancolle children servers');
+				assert.isAbove(worldId, 0, 'world id should be greater than 0');
 				done();
 			});
 		})
@@ -108,7 +107,7 @@ describe('Kancolle game', function() {
 				catch: function() {}
 			})
 
-			Kancolle.getWorldServer({}, function(error, isNewPlayer, server) {
+			Kancolle.getWorldServerId({}, function(error, isNewPlayer, server) {
 				assert.isNotNull(error);
 				assert.isUndefined(isNewPlayer);
 				assert.isUndefined(server);
