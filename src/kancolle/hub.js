@@ -21,33 +21,39 @@ Hub.getServer = function(worldId) {
 }
 
 /**
- * @callback doneCallback
- * @param {null|object} error
- * @param {string} swfLink - HTTP URL to SWF file
+ * @typedef {Url}
+ * @property {string} fileUrl - URL to swf file to launch the game
  */
 
 /**
  * Start Kancolle
  * @param  {object}   gadgetInfo - gadget information containing player's id and security token issued by DMM
- * @param  {doneCallback} done   - callback function
+ * @return {Promise<Url>}
  */
-Hub.launch = function(gadgetInfo, done) {
-	var host = 'http://' + Kancolle.ENTRY_IP; 
-	Kancolle.getWorldServerId(gadgetInfo, function(error, worldId) {
-		var isNewPlayer = worldId == 0;
-		if(error)
-			return done(error);
-		if(worldId < 0)
-			return done(new Error('invalid world id. should be greater than 0, but got ' + worldId));
-		else if(isNewPlayer)
-			return done(null, urljoin(host, 'world.swf'));
-		else
-			oldPlayer();
-	})
+Hub.launch = function(gadgetInfo) {
+	return new Promise(function(resolve, reject) {
+		var host = 'http://' + Kancolle.ENTRY_IP; 
+		Kancolle.getWorldServerId(gadgetInfo, function(error, worldId) {
+			var isNewPlayer = worldId == 0;
+			if(error)
+				return reject(error);
+			if(isNewPlayer)
+				return resolve(urljoin(host, 'kcs', 'world.swf'));
+			else
+				oldPlayer(worldId);
+		})
 
-	if(servers.hasOwnProperty(KEY))
-		return servers[KEY];
-	return null;
+		function oldPlayer(worldId) {
+			var server = Hub.getServer(worldId);
+			server.generateApiToken(gadgetInfo, function(error, isBan, token, starttime) {
+				if(error)
+					return reject(error);
+				if(isBan)
+					return resolve(urljoin(host, 'kcs', 'ban.swf'));
+				return resolve(urljoin(host, 'kcs', 'mainD2.swf', '?api_token=' + token, '?api_starttime=' + starttime));
+			})
+		}
+	})
 }
 
 module.exports = exports = Hub;
