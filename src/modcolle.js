@@ -1,5 +1,9 @@
 'use strict';
 
+const winston = require('winston');
+const loggerConfig = require('./config/loggerSettings.json');
+setupLogger();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const expressHandlebars = require('express-handlebars');
@@ -9,10 +13,6 @@ const LocalStrategy = require('passport-local').Strategy;
 const dmmAuthenticator = require('./middleware/dmm-passport');
 const morgan = require('morgan');
 const app = express();
-
-const winston = require('winston');
-const loggerConfig = require('./config/loggerSettings.json');
-setupLogger();
 const routerLogger = winston.loggers.get('router');
 const router = require('./routing/');
 
