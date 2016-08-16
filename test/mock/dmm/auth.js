@@ -15,7 +15,7 @@ const TOKEN = {
 		password: '0123456789abcdef5555555555555555',
 	}
 }
-const SESSION_COOKIE = 'login session cookie';
+const SESSION_COOKIE = 'INT_SESID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;';
 const BAD_ACCOUNT = {
 	email: 'bad@email',
 	password: 'badpassword',

@@ -7,11 +7,7 @@ const Cookie = tough.Cookie;
 var auth = {};
 
 auth.authenticate = function(username, password, done) {
-	dmmAgent.login(username, password, function(error, dmmCookies) {
-		if(error)
-			return done(error);
-		done(null, dmmCookies);
-	});
+	dmmAgent.login(username, password, done);
 }
 
 auth.serialize = function(dmmCookies, done) {
@@ -20,7 +16,12 @@ auth.serialize = function(dmmCookies, done) {
 		return cookie.key === 'INT_SESID';
 	})
 
-	done(null, session);
+	if(!session.length)
+		return done(new Error('no session cookie found (INT_SESID)'));
+	if(session.length > 1)
+		return done(new Error('only 1 session cookie is allowed'));
+
+	done(null, session[0]);
 }
 
 auth.deserialize = function(dmmSession, done) {
