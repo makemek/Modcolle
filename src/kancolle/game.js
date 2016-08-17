@@ -7,7 +7,6 @@ const sprintf = require('sprintf-js').sprintf;
 var Kancolle = {
 
 	ENTRY_IP: '203.104.209.7',
-	appId: 854854,
 
 	fetchConfig: function(done) {
 		var options = {

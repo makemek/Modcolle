@@ -10,11 +10,6 @@ const KancolleChildServers = require('../../src/kancolle/server');
 
 describe('Kancolle game', function() {
 
-	it('return correcct game ID', function() {
-		const ID = 854854;
-		assert.equal(Kancolle.appId, ID, 'Kancolle app id should be ' + ID);
-	})
-
 	describe('Maintenance test', function() {
 
 		var code;

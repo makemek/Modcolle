@@ -7,6 +7,12 @@ const urljoin = require('url-join');
 var Hub = {};
 
 /**
+ * Application id
+ * @type {Number}
+ */
+Hub.appId = 854854;
+
+/**
  * Request Kancolle server object
  * @param  {number} worldId - world id starting at 1. Checkout @link{http://kancolle.wikia.com/wiki/Servers|Server List} for more detail.
  * @return {object} server - a Kancolle server object

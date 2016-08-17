@@ -9,6 +9,11 @@ const game = require('../../src/kancolle/game');
 
 describe('Kancolle hub', function() {
 
+	it('return correcct game ID', function() {
+		const ID = 854854;
+		assert.equal(hub.appId, ID, 'Kancolle app id should be ' + ID);
+	})
+	
 	it('request an existing server should return an expected server', function() {
 		const BOUNDARY = [1,20];
 		for(var n = BOUNDARY[0]; n <= BOUNDARY[1]; ++n) {
