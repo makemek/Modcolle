@@ -14,16 +14,16 @@ var languagePreset = {
 
 var Injector = {
 
-	__constructor: function(subdomains, cookies) {
+	__constructor: function(cookies, subdomains) {
+		cookies = cookies || [];
+		subdomains = subdomains || ['/'];
+
 		appLog.verbose('parse cookie');
-		if (cookies instanceof Array)
-		  cookies = cookies.map(Cookie.parse);
-		else
-		  cookies = [Cookie.parse(cookies)];
+		cookies = cookies.map(Cookie.parse);
 		appLog.debug(cookies);
 
 		this.cookies = cookies;
-		this.subdomains = subdomains || ['/'];
+		this.subdomains = subdomains;
 		this.domain = 'dmm.com';
 	},
 
@@ -34,7 +34,7 @@ var Injector = {
 	},
 
 	language: function(language) {
-		language = language || languagePreset.japan;
+		language = language || languagePreset.language.japan;
 		var targetCookie = {key: 'cklg', value: language};
 		this.cookies = removeAndInjectCookie(this, targetCookie);
 		return this.cookies;
