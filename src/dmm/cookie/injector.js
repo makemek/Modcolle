@@ -1,7 +1,6 @@
 'use strict';
 
 const inherit = require('inherit');
-const async = require('async');
 const appLog = require('winston').loggers.get('app');
 const tough = require('tough-cookie');
 const Cookie = tough.Cookie;
@@ -24,47 +23,40 @@ var Injector = {
 		appLog.debug(cookies);
 
 		this.cookies = cookies;
-		this.tasks = [];
 		this.subdomains = subdomains || ['/'];
 		this.domain = 'dmm.com';
 	},
 
 	revokeRegionRestriction: function() {
 		var targetCookie = {key: 'ckcy', value: 1};
-		createCookieTask(this, targetCookie);
-		return this;
+		this.cookies = removeAndInjectCookie(this, targetCookie);
+		return this.cookies;
 	},
 
 	language: function(language) {
 		language = language || languagePreset.japan;
 		var targetCookie = {key: 'cklg', value: language};
-		createCookieTask(this, targetCookie);
-		return this;
-	},
-
-	end: function(done) {
-		appLog.info("start queued cookie injector's tasks");
-		var self = this;
-		async.series(this.tasks, function(error) {
-			done(error, self.cookies);
-		});
+		this.cookies = removeAndInjectCookie(this, targetCookie);
+		return this.cookies;
 	}
 }
 
-function createCookieTask(self, targetCookie) {
-	appLog.verbose('push async task');
-	self.tasks.push(function(done) {
-		appLog.verbose('remove cookies that has value ' + targetCookie.key);
-		self.cookies = self.cookies.filter(function(cookie) {
-			return cookie.key != targetCookie.key;
-		})
-		appLog.debug(self.cookies);
+function removeAndInjectCookie(self, targetCookie) {
+	var cookies;
+	appLog.verbose('remove cookies that has value ' + targetCookie.key);
+	cookies = removeCookie(self.cookies, targetCookie);
+	appLog.verbose('merge generated cookies');
+	cookies = cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains));
+	appLog.debug(self.cookies);
+	return cookies;
+}
 
-		appLog.verbose('merge generated cookies');
-		self.cookies = self.cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains));
-		appLog.debug(self.cookies);
-		done();
-	});
+function removeCookie(cookies, targetCookie) {
+	cookies = cookies.filter(function(cookie) {
+		return cookie.key != targetCookie.key;
+	})
+	appLog.debug(cookies);
+	return cookies;
 }
 
 function generateCookies(keyVal, domains, paths) {
