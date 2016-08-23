@@ -59,11 +59,18 @@ describe('DMM passport middleware', function() {
 	})
 
 	it('deserialize session', function(done) {
-		dmmPassport.deserialize(nockDmmAuth.session, function(error, session) {
+		dmmPassport.deserialize(nockDmmAuth.session, function(error, cookies) {
 			if(error)
 				return done(error);
-			assert.isString(session, 'session should be a string');
-			assert.equal(session, nockDmmAuth.session);
+			
+			var session = Cookie.parse(nockDmmAuth.session);
+			var resultCookies = cookies.filter(function(cookie) {
+				return cookie.key == session.key && cookie.value == session.value;
+			})
+			
+			assert.equal(resultCookies.length, 1, 'should have 1 dmm session cookie');
+			assert.equal(resultCookies[0].key, session.key, 'session key should have the same name');
+			assert.equal(resultCookies[0].value, session.value, 'session id should have the same value');
 			done();
 		})
 	})

@@ -1,6 +1,7 @@
 'use strict';
 
 const dmmAgent = require('../dmm/agent');
+const CookieInjector = require('../dmm/cookie/injector');
 const tough = require('tough-cookie');
 const Cookie = tough.Cookie;
 
@@ -25,7 +26,12 @@ auth.serialize = function(dmmCookies, done) {
 }
 
 auth.deserialize = function(dmmSession, done) {
-	done(null, dmmSession);
+	var injector = new CookieInjector([dmmSession], ['/', '/netgame/', '/netgame_s/']);
+	injector.language(CookieInjector.language.japan);
+	injector.revokeRegionRestriction();
+	var cookies = injector.cookies;
+
+	done(null, cookies);
 }
 
 auth.isAuthenticated = function(req, res, next) {
