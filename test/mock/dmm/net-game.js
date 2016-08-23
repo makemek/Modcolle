@@ -9,7 +9,7 @@ nock(HOST, {
 		cookie: function(headerValue) {
 			var hasSession = /INT_SESID\s*=\s*/gi.test(headerValue);
 			var renderPageInJapanese = /cklg\s*=\s*ja/gi.test(headerValue);
-			var loginFromJapan = /ccky\s*=\s*1/gi.test(headerValue);
+			var loginFromJapan = /ckcy\s*=\s*1/gi.test(headerValue);
 
 			return hasSession && renderPageInJapanese && loginFromJapan;
 		}

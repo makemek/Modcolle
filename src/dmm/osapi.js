@@ -8,20 +8,21 @@ const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
 
 var API = {
-	getGameInfo(gameId, dmmCookie, done) {
+	getGameInfo(gameId, dmmCookies, done) {
 		appLog.verbose('Get game metadata');
 		var url = createGameUrl(gameId);
-		var cookie = dmmCookie;
+		var cookies = dmmCookies;
 
-		if(typeof(cookie) == 'object')
-			cookie = cookie.join('; ');
+		if(Array.isArray(dmmCookies))
+			cookies = cookies.join('; ');
 
-		if(!cookie.match(/ccky=1/g)) 
-			appLog.warn('Japan cookie region not set. DMM may reject the access');
+		var fromJapan = cookies.match(/ckcy\w*=\w*1/g);
+		if(!fromJapan)
+			appLog.warn('User does not login from Japan. DMM may reject the access');
 
 		var options = {
 			uri: url,
-			headers: {cookie: cookie}
+			headers: {cookie: cookies}
 		}
 		appLog.info('request page ' + options.uri);
 		appLog.debug(options);

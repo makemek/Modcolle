@@ -13,7 +13,7 @@ describe('DMM API (OSAPI)', function() {
 
 	beforeEach(function() {
 		fakeGameId = 0;
-		fakeCookie = 'INT_SESID=abcd; ccky=1; cklg=ja; a=1; b=2;';
+		fakeCookie = 'INT_SESID=abcd; ckcy=1; cklg=ja; a=1; b=2;';
 	})
 
 	it('get expected gadget information', sinon.test(function(done) {
@@ -21,6 +21,9 @@ describe('DMM API (OSAPI)', function() {
 		var httpRequest = this.spy(rp, 'get');
 
 		DmmApi.getGameInfo(fakeGameId, fakeCookie, function(error, gadgetInfo) {
+			if(error)
+				return done(error);
+			
 			var rpParam = httpRequest.firstCall.args[0];
 			assert.equal(rpParam.uri, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeGameId, 'http url should match');
 			assert.equal(rpParam.headers.cookie, fakeCookie, 'cookie should not be altered');
