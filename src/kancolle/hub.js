@@ -56,7 +56,7 @@ Hub.launch = function(gadgetInfo) {
 					return reject(error);
 				if(isBan)
 					return resolve(urljoin(host, 'kcs', 'ban.swf'));
-				return resolve(urljoin(host, 'kcs', 'mainD2.swf', '?api_token=' + token, '?api_starttime=' + starttime));
+				return resolve(urljoin('http://' + server.host, 'kcs', 'mainD2.swf', '?api_token=' + token, '?api_starttime=' + starttime));
 			})
 		}
 	})

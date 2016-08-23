@@ -44,19 +44,22 @@ describe('Kancolle hub', function() {
 
 	it('should return correct url to old player who launch the game', sinon.test(function(done) {
 		var api_token = 'abc', api_starttime = '123';
+		var worldId = 1;
 		this.stub(game, 'getWorldServerId', function(gadgetInfo, callback) {
-			callback(null, 1);
+			callback(null, worldId);
 		});
 		this.stub(Server.prototype, 'generateApiToken', function(gadgetInfo, callback) {
 			callback(null, false, api_token, api_starttime);
 		});
 		hub.launch({})
 		.then(function(url) {
+			var server = hub.getServer(worldId);
 			url = urlparse(url, true);
-			assert.equal(url.host, '203.104.209.7');
-			assert.equal(url.pathname, '/kcs/mainD2.swf');
-			assert.equal(url.query.api_token, api_token);
-			assert.equal(url.query.api_starttime, api_starttime);
+			assert.equal(url.protocol, 'http:', 'should have http protocol');
+			assert.equal(url.host, server.host, 'should have the host');
+			assert.equal(url.pathname, '/kcs/mainD2.swf', 'mainD2.swf should reside in /kcs/');
+			assert.equal(url.query.api_token, api_token, 'should have api token');
+			assert.equal(url.query.api_starttime, api_starttime, 'should have api start time');
 			done();
 		})
 		.catch(done)
