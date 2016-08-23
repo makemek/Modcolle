@@ -1,6 +1,6 @@
 'use strict';
 
-const agent = require('../../src/dmm/agent');
+const agent = require(SRC_ROOT + '/dmm/agent');
 const async = require('async');
 const dmmAuth = require('../mock/dmm/auth');
 

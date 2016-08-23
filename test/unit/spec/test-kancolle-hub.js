@@ -1,11 +1,11 @@
 'use strict';
 
-const hub = require('../../src/kancolle/hub');
-const servers = require('../../src/kancolle/server/');
-const Server = require('../../src/kancolle/server/server');
+const hub = require(SRC_ROOT + '/kancolle/hub');
+const servers = require(SRC_ROOT + '/kancolle/server/');
+const Server = require(SRC_ROOT + '/kancolle/server/server');
 const urlparse = require('url-parse');
 const sinon = require('sinon');
-const game = require('../../src/kancolle/game');
+const game = require(SRC_ROOT + '/kancolle/game');
 
 describe('Kancolle hub', function() {
 

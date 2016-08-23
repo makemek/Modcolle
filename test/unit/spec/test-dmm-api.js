@@ -1,6 +1,6 @@
 'use strict';
 
-const DmmApi = require('../../src/dmm/osapi');
+const DmmApi = require(SRC_ROOT + '/dmm/osapi');
 const sinon = require('sinon');
 const async = require('async');
 const rp = require('request-promise');

@@ -1,11 +1,11 @@
 'use strict';
 
-const Agent = require('../../src/kancolle/server/server');
+const Agent = require(SRC_ROOT + '/kancolle/server/server');
 const sinon = require('sinon');
 const request = require('request');
-const kancolleExternal = require('../../src/kancolle/external');
+const kancolleExternal = require(SRC_ROOT + '/kancolle/external');
 const path = require('path');
-const osapi = require('../../src/dmm/osapi');
+const osapi = require(SRC_ROOT + '/dmm/osapi');
 
 describe('kancolle server', function() {
 

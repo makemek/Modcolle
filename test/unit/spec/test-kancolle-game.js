@@ -1,12 +1,12 @@
 'use strcit';
 
-const Kancolle = require('../../src/kancolle/game');
+const Kancolle = require(SRC_ROOT + '/kancolle/game');
 const rp = require('request-promise');
 const sinon = require('sinon');
 const async = require('async');
 const sprintf = require('sprintf-js').sprintf;
 const apiTerminal = require('../mock/kancolle/api-terminal');
-const KancolleChildServers = require('../../src/kancolle/server');
+const KancolleChildServers = require(SRC_ROOT + '/kancolle/server');
 
 describe('Kancolle game', function() {
 

@@ -1,7 +1,7 @@
 'use strict';
 
-const dmmPassport = require('../../src/middleware/dmm-passport');
-const dmmAgent = require('../../src/dmm/agent');
+const dmmPassport = require(SRC_ROOT + '/middleware/dmm-passport');
+const dmmAgent = require(SRC_ROOT + '/dmm/agent');
 const tough = require('tough-cookie');
 const Cookie = tough.Cookie;
 const nockDmmAuth = require('../mock/dmm/auth');

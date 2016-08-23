@@ -2,7 +2,7 @@
 
 const Cookie = require('tough-cookie').Cookie;
 const sprintf = require('sprintf-js').sprintf
-const Injector = require('../../src/dmm/cookie/injector');
+const Injector = require(SRC_ROOT + '/dmm/cookie/injector');
 const async = require('async');
 
 describe('Region cookie generator', function() {
