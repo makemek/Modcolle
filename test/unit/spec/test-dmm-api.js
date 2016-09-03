@@ -20,14 +20,9 @@ describe('DMM API (OSAPI)', function() {
 
 		var httpRequest = this.spy(rp, 'get');
 
-		DmmApi.getGameInfo(fakeGameId, fakeCookie, function(error, gadgetInfo) {
-			if(error)
-				return done(error);
-			
+		DmmApi.getGameInfo(fakeGameId, fakeCookie)
+		.then(gadgetInfo => {
 			var rpParam = httpRequest.firstCall.args[0];
-			assert.equal(rpParam.uri, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeGameId, 'http url should match');
-			assert.equal(rpParam.headers.cookie, fakeCookie, 'cookie should not be altered');
-
 			var expectedParsedGadget = {
 			    VIEWER_ID : 123,
 			    OWNER_ID  : 123,
@@ -40,52 +35,54 @@ describe('DMM API (OSAPI)', function() {
 			    SV_CD     : "xx_xxxxxx"
 			};
 
-			assert.isNull(error);
+			assert.equal(rpParam.uri, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeGameId, 'http url should match');
+			assert.equal(rpParam.headers.cookie, fakeCookie, 'cookie should not be altered');
 			assert.deepEqual(gadgetInfo, expectedParsedGadget, 'gadgetInfo should have the same expected properties and values');	
 			done();
-		});
+		})
+		.catch(done);
 	}))
 
-	it('should return error when there is no gadgetInfo variable', sinon.test(function() {
-		var httpRequest = this.stub(rp, 'get').returns(getFakeResponse(''));
-		DmmApi.getGameInfo(fakeGameId, fakeCookie, function(error, gadgetInfo) {
-			assert.isUndefined(gadgetInfo, 'gadget info should not have any value');
-			assert.isNotNull(error, 'there should be an error');
-			assert.isDefined(error, 'error should be defined');
+	it('should return error when there is no gadgetInfo variable', sinon.test(function(done) {
+		var httpRequest = this.stub(rp, 'get')
+		.returns(getFakeResponse(''));
+
+		DmmApi.getGameInfo(fakeGameId, fakeCookie)
+		.then(done)
+		.catch(error => {
+			assert.isDefined(error);
+			done();
 		})
 	}))
 
 	describe('proxy request', function() {
 		var securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy';
 		it('should make proxy request to the target url', function(done) {
-			DmmApi.proxyRequest('http://www.example.com', {ST: securityToken}, function(error, response) {
-				if(error)
-					return done(error);
-
+			DmmApi.proxyRequest('http://www.example.com', {ST: securityToken})
+			.then(response => {
 				assert.isObject(response, 'response should be an object');
 				assert.isTrue(response.hasOwnProperty('body'), 'should have a body (.body) property');
 				assert.isDefined(response.hasOwnProperty('headers'), 'should have a headers (.headers) property');
 				assert.isDefined(response.hasOwnProperty('rc'), 'should have http status (.rc) property');
 				assert.isNumber(response.rc, 'http status value (.rc) should be a number');
-
 				done();
 			})
-		
+			.catch(done);
 		})
 
 		it('invalid url ', function(done){
-			DmmApi.proxyRequest('http://invlidUrl', {ST: securityToken}, function(error, response) {
-				if(error)
-					return done(error);
-
+			DmmApi.proxyRequest('http://invlidUrl', {ST: securityToken})
+			.then(response => {
 				assert.equal(response.body, 'request error');
 				done();
 			})
+			.catch(done);
 		})
 
 		it('invalid security token', function(done) {
-			DmmApi.proxyRequest('', {ST: ''}, function(error, response) {
-				assert.isNotNull(error, 'there should be error');
+			DmmApi.proxyRequest('', {ST: ''})
+			.then(done)
+			.catch(error => {
 				assert.equal(error.statusCode, 500, 'http status code should be internal server error (500)');
 				done();
 			})
