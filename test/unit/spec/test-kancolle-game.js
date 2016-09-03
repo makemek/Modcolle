@@ -27,41 +27,39 @@ describe('Kancolle game', function() {
 
 		it('is NOT on maintenance', function(done) {
 			var sourceText = sprintf(code, 0, 0);
-			var httpRequest = sinon.stub(rp, 'get').returns({
-				then: function(bodyCallback) {bodyCallback(sourceText); return this;},
-				catch: function() {}
-			})
+			var httpRequest = sinon.stub(rp, 'get')
+			.returns(new Promise(function(resolve, reject) {
+				return resolve(sourceText);
+			}))
 
-			Kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
-				assert.isNull(error);
+			Kancolle.getMaintenanceInfo()
+			.then(function(maintenanceInfo) {
 				assert.isFalse(maintenanceInfo.isMaintain);
-
 				httpRequest.restore();
 				done();
 			})
+			.catch(done);
 		})
 
 		async.forEach([
 		{doing: 0, emergency: 1},
 		{doing: 1, emergency: 0},
-		{doing: 1, emergency: 1}], function(mode, callback) {
+		{doing: 1, emergency: 1}], function(mode) {
 			it(sprintf('is on maintenance (doing = %d, emergency = %d)', mode.doing, mode.emergency), function(done) {
 				var sourceText = sprintf(code, mode.doing, mode.emergency);
-				var httpRequest = sinon.stub(rp, 'get').returns({
-					then: function(bodyCallback) {bodyCallback(sourceText); return this;},
-					catch: function() {}
-				})
+				var httpRequest = sinon.stub(rp, 'get')
+				.returns(new Promise(function(resolve, reject) {
+					return resolve(sourceText);
+				}))
 
-				Kancolle.getMaintenanceInfo(function(error, maintenanceInfo) {
-					assert.isNull(error);
+				Kancolle.getMaintenanceInfo()
+				.then(function(maintenanceInfo) {
 					assert.isTrue(maintenanceInfo.isMaintain);
-
 					httpRequest.restore();
 					done();
 				})
+				.catch(done);
 			})
-
-			callback();
 		});
 	})
 
@@ -75,39 +73,37 @@ describe('Kancolle game', function() {
 
 		it('return world id 0 if player is new', function(done) {
 			var gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer};
-			Kancolle.getWorldServerId(gadgetInfo, function(error, worldId) {
-				if(error)
-					return done(error);
+			Kancolle.getWorldServerId(gadgetInfo)
+			.then(worldId => {
 				assert.equal(worldId, 0, 'world id should be 0');
 				done();
-			});
+			})
+			.catch(done);
 		})
 
 		it('return world id greater than 0 if player is old', function(done) {
 			var gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer};
-			Kancolle.getWorldServerId(gadgetInfo, function(error, worldId) {
-				if(error)
-					done(error);
-
+			Kancolle.getWorldServerId(gadgetInfo)
+			.then(worldId => {
 				assert.isAbove(worldId, 0, 'world id should be greater than 0');
 				done();
-			});
+			})
+			.catch(done);
 		})
 
 		it('should return error when internal error occurred in the target server', sinon.test(function(done) {
 			var error = {api_data: 0};
 			var errorResponse = 'svdata=' + JSON.stringify(error);
-			this.stub(rp, 'get').returns({
-				then: function(bodyCallback) { bodyCallback(errorResponse); return this;},
-				catch: function() {}
-			})
-
-			Kancolle.getWorldServerId({}, function(error, isNewPlayer, server) {
-				assert.isNotNull(error);
-				assert.isUndefined(isNewPlayer);
-				assert.isUndefined(server);
+			this.stub(rp, 'get')
+			.returns(new Promise(function(resolve, reject) {
+				return resolve(errorResponse);
+			}))
+			
+			Kancolle.getWorldServerId({})
+			.catch(error => {
+				assert.isDefined(error);
 				done();
-			});
+			})
 		}))
 	})
 })
