@@ -13,7 +13,7 @@ describe('DMM passport middleware', function() {
 	it('grant access', function(done) {
 		dmmPassport.authenticate('someone@example.com', 'password', function(error, cookies) {
 			if(error)
-				done(error);
+				return done(error);
 
 			cookies = cookies.map(Cookie.parse);
 			cookies.filter(function(cookie) {

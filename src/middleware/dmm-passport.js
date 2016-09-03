@@ -8,7 +8,11 @@ const Cookie = tough.Cookie;
 var auth = {};
 
 auth.authenticate = function(username, password, done) {
-	dmmAgent.login(username, password, done);
+	dmmAgent.login(username, password)
+	.then(function(cookie) {
+		return done(null, cookie);
+	})
+	.catch(done);
 }
 
 auth.serialize = function(dmmCookies, done) {
