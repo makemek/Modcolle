@@ -39,10 +39,9 @@ Hub.getServer = function(worldId) {
 Hub.launch = function(gadgetInfo) {
 	return new Promise(function(resolve, reject) {
 		var host = 'http://' + Kancolle.ENTRY_IP; 
-		Kancolle.getWorldServerId(gadgetInfo, function(error, worldId) {
+		Kancolle.getWorldServerId(gadgetInfo)
+		.then(worldId => {
 			var isNewPlayer = worldId == 0;
-			if(error)
-				return reject(error);
 			if(isNewPlayer)
 				return resolve(urljoin(host, 'kcs', 'world.swf'));
 			else
