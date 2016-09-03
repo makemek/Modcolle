@@ -13,7 +13,8 @@
     "test": "nf run mocha",
     "start": "nf start",
     "dev": "nf run nodemon ./bin/www",
-    "coverage": "nf run istanbul cover ./node_modules/mocha/bin/_mocha"
+    "coverage": "nf run istanbul cover ./node_modules/mocha/bin/_mocha",
+    "postinstall": "cp .env.template .env"
   },
   "dependencies": {
     "body-parser": "1.15.2",
