@@ -1,7 +1,11 @@
 'use strict';
 
+const LOGGER_SILENT = process.env.LOGGER_SILENT;
+const LOGGER_LEVEL = process.env.LOGGER_LEVEL;
+const LOGGER_TIMESTAMP = process.env.LOGGER_TIMESTAMP;
+const LOGGER_PRETTY_PRINT = process.env.LOGGER_PRETTY_PRINT;
+
 const winston = require('winston');
-const loggerConfig = require('./config/loggerSettings.json');
 setupLogger();
 
 const express = require('express');
@@ -22,8 +26,19 @@ setupDefaultLocalResponseHeader();
 setupRouting();
 
 function setupLogger() {
-  Object.keys(loggerConfig).forEach(function(key) {
-      winston.loggers.add(key, loggerConfig[key]);
+	var loggers = ['app', 'router', 'agent'];
+  	loggers.forEach(function(logger) {
+  		var loggerConfig = {
+  			console: {
+	  			label: logger,
+	  			level: LOGGER_LEVEL,
+	  			colorize: 'all',
+	  			silent: LOGGER_SILENT === 'true',
+	  			timestamp: LOGGER_TIMESTAMP === 'true',
+	  			prettyPrint: LOGGER_PRETTY_PRINT === 'true',
+  			}
+  		};
+     	winston.loggers.add(logger, loggerConfig);
   });
 }
 
