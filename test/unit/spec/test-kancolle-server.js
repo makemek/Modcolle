@@ -90,30 +90,25 @@ describe('kancolle server', function() {
 	}))
 
 	it('generate api token for non-banned player', function(done) {
-		agent.generateApiToken({VIEWER_ID: 12345678, ST: 'xxxxxxxxx'}, function(error, isBan, token, starttime) {
-			if(error)
-				return done(error);
-			assert.isFalse(isBan, 'should not get banned');
+		agent.generateApiToken({VIEWER_ID: 12345678, ST: 'xxxxxxxxx'})
+		.then(player => {
+			assert.isFalse(player.isBan, 'should not get banned');
 			done();
 		})
+		.catch(done);
 	})
 
 	it('NOT generate api token for banned player', sinon.test(function(done) {
-		var stub = this.stub(osapi, 'proxyRequest');
-		agent.generateApiToken({}, function(error, isBan, token, starttime) {
-			if(error)
-				done(error);
-
-			assert.isNull(error, 'there should be no error');
-			assert.isTrue(isBan, 'this player should be banned');
-			assert.isUndefined(token, 'no api token should be given');
-			assert.isUndefined(starttime, 'no api start time should be given');
+		var body = 'svdata=' + JSON.stringify({api_result: 301})
+		var stub = this.stub(osapi, 'proxyRequest').returns(Promise.resolve({body: body}));
+		agent.generateApiToken({})
+		.then(player => {
+			assert.isTrue(player.isBan, 'this player should be banned');
+			assert.isUndefined(player.api_token, 'no api token should be given');
+			assert.isUndefined(player.api_start_time, 'no api start time should be given');
 			done();
-		});
-
-		var callback = stub.firstCall.args[2];
-		var body = JSON.stringify({api_result: 301})
-		callback(null, {body: 'svdata=' + body});
+		})
+		.catch(done);
 	}))
 
 })

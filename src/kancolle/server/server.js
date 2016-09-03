@@ -48,19 +48,21 @@ var KancolleServer = {
 		}, onResponse);
 	},
 
-	generateApiToken: function(gadgetInfo, done) {
+	generateApiToken: function(gadgetInfo) {
 		const url = sprintf('http://%s/kcsapi/api_auth_member/dmmlogin/%s/1/%d', this.host, gadgetInfo.VIEWER_ID, Date.now());
-		osapi.proxyRequest(url, gadgetInfo, function(error, response) {
-			if(error)
-				return done(error);
-
+		return osapi.proxyRequest(url, gadgetInfo).then(response => {
 			var body = response.body;
 			body = body.replace('svdata=', '');
 			body = body.replace(/\\/g, '');
 			var apiResponse = JSON.parse(body);
 			var isBan = apiResponse.api_result == 301;
 
-			return done(null, isBan, apiResponse.api_token, apiResponse.api_starttime);
+			var data = {
+				isBan: isBan,
+				api_token: apiResponse.api_token,
+				api_start_time: apiResponse.api_starttime
+			}
+			return Promise.resolve(data);
 		})
 	}
 }

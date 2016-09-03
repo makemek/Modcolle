@@ -37,28 +37,28 @@ Hub.getServer = function(worldId) {
  * @return {Promise<Url>}
  */
 Hub.launch = function(gadgetInfo) {
-	return new Promise(function(resolve, reject) {
-		var host = 'http://' + Kancolle.ENTRY_IP; 
-		Kancolle.getWorldServerId(gadgetInfo)
-		.then(worldId => {
-			var isNewPlayer = worldId == 0;
-			if(isNewPlayer)
-				return resolve(urljoin(host, 'kcs', 'world.swf'));
-			else
-				oldPlayer(worldId);
-		})
-
-		function oldPlayer(worldId) {
-			var server = Hub.getServer(worldId);
-			server.generateApiToken(gadgetInfo, function(error, isBan, token, starttime) {
-				if(error)
-					return reject(error);
-				if(isBan)
-					return resolve(urljoin(host, 'kcs', 'ban.swf'));
-				return resolve(urljoin('http://' + server.host, 'kcs', 'mainD2.swf', '?api_token=' + token, '?api_starttime=' + starttime));
-			})
-		}
+	var masterHost = 'http://' + Kancolle.ENTRY_IP; 
+	return Kancolle.getWorldServerId(gadgetInfo)
+	.then(worldId => {
+		if(worldId == 0)
+			return newPlayer();
+		else
+			return oldPlayer(worldId);
 	})
+
+	function newPlayer() {
+		return Promise.resolve(urljoin(masterHost, 'kcs', 'world.swf'));
+	}
+
+	function oldPlayer(worldId) {
+		var server = Hub.getServer(worldId);
+		return server.generateApiToken(gadgetInfo).then(player => {
+			if(player.isBan)
+				return Promise.resolve(urljoin(masterHost, 'kcs', 'ban.swf'));
+			else
+				return Promise.resolve(urljoin('http://' + server.host, 'kcs', 'mainD2.swf', '?api_token=' + player.api_token, '?api_starttime=' + player.api_start_time));
+		})
+	}
 }
 
 module.exports = exports = Hub;

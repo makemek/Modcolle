@@ -41,12 +41,15 @@ describe('Kancolle hub', function() {
 	}))
 
 	it('should return correct url to old player who launch the game', sinon.test(function(done) {
-		var api_token = 'abc', api_starttime = '123';
+		var player = {
+			isBan: false,
+			api_token: 'abc',
+			api_start_time: '123'
+		}
 		var worldId = 1;
 		this.stub(game, 'getWorldServerId').returns(createPromise(worldId));
-		this.stub(Server.prototype, 'generateApiToken', function(gadgetInfo, callback) {
-			callback(null, false, api_token, api_starttime);
-		});
+		this.stub(Server.prototype, 'generateApiToken').returns(Promise.resolve(player))
+
 		hub.launch({})
 		.then(function(url) {
 			var server = hub.getServer(worldId);
@@ -54,8 +57,8 @@ describe('Kancolle hub', function() {
 			assert.equal(url.protocol, 'http:', 'should have http protocol');
 			assert.equal(url.host, server.host, 'should have the host');
 			assert.equal(url.pathname, '/kcs/mainD2.swf', 'mainD2.swf should reside in /kcs/');
-			assert.equal(url.query.api_token, api_token, 'should have api token');
-			assert.equal(url.query.api_starttime, api_starttime, 'should have api start time');
+			assert.equal(url.query.api_token, player.api_token, 'should have api token');
+			assert.equal(url.query.api_starttime, player.api_start_time, 'should have api start time');
 			done();
 		})
 		.catch(done)
@@ -63,9 +66,9 @@ describe('Kancolle hub', function() {
 
 	it('should return correct url to old player who is banned from the game', sinon.test(function(done) {
 		this.stub(game, 'getWorldServerId').returns(createPromise(1));
-		this.stub(Server.prototype, 'generateApiToken', function(gadgetInfo, callback) {
-			callback(null, true);
-		});
+		this.stub(Server.prototype, 'generateApiToken')
+		.returns(Promise.resolve({isBan: true}));
+
 		hub.launch({})
 		.then(function(url) {
 			assert.equal('http://203.104.209.7/kcs/ban.swf', url, 'url should match');
@@ -73,23 +76,6 @@ describe('Kancolle hub', function() {
 		})
 		.catch(done);
 	}))
-
-	it('should return error if cannot generate api token for some reason', sinon.test(function(done) {
-		var expectedError = new Error('some internal error occurred');
-		this.stub(game, 'getWorldServerId').returns(createPromise(1));
-		this.stub(Server.prototype, 'generateApiToken', function(gadgetInfo, callback) {
-			callback(expectedError)
-		});
-
-		hub.launch({})
-		.catch(function(error) {
-			if(error.message != expectedError.message)
-				return done(error);
-			assert.deepEqual(error, expectedError);
-			done();
-		})
-	}))
-
 })
 
 function createPromise(resolveValue) {
