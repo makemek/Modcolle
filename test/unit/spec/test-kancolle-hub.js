@@ -16,10 +16,9 @@ describe('Kancolle hub', function() {
 	
 	it('request an existing server should return an expected server', function() {
 		const BOUNDARY = [1,20];
-		for(var n = BOUNDARY[0]; n <= BOUNDARY[1]; ++n) {
-			var accessPropertyName = 'World_' + n;
-			assert.isTrue(servers.hasOwnProperty(accessPropertyName), accessPropertyName + ' not found');
-			assert.deepEqual(hub.getServer(n), servers[accessPropertyName], n + ' should be the same server');
+		for(var worldId = BOUNDARY[0]; worldId <= BOUNDARY[1]; ++worldId) {
+			assert.isTrue(servers.hasOwnProperty(worldId), 'worldId ' + worldId + ' not found');
+			assert.deepEqual(hub.getServer(worldId), servers[worldId], 'worldId ' + worldId + ' should be the same server');
 		}
 	})
 
@@ -53,9 +52,10 @@ describe('Kancolle hub', function() {
 		hub.launch({})
 		.then(function(url) {
 			var server = hub.getServer(worldId);
-			url = urlparse(url, true);
+			var url = urlparse(url, true);
+			var expectUrl = urlparse(server.host);
 			assert.equal(url.protocol, 'http:', 'should have http protocol');
-			assert.equal(url.host, server.host, 'should have the host');
+			assert.equal(url.host, expectUrl.host, 'should have the host');
 			assert.equal(url.pathname, '/kcs/mainD2.swf', 'mainD2.swf should reside in /kcs/');
 			assert.equal(url.query.api_token, player.api_token, 'should have api token');
 			assert.equal(url.query.api_starttime, player.api_start_time, 'should have api start time');

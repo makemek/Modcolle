@@ -1,16 +1,17 @@
 'use strict';
 
+const KANCOLLE_MASTER_SERVER = process.env.KANCOLLE_SERVER_MASTER;
 const rp = require('request-promise');
 const appLog = require('winston').loggers.get('app');
 const sprintf = require('sprintf-js').sprintf;
 
 var Kancolle = {
 
-	ENTRY_IP: '203.104.209.7',
+	ENTRY_HOST: KANCOLLE_MASTER_SERVER,
 
 	fetchConfig: function() {
 		var options = {
-			url: 'http://' + this.ENTRY_IP + '/gadget/js/kcs_const.js'
+			url: 'http://' + this.ENTRY_HOST + '/gadget/js/kcs_const.js'
 		}
 
 		appLog.info('load scripts from ' + options.url);
@@ -43,7 +44,7 @@ var Kancolle = {
 
 	getWorldServerId: function(gadgetInfo) {
 		var options = {
-			uri: sprintf('http://%s/kcsapi/api_world/get_id/%s/1/%d', this.ENTRY_IP, gadgetInfo.VIEWER_ID, Date.now()),
+			uri: sprintf('%s/kcsapi/api_world/get_id/%s/1/%d', this.ENTRY_HOST, gadgetInfo.VIEWER_ID, Date.now()),
 		}
 		appLog.verbose('request to %s', options.uri);
 		appLog.debug('options', options);
@@ -58,7 +59,7 @@ var Kancolle = {
 			appLog.debug('parsed result', response);
 
 			if(response.api_result != 1) {
-				var error = new Error('Internal error at target server %s', this.ENTRY_IP);
+				var error = new Error('Internal error at target server %s', this.ENTRY_HOST);
 				appLog.error(error.message);
 				return Promise.reject(error);
 			}

@@ -49,7 +49,7 @@ var KancolleServer = {
 	},
 
 	generateApiToken: function(gadgetInfo) {
-		const url = sprintf('http://%s/kcsapi/api_auth_member/dmmlogin/%s/1/%d', this.host, gadgetInfo.VIEWER_ID, Date.now());
+		const url = sprintf('%s/kcsapi/api_auth_member/dmmlogin/%s/1/%d', this.host, gadgetInfo.VIEWER_ID, Date.now());
 		return osapi.proxyRequest(url, gadgetInfo).then(response => {
 			var body = response.body;
 			body = body.replace('svdata=', '');

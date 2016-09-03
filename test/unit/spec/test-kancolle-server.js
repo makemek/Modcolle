@@ -12,7 +12,7 @@ describe('kancolle server', function() {
 	var agent;
 	const KANCOLLE_CONFIG = {
 		baseDir: 'base',
-		serv: '0.0.0.0'
+		serv: 'http://0.0.0.0'
 	}
 
 	beforeEach(function() {

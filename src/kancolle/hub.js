@@ -19,11 +19,9 @@ Hub.appId = 854854;
  * @throws {ReferenceError} If worldId doesn't match with any Kancolle server
  */
 Hub.getServer = function(worldId) {
-	const PREFIX = 'World_';
-	const KEY = PREFIX + worldId;
-	if(!servers[KEY])
-		throw new ReferenceError(KEY + ' Kancolle ip lookup not found. Please make sure that mapping configuration world id to server is configured correctly');
-	return servers[KEY];
+	if(!servers[worldId])
+		throw new ReferenceError(`Not found ip address associated with world id ${worldId}. Please make sure that KANCOLLE_SERVER_${worldId} exist in environment variables`);
+	return servers[worldId];
 }
 
 /**
@@ -37,7 +35,6 @@ Hub.getServer = function(worldId) {
  * @return {Promise<Url>}
  */
 Hub.launch = function(gadgetInfo) {
-	var masterHost = 'http://' + Kancolle.ENTRY_IP; 
 	return Kancolle.getWorldServerId(gadgetInfo)
 	.then(worldId => {
 		if(worldId == 0)
@@ -47,16 +44,16 @@ Hub.launch = function(gadgetInfo) {
 	})
 
 	function newPlayer() {
-		return Promise.resolve(urljoin(masterHost, 'kcs', 'world.swf'));
+		return Promise.resolve(urljoin(Kancolle.ENTRY_HOST, 'kcs', 'world.swf'));
 	}
 
 	function oldPlayer(worldId) {
 		var server = Hub.getServer(worldId);
 		return server.generateApiToken(gadgetInfo).then(player => {
 			if(player.isBan)
-				return Promise.resolve(urljoin(masterHost, 'kcs', 'ban.swf'));
+				return Promise.resolve(urljoin(Kancolle.ENTRY_HOST, 'kcs', 'ban.swf'));
 			else
-				return Promise.resolve(urljoin('http://' + server.host, 'kcs', 'mainD2.swf', '?api_token=' + player.api_token, '?api_starttime=' + player.api_start_time));
+				return Promise.resolve(urljoin(server.host, 'kcs', 'mainD2.swf', '?api_token=' + player.api_token, '?api_starttime=' + player.api_start_time));
 		})
 	}
 }
