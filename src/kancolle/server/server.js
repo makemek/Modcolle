@@ -14,7 +14,8 @@ const kancolleExternal = require('../external');
 
 var KancolleServer = {
 
-	__constructor: function(host) {
+	__constructor: function(worldId, host) {
+		this.worldId = worldId;
 		this.host = host;
 	},
 

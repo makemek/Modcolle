@@ -16,7 +16,7 @@ describe('kancolle server', function() {
 	}
 
 	beforeEach(function() {
-		agent = new Agent(KANCOLLE_CONFIG.serv);
+		agent = new Agent(1, KANCOLLE_CONFIG.serv);
 	})
 
 	it('load file locally', sinon.test(function() {
