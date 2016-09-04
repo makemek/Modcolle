@@ -1,3 +1,5 @@
+'use strict';
+
 const KcServer = require('./server');
 const ACCESS_KEY = 'KANCOLLE_SERVER_';
 var servers = {};
