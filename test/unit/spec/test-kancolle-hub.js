@@ -14,19 +14,23 @@ describe('Kancolle hub', function() {
 		assert.equal(hub.appId, ID, 'Kancolle app id should be ' + ID);
 	})
 	
-	it('request an existing server should return an expected server', function() {
-		const BOUNDARY = [1,20];
-		for(var worldId = BOUNDARY[0]; worldId <= BOUNDARY[1]; ++worldId) {
-			assert.isTrue(servers.hasOwnProperty(worldId), 'worldId ' + worldId + ' not found');
-			assert.deepEqual(hub.getServer(worldId), servers[worldId], 'worldId ' + worldId + ' should be the same server');
-		}
+	it('request for kancolle server by world id should return a correct server', function() {
+		var worldId = '9999', fakeKancolleServer = new Server(worldId);
+		servers[worldId] = fakeKancolleServer;
+		assert.deepEqual(hub.getServer(worldId), fakeKancolleServer, 'should return the same server');
+		delete servers[worldId];
 	})
 
-	it('request non-existent server should throw ReferenceError', function() {
-		const invalidValue = -1;
-		assert.throws(function() {
-			hub.getServer(invalidValue);
-		}, ReferenceError, null, 'should throw misconfiguration error');
+	it('request for kancolle server by host name should return a correct server', function() {
+		var host = 'www.example.com', fakeKancolleServer = new Server('9999999', host);
+		servers[host] = fakeKancolleServer;
+		assert.deepEqual(hub.getServer(host), fakeKancolleServer, 'should return the same server');
+		delete servers[host];
+	})
+
+	it('request non-existent server should return undefined', function() {
+		const invalidValue = null;
+		assert.isUndefined(hub.getServer(invalidValue), 'should return nothing');
 	})
 
 	it('should return correct url to new player who launch the game', sinon.test(function(done) {

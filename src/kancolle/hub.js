@@ -14,14 +14,11 @@ Hub.appId = 854854;
 
 /**
  * Request Kancolle server object
- * @param  {number} worldId - world id starting at 1. Checkout @link{http://kancolle.wikia.com/wiki/Servers|Server List} for more detail.
+ * @param  {string} key - can be either the world id starting at 1 or server's host name. Checkout @link{http://kancolle.wikia.com/wiki/Servers|Server List} for more detail.
  * @return {object} server - a Kancolle server object
- * @throws {ReferenceError} If worldId doesn't match with any Kancolle server
  */
-Hub.getServer = function(worldId) {
-	if(!servers[worldId])
-		throw new ReferenceError(`Not found ip address associated with world id ${worldId}. Please make sure that KANCOLLE_SERVER_${worldId} exist in environment variables`);
-	return servers[worldId];
+Hub.getServer = function(key) {
+	return servers[key];
 }
 
 /**
