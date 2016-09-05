@@ -15,6 +15,7 @@ nock(HOST, {
 		}
 	}
 })
+.persist()
 .get(function(uri) {
 	return /\/netgame\/social\/-\/gadgets\/=\/app_id=\d+/gi.test(uri);
 })
