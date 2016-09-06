@@ -1,7 +1,7 @@
 'use strict';
 
 const dmmAgent = require('../dmm/agent');
-const CookieInjector = require('../dmm/cookie/injector');
+const CookieInjector = require('../dmm/cookie-injector');
 const tough = require('tough-cookie');
 const Cookie = tough.Cookie;
 
