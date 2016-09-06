@@ -6,6 +6,7 @@ const request = require('request');
 const kancolleExternal = require(SRC_ROOT + '/kancolle/external');
 const path = require('path');
 const osapi = require(SRC_ROOT + '/dmm/osapi');
+const playerProfile = require('../mock/kancolle/api-terminal');
 
 describe('kancolle server', function() {
 
@@ -90,7 +91,7 @@ describe('kancolle server', function() {
 	}))
 
 	it('generate api token for non-banned player', function(done) {
-		agent.generateApiToken({VIEWER_ID: 12345678, ST: 'xxxxxxxxx'})
+		agent.generateApiToken({VIEWER_ID: playerProfile.oldPlayer.dmmId, ST: 'xxxxxxxxx'})
 		.then(player => {
 			assert.isFalse(player.isBan, 'should not get banned');
 			done();

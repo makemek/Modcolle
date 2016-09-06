@@ -4,7 +4,12 @@ const request = require('supertest-as-promised');
 const app = require(SRC_ROOT);
 const cheerio = require('cheerio');
 const validator = require('validator');
-const urlparse = require('url-parse');
+const URL = require('url-parse');
+const async = require('async');
+const sinon = require('sinon');
+const game = require(SRC_ROOT + '/kancolle/game');
+const playerProfile = require('../mock/kancolle/api-terminal');
+const osapi = require(SRC_ROOT + '/dmm/osapi');
 
 describe('/index', function() {
 
@@ -16,28 +21,39 @@ describe('/index', function() {
 		.end(done);
 	})
 
-	it('if already logged in, launch Kancolle', done => {
-		request(app)
-		.post('/login')
-		.expect(302)
-		.expect('location', '/')
-		.send({username: 'someone', password: 'password'})
-		.then(res => {
-			return request(app)
-			.get('/')
-			.set('cookie', res.headers['set-cookie'])
-			.expect(200)
-		})
-		.then(res => {
-			var startupFiles = ['mainD2.swf', 'ban.swf', 'world.swf']
-			let $ = cheerio.load(res.text);
-			var url = $('#game').attr('data');
+	async.forEach([
+		{case: 'old player', targetUrl: '/kcs/mainD2.swf', account: {username: 'shimakaze', password: 'desu'}, playerProfile: playerProfile.oldPlayer},
+		{case: 'new player', targetUrl: 'http://203.104.209.7/kcs/world.swf', account: {username: 'poi', password: 'poipoipoi'}, playerProfile: playerProfile.newPlayer},
+		{case: 'banned player', targetUrl: 'http://203.104.209.7/kcs/ban.swf', account: {username: 'badTeitoku', password: 'T^T'}, playerProfile: playerProfile.bannedPlayer}],
+	testcase => {
+		it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, sinon.test(function(done) {
+			this.stub(game, 'getWorldServerId', gadget => {
+				return Promise.resolve(testcase.playerProfile.world);
+			});
+			this.stub(osapi, 'getGameInfo', _ => {
+				return Promise.resolve({VIEWER_ID: testcase.playerProfile.dmmId, ST: 'abcd'});
+			});
 
-			assert.isTrue(validator.isURL(url), 'should be a url');
-			var matchWithStartupFiles = /mainD2\.swf|ban\.swf|world\.swf/.test(url);
-			assert.isTrue(matchWithStartupFiles, 'should match with any kancolle startup files');
-			done();
-		})
-		.catch(done)
+			request(app)
+			.post('/login')
+			.expect(302)
+			.expect('location', '/')
+			.send(testcase.account)
+			.then(res => {
+				return request(app)
+				.get('/')
+				.set('cookie', res.headers['set-cookie'])
+				.expect(200)
+			})
+			.then(res => {
+				var startupFiles = ['ban.swf', 'world.swf']
+				let $ = cheerio.load(res.text);
+				var url = $('#game').attr('data');
+
+				assert.isTrue(url.startsWith(testcase.targetUrl), 'should start with ' + url);
+				done();
+			})
+			.catch(done)
+		}))
 	})
 })
