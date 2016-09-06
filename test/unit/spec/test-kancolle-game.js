@@ -72,7 +72,7 @@ describe('Kancolle game', function() {
 		})
 
 		it('return world id 0 if player is new', function(done) {
-			var gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer};
+			var gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer.dmmId};
 			Kancolle.getWorldServerId(gadgetInfo)
 			.then(worldId => {
 				assert.equal(worldId, 0, 'world id should be 0');
@@ -82,7 +82,7 @@ describe('Kancolle game', function() {
 		})
 
 		it('return world id greater than 0 if player is old', function(done) {
-			var gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer};
+			var gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer.dmmId};
 			Kancolle.getWorldServerId(gadgetInfo)
 			.then(worldId => {
 				assert.isAbove(worldId, 0, 'world id should be greater than 0');
