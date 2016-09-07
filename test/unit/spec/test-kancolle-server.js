@@ -7,6 +7,8 @@ const kancolleExternal = require(SRC_ROOT + '/kancolle/external');
 const path = require('path');
 const osapi = require(SRC_ROOT + '/dmm/osapi');
 const playerProfile = require('../mock/kancolle/api-terminal');
+const urljoin = require('url-join');
+const stream = new require('stream').Readable();
 
 describe('kancolle server', function() {
 
@@ -39,33 +41,17 @@ describe('kancolle server', function() {
 		assert.isTrue(path.isAbsolute(args[0]), 'path is relative');
 	}))
 
-	it('download from network', sinon.test(function() {
-		var sensitiveParams = '?api_token=abc&api_starttime=1234'
-		var url = 'http://www.example.com';
-		const KCS_URL = 'http://www.kcs.com';
+	it('download from the internet', function(done) {
+		var sensitiveParams = '?api_token=abc&api_starttime=1234';
+		var url = 'http://www.example.com/';
 
-		var res = this.spy();
-		var callback = this.spy();
-		var mockRes = {
-			on: function() {
-				return this;
-			},
+		stream.end = done;
+		var req = agent.download(urljoin(url, sensitiveParams));
+		req.pipe(stream);
 
-			pipe: function(_res) {
-				return this;
-			}
-		}
-		var httpGet = this.stub(request, 'get').returns(mockRes);
-		var kancolleHost = this.stub(kancolleExternal, 'host').returns(KCS_URL);
-
-		agent.download(res, url + sensitiveParams, callback);
-
-		sinon.assert.calledOnce(httpGet);
-		var param = httpGet.firstCall.args[0];
-		expect(param.url).to.equal(url);
-		expect(param.headers.host).to.equal(KANCOLLE_CONFIG.serv);
-		expect(param.headers['x-requested-with']).to.match(/flash/i);
-	}))
+		assert.equal(req.uri.href, url, 'should not contain api token query parameter');
+		assert.isTrue(req.headers['x-requested-with'].startsWith('ShockwaveFlash/'), 'should set header x-requested-with ShockwaveFlash');
+	})
 
 	it('call API', sinon.test(function() {
 		var url = 'http://api.example.com';
