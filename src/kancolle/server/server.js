@@ -2,6 +2,7 @@
 
 const KANCOLLE_BASE_DIR = process.env.KANCOLLE_BASE_DIR;
 const request = require('request');
+const rp = require('request-promise');
 const path = require('path');
 const urljoin = require('url-join');
 const urlparse = require('url-parse');
@@ -19,23 +20,16 @@ var KancolleServer = {
 		this.host = host;
 	},
 
-	download: function(res, url, onResponse) {
-		var parsedUrl = removeUrlParameterSensitiveData(url);
-
-		agentLog.info('Download: ' + parsedUrl);
+	download: function(url) {
+		agentLog.info('Download: ' + url);
 		agentLog.verbose('Remove sensitive data in URL parameters');
-		agentLog.verbose('Parsed URL: ' + parsedUrl);
-
-		var forgeHeader = forgeKancolleHttpRequestHeader(this);
-		delete forgeHeader['origin'];
-		delete forgeHeader['referer'];
-		forgeHeader['x-requested-with'] = 'ShockwaveFlash/22.0.0.192';
-		agentLog.debug(forgeHeader);
+		var parsedUrl = removeUrlParameterSensitiveData(url);
+		agentLog.debug('Parsed URL: ' + parsedUrl);
 
 		return request.get({
 			url: parsedUrl,
-			headers: forgeHeader
-		}).on('response', onResponse).pipe(res);
+			headers: {'x-requested-with': 'ShockwaveFlash/22.0.0.192'}
+		});
 	},
 
 	apiRequest: function(_url, req, onResponse) {
