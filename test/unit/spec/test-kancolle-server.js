@@ -22,25 +22,6 @@ describe('kancolle server', function() {
 		agent = new Agent(1, KANCOLLE_CONFIG.serv);
 	})
 
-	it('load file locally', sinon.test(function() {
-		const FILE = 'somefile.somthing';
-
-		var res = {
-			sendFile: function(){}
-		}
-		var sendFile = this.stub(res, 'sendFile');
-		var errorCallback = this.stub();
-
-		Agent.load(res, FILE, errorCallback);
-		sinon.assert.calledOnce(sendFile);
-
-		var args = sendFile.firstCall.args;
-		assert.include(args, errorCallback, 'error callback not include');
-		assert.include(args[0], process.env.KANCOLLE_BASE_DIR, 'no kancolle base directory');
-		assert.equal(path.basename(args[0]), FILE, 'load a different filename from what expected');
-		assert.isTrue(path.isAbsolute(args[0]), 'path is relative');
-	}))
-
 	it('download from the internet', function(done) {
 		var sensitiveParams = '?api_token=abc&api_starttime=1234';
 		var url = 'http://www.example.com/';
