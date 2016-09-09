@@ -7,20 +7,19 @@ const path = require('path');
 const urljoin = require('url-join');
 const urlparse = require('url-parse');
 const agentLog = require('winston').loggers.get('agent');
-const inherit = require('inherit');
 const osapi = require('../../dmm/osapi');
 const sprintf = require('sprintf-js').sprintf;
 
 const kancolleExternal = require('../external');
 
-var KancolleServer = {
+class KancolleServer {
 
-	__constructor: function(worldId, host) {
+	constructor(worldId, host) {
 		this.worldId = worldId;
 		this.host = host;
-	},
+	}
 
-	download: function(url) {
+	download(url) {
 		agentLog.info('Download: ' + url);
 		agentLog.verbose('Remove sensitive data in URL parameters');
 		var parsedUrl = removeUrlParameterSensitiveData(url);
@@ -30,9 +29,9 @@ var KancolleServer = {
 			url: parsedUrl,
 			headers: {'x-requested-with': 'ShockwaveFlash/22.0.0.192'}
 		});
-	},
+	}
 
-	apiRequest: function(_url, req, onResponse) {
+	apiRequest(_url, req, onResponse) {
 		agentLog.info('POST URL: ' + _url);
 		var returnResponseAsBuffer = null;
 		request.post({
@@ -41,9 +40,9 @@ var KancolleServer = {
 			headers: forgeKancolleHttpRequestHeader(this, req.headers),
 			encoding: returnResponseAsBuffer
 		}, onResponse);
-	},
+	}
 
-	generateApiToken: function(gadgetInfo) {
+	generateApiToken(gadgetInfo) {
 		const url = sprintf('%s/kcsapi/api_auth_member/dmmlogin/%s/1/%d', this.host, gadgetInfo.VIEWER_ID, Date.now());
 		return osapi.proxyRequest(url, gadgetInfo).then(response => {
 			var body = response.body;
@@ -59,15 +58,6 @@ var KancolleServer = {
 			}
 			return Promise.resolve(data);
 		})
-	}
-}
-
-var staticMethods = {
-	load: function(res, path2file, onError) {
-		var file = path.resolve(path.join(KANCOLLE_BASE_DIR, path2file));
-		agentLog.debug('resolve path: %s', file);
-		agentLog.info('Load file: ' + file);
-		return res.sendFile(file, {}, onError);
 	}
 }
 
@@ -110,4 +100,4 @@ function removeUrlParameterSensitiveData(url) {
 	return url.toString();
 }
 
-module.exports = exports = inherit(KancolleServer, staticMethods);
+module.exports = exports = KancolleServer;
