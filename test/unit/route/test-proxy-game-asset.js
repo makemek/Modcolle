@@ -63,27 +63,55 @@ describe('request kancolle world server image', function() {
 	}))
 })
 
-describe('request resource from kancolle server', function() {
+describe(`request assets from Kancolle server`, function() {
 
-	var agent;
+	var kancolleGetServer;
+	var nockRequest;
+	const HOST = 'http://1.2.3.4';
 
 	before(function() {
-		agent = new Agent('1.1.1.1');
+		nockRequest = nock(HOST);
 	})
 
-	async.forEach(['file.swf', 'sound/file.mp3', 'file.png'], function(file) {
+	beforeEach(function() {
+		kancolleGetServer = sinon.stub(kancolle, 'getServer', _ => {
+			var server = new Server(1, HOST);
+			return server;
+		})
+	})
 
-		it('request ' + file, sinon.test(function(done) {
-			var host = agent.host;
-			
-			request(app)
-			.get('/' + file)
-			.then(function(res) {
-				var filepath = loadStub.firstCall.args[1];
-				assert.include(path.normalize(filepath), path.normalize(file), 'should load the correct file');
-				done();
+	afterEach(function() {
+		sinon.restore(kancolleGetServer);
+	})
+
+	var fileCategory = [
+	{case: 'graphical image', input: '/kcs/resource/file.png'},
+	{case: 'sound', input: '/kcs/sound/file.mp3'},
+	{case: 'game component', input: '/kcs/file.swf'}]
+	fileCategory.forEach(testcase => {
+		describe(testcase.case, function() {
+
+			it('file exists on the destinated server', function(done) {
+				nockRequest
+				.get(testcase.input)
+				.reply(200);
+
+				request(app)
+				.get(testcase.input)
+				.expect(200)
+				.end(done);
 			})
-			.catch(done)
-		}))
+
+			it('file NOT exists on the destinated server', done => {
+				nockRequest
+				.get(testcase.input)
+				.reply(404);
+
+				request(app)
+				.get(testcase.input)
+				.expect(404)
+				.end(done)
+			})
+		})
 	})
 })

@@ -85,34 +85,16 @@ router.get('/' + WOLRD_IMG_URL + '/:worldImg', function(req, res, next) {
  **/
 var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i;
 router.get(urlEndWithFileType, function(req, res, next) {
-   var agent = new Agent(MY_WORLD_SERVER);
-   var path2file = path.join(req.baseUrl, req.path);
-   
-   Agent.load(res, path2file, handleFileNotFound(agent, req.originalUrl, res, next));
-});
-
-function handleFileNotFound(agent, urlDownload, res, next) {
-   return function(error) {
-      var fileNotFound = error && error.status === 404;
-      if(fileNotFound) {
-         var resource = kancolleExternal.kcsResource(urlDownload);
-         appLog.info('File not found or not cached');
-         appLog.info('Get resource from: ' + resource);
-         return agent.download(res, resource, function(response) {
-            if(response.statusCode != 200) {
-               appLog.error(error);
-               return next(error);
-            }
-            appLog.info('Download Completed');
-            appLog.info('Source URL: ' + resource);
-            appLog.debug('Return status code: ' + response.statusCode);
-         });
-      }
-      else if(error) {
-         appLog.error(error);
-         return next(error);
-      }
+   appLog.info('received request for kancolle asset', req.path);
+   var kancolleServer = kancolle.getServer(1);
+   appLog.info('get kancolle server', kancolleServer.host);
+   if(!kancolleServer) {
+      appLog.error('kancolle server not found');
+      return res.sendStatus(500);
    }
-}
+
+   var fileStream = kancolleServer.download(urljoin(kancolleServer.host, req.path));
+   return fileStream.pipe(res);
+});
 
 module.exports = exports = router;
