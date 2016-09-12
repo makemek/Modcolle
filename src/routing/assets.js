@@ -28,7 +28,7 @@ const request = require('request');
  * If <server> is a host name, <world> replace '.' with '_' only
  * For example, www.example.com becomes www_example_com
  **/
-const WOLRD_IMG_URL = 'kcs/resources/image/world'
+const WOLRD_IMG_URL = 'resources/image/world'
 router.get('/' + WOLRD_IMG_URL + '/:worldImg', function(req, res, next) {
    appLog.info('convert image name ' + req.params.worldImg + ' to acceptable format');
 
@@ -40,7 +40,7 @@ router.get('/' + WOLRD_IMG_URL + '/:worldImg', function(req, res, next) {
    }
 
    //TODO try loading from disk before downloading Kancolle server
-   var url = urljoin(targetServer.host, WOLRD_IMG_URL, req.params.worldImg);
+   var url = urljoin(targetServer.host, req.originalUrl);
    appLog.info('donwload server image logo from ' + url);
    var proxyRequest = targetServer.download(url);
    registerProxyEvent(proxyRequest);
@@ -85,7 +85,7 @@ router.get('/' + WOLRD_IMG_URL + '/:worldImg', function(req, res, next) {
  **/
 var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i;
 router.get(urlEndWithFileType, function(req, res, next) {
-   appLog.info('received request for kancolle asset', req.path);
+   appLog.info('received request for kancolle asset', req.originalUrl);
    var kancolleServer = kancolle.getServer(1);
    appLog.info('get kancolle server', kancolleServer.host);
    if(!kancolleServer) {
@@ -93,7 +93,7 @@ router.get(urlEndWithFileType, function(req, res, next) {
       return res.sendStatus(500);
    }
 
-   var fileStream = kancolleServer.download(urljoin(kancolleServer.host, req.path));
+   var fileStream = kancolleServer.download(urljoin(kancolleServer.host, req.originalUrl));
    return fileStream.pipe(res);
 });
 
