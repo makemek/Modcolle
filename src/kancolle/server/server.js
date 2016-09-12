@@ -10,8 +10,6 @@ const agentLog = require('winston').loggers.get('agent');
 const osapi = require('../../dmm/osapi');
 const sprintf = require('sprintf-js').sprintf;
 
-const kancolleExternal = require('../external');
-
 class KancolleServer {
 
 	constructor(worldId, host) {
@@ -31,14 +29,15 @@ class KancolleServer {
 		});
 	}
 
-	apiRequest(_url, req, onResponse) {
-		agentLog.info('POST URL: ' + _url);
-		request.post({
-			url: _url, 
-			form: req.body,
-			headers: forgeKancolleHttpRequestHeader(this, req.headers),
+	apiRequest(apiUrl, payload, initialHttpHeaders) {
+		var fullUrl = urljoin(this.host, apiUrl);
+		agentLog.info('call Kancolle API', fullUrl);
+		return rp.post({
+			url: fullUrl, 
+			form: payload,
+			headers: forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders),
 			gzip: true
-		}, onResponse);
+		});
 	}
 
 	generateApiToken(gadgetInfo) {
@@ -60,11 +59,11 @@ class KancolleServer {
 	}
 }
 
-function forgeKancolleHttpRequestHeader(self, httpHeader) {
+function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders = {}) {
 	agentLog.verbose('Forge HTTP header to match with HTTP request from browser');
-	agentLog.debug(self.host)
-	var headers = httpHeader || {};
-	modifyHeader(self.host, kancolleExternal.host());
+	agentLog.debug('URL', fullUrl);
+	var headers = initialHttpHeaders;
+	modifyHeader(fullUrl);
 	avoidSocketHangup();
 
 	return headers;
@@ -79,15 +78,14 @@ function forgeKancolleHttpRequestHeader(self, httpHeader) {
 		return JSON.parse(JSON.stringify(header));
 	}
 
-	function modifyHeader(serverIp, hostRoot) {
-		headers.host = serverIp;
-		headers.origin = hostRoot;
+	function modifyHeader(fullUrl) {
+		var url = urlparse(fullUrl);
+		headers.host = url.host;
+		headers.origin = url.origin;
 
-		if(headers.hasOwnProperty('referer'))
-			headers.referer = headers.referer.replace(headers.host, serverIp);
-
+		delete headers['referer'];
 		headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36';
-		agentLog.debug(headers);
+		agentLog.debug('modified http headers', headers);
 	}
 }
 
