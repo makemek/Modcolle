@@ -32,12 +32,14 @@ class KancolleServer {
 	apiRequest(apiUrl, payload, initialHttpHeaders) {
 		var fullUrl = urljoin(this.host, apiUrl);
 		agentLog.info('call Kancolle API', fullUrl);
-		return rp.post({
+		var options = {
 			url: fullUrl, 
 			form: payload,
 			headers: forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders),
 			gzip: true
-		});
+		};
+		agentLog.debug('POST options', options);
+		return rp.post(options);
 	}
 
 	generateApiToken(gadgetInfo) {
@@ -59,7 +61,8 @@ class KancolleServer {
 	}
 }
 
-function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders = {}) {
+function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders) {
+	initialHttpHeaders = initialHttpHeaders || {};
 	agentLog.verbose('Forge HTTP header to match with HTTP request from browser');
 	agentLog.debug('URL', fullUrl);
 	var headers = initialHttpHeaders;
