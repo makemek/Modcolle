@@ -33,12 +33,11 @@ class KancolleServer {
 
 	apiRequest(_url, req, onResponse) {
 		agentLog.info('POST URL: ' + _url);
-		var returnResponseAsBuffer = null;
 		request.post({
 			url: _url, 
 			form: req.body,
 			headers: forgeKancolleHttpRequestHeader(this, req.headers),
-			encoding: returnResponseAsBuffer
+			gzip: true
 		}, onResponse);
 	}
 
