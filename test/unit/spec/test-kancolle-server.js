@@ -2,14 +2,13 @@
 
 const Agent = require(SRC_ROOT + '/kancolle/server/server');
 const sinon = require('sinon');
-const request = require('request');
-const kancolleExternal = require(SRC_ROOT + '/kancolle/external');
-const path = require('path');
+const rp = require('request-promise');
 const osapi = require(SRC_ROOT + '/dmm/osapi');
 const playerProfile = require('../mock/kancolle/api-terminal');
 const urljoin = require('url-join');
 const stream = new require('stream').Readable();
 const nock = require('nock');
+const URL = require('url-parse');
 
 describe('kancolle server', function() {
 
@@ -40,26 +39,23 @@ describe('kancolle server', function() {
 	})
 
 	it('call API', sinon.test(function() {
-		var url = 'http://api.example.com';
-		var req = {
-			body: {},
-			headers: {someHeader: 'header'}
-		}
-		var reqStub = this.stub(req);
-		var httpPost = this.stub(request, 'post');
-		this.stub(kancolleExternal, 'host').returns(KANCOLLE_CONFIG.serv);
+		var apiUrl = '/kcsapi/some/api';
+		var payload = {};
+		var headers = {headers: {someHeader: 'header'}};
+		var httpPost = this.stub(rp, 'post');
+		var agentUrl = new URL(agent.host);
 
-		agent.apiRequest(url, reqStub, function(){});
+		agent.apiRequest(apiUrl, payload, headers);
 
 		sinon.assert.calledOnce(httpPost);
 		var postArgs = httpPost.firstCall.args[0];
-		expect(postArgs.url).to.equal(url);
-		expect(postArgs.headers.host).to.equal(KANCOLLE_CONFIG.serv);
-		expect(postArgs.headers.origin).to.include(KANCOLLE_CONFIG.serv);
-		expect(postArgs.headers['connection']).to.not.exist;
-		expect(postArgs.headers['content-length']).to.not.exist;
-		expect(postArgs.headers['content-type']).to.not.exist;
-		expect(postArgs.headers.someHeader).to.equal(req.headers.someHeader);
+		assert.equal(postArgs.url, urljoin(agent.host, apiUrl), 'should make correct post url');
+		assert.equal(postArgs.headers.host, agentUrl.host);
+		assert.equal(postArgs.headers.origin, agentUrl.origin);
+		assert.isUndefined(postArgs.headers['connection']);
+		assert.isUndefined(postArgs.headers['content-length']);
+		assert.isUndefined(postArgs.headers['content-type']);
+		assert.include(postArgs.headers, headers);
 	}))
 
 	it('generate api token for non-banned player', function(done) {
