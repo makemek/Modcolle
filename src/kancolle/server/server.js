@@ -32,12 +32,14 @@ class KancolleServer {
 	apiRequest(apiUrl, payload, initialHttpHeaders) {
 		var fullUrl = urljoin(this.host, apiUrl);
 		agentLog.info('call Kancolle API', fullUrl);
-		return rp.post({
+		var options = {
 			url: fullUrl, 
 			form: payload,
 			headers: forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders),
 			gzip: true
-		});
+		};
+		agentLog.debug('POST options', options);
+		return rp.post(options);
 	}
 
 	generateApiToken(gadgetInfo) {

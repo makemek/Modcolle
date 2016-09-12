@@ -3,6 +3,7 @@
 const servers = require('./server/');
 const Kancolle = require('./game');
 const urljoin = require('url-join');
+const appLog = require('winston').loggers.get('app');
 
 var Hub = {};
 
@@ -18,6 +19,7 @@ Hub.appId = 854854;
  * @return {object} server - a Kancolle server object
  */
 Hub.getServer = function(key) {
+	appLog.info('request Kancolle server ', key);
 	return servers[key];
 }
 
