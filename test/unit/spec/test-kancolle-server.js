@@ -9,6 +9,7 @@ const osapi = require(SRC_ROOT + '/dmm/osapi');
 const playerProfile = require('../mock/kancolle/api-terminal');
 const urljoin = require('url-join');
 const stream = new require('stream').Readable();
+const nock = require('nock');
 
 describe('kancolle server', function() {
 
@@ -25,6 +26,10 @@ describe('kancolle server', function() {
 	it('download from the internet', function(done) {
 		var sensitiveParams = '?api_token=abc&api_starttime=1234';
 		var url = 'http://www.example.com/';
+
+		nock(url)
+		.get('/')
+		.reply(200);
 
 		stream.end = done;
 		var req = agent.download(urljoin(url, sensitiveParams));
