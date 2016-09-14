@@ -26,16 +26,20 @@ auth.serialize = function(dmmCookies, done) {
 	if(session.length > 1)
 		return done(new Error('only 1 session cookie is allowed'));
 
-	done(null, session[0]);
+	session = session[0];
+	session = injectCookies(session, ['/', '/netgame/', '/netgame_s/']);
+	return done(null, session);
+
+	function injectCookies(session, subdomains) {
+		var injector = new CookieInjector([session], subdomains);
+		injector.language(CookieInjector.language.japan);
+		injector.revokeRegionRestriction();
+		return injector.cookies;
+	}
 }
 
 auth.deserialize = function(dmmSession, done) {
-	var injector = new CookieInjector([dmmSession], ['/', '/netgame/', '/netgame_s/']);
-	injector.language(CookieInjector.language.japan);
-	injector.revokeRegionRestriction();
-	var cookies = injector.cookies;
-
-	done(null, cookies);
+	done(null, dmmSession);
 }
 
 auth.isAuthenticated = function(req, res, next) {

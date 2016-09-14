@@ -5,8 +5,7 @@ const router = express.Router();
 const appLog = require('winston').loggers.get('app');
 const kancolle = require('../../kancolle/');
 
-router.post('/*', function(req, res, next) {
-	extractWorldIdFromApiToken(req, res, next);
+router.post('/*', extractWorldIdFromApiToken, function(req, res, next) {
 	var server = kancolle.getServer(req.body.worldId);
 	if(!server)
 		return res.sendStatus(400);
@@ -41,6 +40,7 @@ function extractWorldIdFromApiToken(req, res, next) {
 
 	req.body.worldId = extraInfos[0];
 	req.body.api_token = extraInfos[1];
+	return next();
 }
 
 module.exports = exports = router;
