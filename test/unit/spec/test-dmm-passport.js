@@ -48,29 +48,29 @@ describe('DMM passport middleware', function() {
 	})
 
 	it('serialize 1 session', function(done) {
-		var cookies = [nockDmmAuth.session, 'others=doe', 'foo=bar'];
-		dmmPassport.serialize(cookies, function(error, session) {
+		var others = 'others=doe', foo = 'foo=bar';
+		var cookies = [nockDmmAuth.session, others, foo];
+		dmmPassport.serialize(cookies, function(error, injectedCookies) {
 			if(error)
 				return done(error);
-			assert.isString(session, 'session should be a string');
-			assert.equal(session, nockDmmAuth.session);
+			
+			assert.isArray(injectedCookies, 'session should be an array');
+			injectedCookies = injectedCookies.join('; ');
+			assert.include(injectedCookies, nockDmmAuth.session);
+			assert.notInclude(injectedCookies, others);
+			assert.notInclude(injectedCookies, foo);
+			assert.include(injectedCookies, 'ckcy');
 			done();
 		})
 	})
 
 	it('deserialize session', function(done) {
-		dmmPassport.deserialize(nockDmmAuth.session, function(error, cookies) {
+		var expectedCookies = [nockDmmAuth.session, 'others=doe'];
+		dmmPassport.deserialize(expectedCookies, function(error, cookies) {
 			if(error)
 				return done(error);
-			
-			var session = Cookie.parse(nockDmmAuth.session);
-			var resultCookies = cookies.filter(function(cookie) {
-				return cookie.key == session.key && cookie.value == session.value;
-			})
-			
-			assert.equal(resultCookies.length, 1, 'should have 1 dmm session cookie');
-			assert.equal(resultCookies[0].key, session.key, 'session key should have the same name');
-			assert.equal(resultCookies[0].value, session.value, 'session id should have the same value');
+
+			assert.equal(cookies, expectedCookies, 'no cookie should be altered');
 			done();
 		})
 	})
