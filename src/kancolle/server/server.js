@@ -61,7 +61,8 @@ class KancolleServer {
 	}
 }
 
-function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders = {}) {
+function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders) {
+	initialHttpHeaders = initialHttpHeaders || {};
 	agentLog.verbose('Forge HTTP header to match with HTTP request from browser');
 	agentLog.debug('URL', fullUrl);
 	var headers = initialHttpHeaders;
