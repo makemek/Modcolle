@@ -54,8 +54,7 @@ describe('DMM passport middleware', function() {
 			if(error)
 				return done(error);
 			
-			assert.isArray(injectedCookies, 'session should be an array');
-			injectedCookies = injectedCookies.join('; ');
+			assert.isString(injectedCookies, 'session should be a string');
 			assert.include(injectedCookies, nockDmmAuth.session);
 			assert.notInclude(injectedCookies, others);
 			assert.notInclude(injectedCookies, foo);

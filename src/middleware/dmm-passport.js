@@ -28,7 +28,7 @@ auth.serialize = function(dmmCookies, done) {
 
 	session = session[0];
 	session = injectCookies(session, ['/', '/netgame/', '/netgame_s/']);
-	return done(null, session);
+	return done(null, session.join(';'));
 
 	function injectCookies(session, subdomains) {
 		var injector = new CookieInjector([session], subdomains);
