@@ -1,9 +1,9 @@
-var chai = require('chai');
-chai.use(require('chai-string'));
+var chai = require('chai')
+chai.use(require('chai-string'))
 
-chai.config.includeStack = true;
+chai.config.includeStack = true
 
-global.expect = chai.expect;
-global.AssertionError = chai.AssertionError;
-global.Assertion = chai.Assertion;
-global.assert = chai.assert;
+global.expect = chai.expect
+global.AssertionError = chai.AssertionError
+global.Assertion = chai.Assertion
+global.assert = chai.assert

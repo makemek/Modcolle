@@ -1,17 +1,17 @@
-'use strict';
+'use strict'
 
 /**
  * Handle Kancolle requests to external resources
  **/
 
-var express = require('express');
-var router = express.Router();
-var path = require('path');
-const validator = require('validator');
-const urljoin = require('url-join');
-const kancolle = require('../kancolle/');
-const appLog = require('winston').loggers.get('app');
-const request = require('request');
+var express = require('express')
+var router = express.Router()
+var path = require('path')
+const validator = require('validator')
+const urljoin = require('url-join')
+const kancolle = require('../kancolle/')
+const appLog = require('winston').loggers.get('app')
+const request = require('request')
 
 /**
  * Handle http GET request to server flag image
@@ -30,50 +30,50 @@ const request = require('request');
  **/
 const WOLRD_IMG_URL = 'resources/image/world'
 router.get('/' + WOLRD_IMG_URL + '/:worldImg', function(req, res, next) {
-   appLog.info('convert image name ' + req.params.worldImg + ' to acceptable format');
+   appLog.info('convert image name ' + req.params.worldImg + ' to acceptable format')
 
-   var host = getHost(req.params.worldImg);
-   var targetServer = kancolle.getServer(host);
+   var host = getHost(req.params.worldImg)
+   var targetServer = kancolle.getServer(host)
    if(!targetServer) {
-      appLog.info(host + ' does not exist in any kancolle server host name');
-      return res.sendStatus(400);
+      appLog.info(host + ' does not exist in any kancolle server host name')
+      return res.sendStatus(400)
    }
 
    //TODO try loading from disk before downloading Kancolle server
-   var url = urljoin(targetServer.host, req.originalUrl);
-   appLog.info('donwload server image logo from ' + url);
-   var proxyRequest = targetServer.download(url);
-   registerProxyEvent(proxyRequest);
-   proxyRequest.pipe(res);
+   var url = urljoin(targetServer.host, req.originalUrl)
+   appLog.info('donwload server image logo from ' + url)
+   var proxyRequest = targetServer.download(url)
+   registerProxyEvent(proxyRequest)
+   proxyRequest.pipe(res)
 
    function getHost(worldImageFilename) {
-      var host;
-      var trailoutString = '_t.png';
-      var basename = path.basename(worldImageFilename, trailoutString);
-      appLog.debug('trail out ' + trailoutString, basename);
+      var host
+      var trailoutString = '_t.png'
+      var basename = path.basename(worldImageFilename, trailoutString)
+      appLog.debug('trail out ' + trailoutString, basename)
 
-      var ipStrip = basename.split('_').map(Number).join('.');
+      var ipStrip = basename.split('_').map(Number).join('.')
       if(validator.isIP(ipStrip)) {
-         host = ipStrip;
-         appLog.verbose(worldImageFilename + 'is an ip address', host);
+         host = ipStrip
+         appLog.verbose(worldImageFilename + 'is an ip address', host)
       }
       else {
-         host = basename.split('_').join('.');
-         appLog.verbose(worldImageFilename + 'is a hostname', host);
+         host = basename.split('_').join('.')
+         appLog.verbose(worldImageFilename + 'is a hostname', host)
       }
 
-      return host;
+      return host
    }
 
    function registerProxyEvent(proxyRequest) {
       proxyRequest.on('error', next)
       proxyRequest.on('response', () => {
-         appLog.info('connected to ' + url);
+         appLog.info('connected to ' + url)
       })
       proxyRequest.on('end', () => {
-         appLog.info('terminate connection ' + url);
+         appLog.info('terminate connection ' + url)
       })
-      return proxyRequest;
+      return proxyRequest
    }
 })
 
@@ -83,18 +83,18 @@ router.get('/' + WOLRD_IMG_URL + '/:worldImg', function(req, res, next) {
  * First, it will look file in a directory reflected by its uri
  * If file is not found, it will request the file from kancolle server
  **/
-var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i;
+var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i
 router.get(urlEndWithFileType, function(req, res, next) {
-   appLog.info('received request for kancolle asset', req.originalUrl);
-   var kancolleServer = kancolle.getServer(1);
-   appLog.info('get kancolle server', kancolleServer.host);
+   appLog.info('received request for kancolle asset', req.originalUrl)
+   var kancolleServer = kancolle.getServer(1)
+   appLog.info('get kancolle server', kancolleServer.host)
    if(!kancolleServer) {
-      appLog.error('kancolle server not found');
-      return res.sendStatus(500);
+      appLog.error('kancolle server not found')
+      return res.sendStatus(500)
    }
 
-   var fileStream = kancolleServer.download(urljoin(kancolleServer.host, req.originalUrl));
-   return fileStream.pipe(res);
-});
+   var fileStream = kancolleServer.download(urljoin(kancolleServer.host, req.originalUrl))
+   return fileStream.pipe(res)
+})
 
-module.exports = exports = router;
+module.exports = exports = router

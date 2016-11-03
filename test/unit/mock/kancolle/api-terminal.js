@@ -1,41 +1,41 @@
-'use strict';
+'use strict'
 
-const nock = require('nock');
-const URL = require('url-parse');
-const validator = require('validator');
+const nock = require('nock')
+const URL = require('url-parse')
+const validator = require('validator')
 
 const playerProfile = {
-	newPlayer: {dmmId: 1, world: 0},
-	oldPlayer: {dmmId: 2, world: 1},
+  newPlayer: {dmmId: 1, world: 0},
+  oldPlayer: {dmmId: 2, world: 1},
   bannedPlayer: {dmmId: 3, world: 1}
 }
 
 nock('http://203.104.209.7')
 .get(function(uri) {
-	var newPlayer = '/kcsapi/api_world/get_id/' + playerProfile.newPlayer.dmmId + '/1';
-	return uri.startsWith(newPlayer);
+  var newPlayer = '/kcsapi/api_world/get_id/' + playerProfile.newPlayer.dmmId + '/1'
+  return uri.startsWith(newPlayer)
 })
-.reply(200, 'svdata={"api_result": 1, "api_data": {"api_world_id": 0}}');
+.reply(200, 'svdata={"api_result": 1, "api_data": {"api_world_id": 0}}')
 
 nock('http://203.104.209.7')
 .persist()
 .get(function(uri) {
-  return /\/kcsapi\/api_world\/get_id\/\d+\/1/.test(uri);
+  return /\/kcsapi\/api_world\/get_id\/\d+\/1/.test(uri)
 })
-.reply(200, 'svdata={"api_result": 1, "api_data": {"api_world_id": 1}}');
+.reply(200, 'svdata={"api_result": 1, "api_data": {"api_world_id": 1}}')
 
 nock('http://osapi.dmm.com:80', {"encodedQueryParams":true})
 .persist()
 .post('/gadgets/makeRequest', function(body) {
-  var url = new URL(body.url, true);
-  var samePathname = url.pathname.startsWith('/kcsapi/api_auth_member/dmmlogin/' + playerProfile.bannedPlayer.dmmId + '/1/');
-  var hasSignOwner = body.signOwner === 'true';
-  var authz = body.authz === 'signed';
-  var st = body.st;
+  var url = new URL(body.url, true)
+  var samePathname = url.pathname.startsWith('/kcsapi/api_auth_member/dmmlogin/' + playerProfile.bannedPlayer.dmmId + '/1/')
+  var hasSignOwner = body.signOwner === 'true'
+  var authz = body.authz === 'signed'
+  var st = body.st
 
-  return samePathname && hasSignOwner && authz && st;
+  return samePathname && hasSignOwner && authz && st
 })
-.reply(200, "throw 1; < don't be evil' >{\"http:\\/\\/0.0.0.0\\/kcsapi\\/api_auth_member\\/dmmlogin\\/" + playerProfile.bannedPlayer + "\\/1\\/1470910003205\":{\"rc\":200,\"body\":\"svdata={\\\"api_result\\\":301}\",\"headers\":{\"Server\":\"nginx\",\"Content-Type\":\"text\\/plain\",\"Connection\":\"keep-alive\",\"X-Powered-By\":\"PHP\\/5.3.3\"}}}");
+.reply(200, "throw 1; < don't be evil' >{\"http:\\/\\/0.0.0.0\\/kcsapi\\/api_auth_member\\/dmmlogin\\/" + playerProfile.bannedPlayer + "\\/1\\/1470910003205\":{\"rc\":200,\"body\":\"svdata={\\\"api_result\\\":301}\",\"headers\":{\"Server\":\"nginx\",\"Content-Type\":\"text\\/plain\",\"Connection\":\"keep-alive\",\"X-Powered-By\":\"PHP\\/5.3.3\"}}}")
 
 nock('http://osapi.dmm.com:80', {"encodedQueryParams":true})
 .persist()
@@ -47,7 +47,7 @@ nock('http://osapi.dmm.com:80', {"encodedQueryParams":true})
   'content-disposition': 'attachment;filename=p.txt',
   'content-length': '397',
   connection: 'close',
-  'content-type': 'application/json; charset="UTF-8"' });
+  'content-type': 'application/json; charset="UTF-8"' })
 
 
-module.exports = exports = playerProfile;
+module.exports = exports = playerProfile

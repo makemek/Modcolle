@@ -1,3 +1,3 @@
-'use strict';
+'use strict'
 
-module.exports = exports = require('./hub');
+module.exports = exports = require('./hub')
