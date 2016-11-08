@@ -7,9 +7,9 @@ const HOST = 'http://www.dmm.com'
 nock(HOST, {
   reqheaders: {
     cookie: function(headerValue) {
-      var hasSession = /INT_SESID\s*=\s*/gi.test(headerValue)
-      var renderPageInJapanese = /cklg\s*=\s*ja/gi.test(headerValue)
-      var loginFromJapan = /ckcy\s*=\s*1/gi.test(headerValue)
+      const hasSession = /INT_SESID\s*=\s*/gi.test(headerValue)
+      const renderPageInJapanese = /cklg\s*=\s*ja/gi.test(headerValue)
+      const loginFromJapan = /ckcy\s*=\s*1/gi.test(headerValue)
 
       return hasSession && renderPageInJapanese && loginFromJapan
     }
@@ -20,7 +20,7 @@ nock(HOST, {
   return /\/netgame\/social\/-\/gadgets\/=\/app_id=\d+/gi.test(uri)
 })
 .reply(200, () => {
-  var response =
+  const response =
   `
   //<![CDATA[
   var foo = {}

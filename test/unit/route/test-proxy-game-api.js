@@ -9,7 +9,7 @@ const Server = require(global.SRC_ROOT + '/kancolle/server/server')
 
 describe('proxy Kancolle API', () => {
 
-  var payload
+  let payload
   const EMBEDED_SYMBOL = '_'
 
   beforeEach(() => {
@@ -36,11 +36,11 @@ describe('proxy Kancolle API', () => {
   describe('world id embed in API token', () => {
 
     it('can be mapped to Kancolle server should accept request', sinon.test(function(done) {
-      var host = 'http://0.0.0.0', world = '0'
+      const host = 'http://0.0.0.0', world = '0'
       this.stub(kancolle, 'getServer', () => {
         return new Server(world, host)
       })
-      var embededPayload = {api_token: [world, payload.api_token].join(EMBEDED_SYMBOL)}
+      const embededPayload = {api_token: [world, payload.api_token].join(EMBEDED_SYMBOL)}
 
       nock(host)
       .post('/kcsapi/some/api', payload)

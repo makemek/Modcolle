@@ -5,7 +5,7 @@ const CookieInjector = require('../dmm/cookie-injector')
 const tough = require('tough-cookie')
 const Cookie = tough.Cookie
 
-var auth = {}
+const auth = {}
 
 auth.authenticate = function(username, password, done) {
   dmmAgent.login(username, password)
@@ -16,7 +16,7 @@ auth.authenticate = function(username, password, done) {
 }
 
 auth.serialize = function(dmmCookies, done) {
-  var session = dmmCookies.filter((cookie) => {
+  let session = dmmCookies.filter((cookie) => {
     cookie = Cookie.parse(cookie)
     return cookie.key === 'INT_SESID'
   })
@@ -31,7 +31,7 @@ auth.serialize = function(dmmCookies, done) {
   return done(null, session.join(';'))
 
   function injectCookies(session, subdomains) {
-    var injector = new CookieInjector([session], subdomains)
+    const injector = new CookieInjector([session], subdomains)
     injector.language(CookieInjector.language.japan)
     injector.revokeRegionRestriction()
     return injector.cookies

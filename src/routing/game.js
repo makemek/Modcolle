@@ -23,13 +23,13 @@ router.get('/', (req, res, next) => {
   function routeTraffic(url) {
     const TARGET_FILE = 'mainD2.swf'
     url = new URL(url, true)
-    var isTargetFile = url.pathname.includes(TARGET_FILE)
+    const isTargetFile = url.pathname.includes(TARGET_FILE)
     if(!isTargetFile)
       return url.toString()
 
-    var server = kancolle.getServer(url.hostname)
-    var apiTokenWithExtraEmbededInfo = [server.worldId, url.query.api_token].join('_') // embed player's info so that any API POST request from flash will contain this information
-    var interceptedUrl = urljoin(
+    const server = kancolle.getServer(url.hostname)
+    const apiTokenWithExtraEmbededInfo = [server.worldId, url.query.api_token].join('_') // embed player's info so that any API POST request from flash will contain this information
+    const interceptedUrl = urljoin(
       url.pathname, // remove hostname from flash url so that it makes http request to this site
       '?api_token=' + apiTokenWithExtraEmbededInfo,
       '?api_starttime=' + url.query.api_starttime)

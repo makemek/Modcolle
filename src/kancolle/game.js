@@ -5,12 +5,12 @@ const rp = require('request-promise')
 const appLog = require('winston').loggers.get('app')
 const sprintf = require('sprintf-js').sprintf
 
-var Kancolle = {
+const Kancolle = {
 
   ENTRY_HOST: KANCOLLE_MASTER_SERVER,
 
   fetchConfig: function() {
-    var options = {
+    const options = {
       url: 'http://' + this.ENTRY_HOST + '/gadget/js/kcs_const.js'
     }
 
@@ -18,12 +18,12 @@ var Kancolle = {
     return rp.get(options)
     .then(jsCode => {
       appLog.verbose('append js code to output variable value')
-      var var2export = sprintf('JSON.stringify({%s, %s, %s})',
+      const var2export = sprintf('JSON.stringify({%s, %s, %s})',
         'ConstServerInfo', 'ConstURLInfo', 'MaintenanceInfo')
       jsCode += ';' + var2export
 
       appLog.info('emulate javascripts assuming that code from ' + options.url + ' is trusted')
-      var json = JSON.parse(eval(jsCode))
+      const json = JSON.parse(eval(jsCode))
       appLog.debug('parsed json result')
       appLog.debug(json)
       return Promise.resolve(json)
@@ -33,8 +33,8 @@ var Kancolle = {
   getMaintenanceInfo: function() {
     return this.fetchConfig()
     .then(kcs_config => {
-      var maintenanceInfo = kcs_config.MaintenanceInfo
-      var isMaintain = Boolean(maintenanceInfo.IsDoing) || Boolean(maintenanceInfo.IsEmergency)
+      const maintenanceInfo = kcs_config.MaintenanceInfo
+      const isMaintain = Boolean(maintenanceInfo.IsDoing) || Boolean(maintenanceInfo.IsEmergency)
       maintenanceInfo.isMaintain = isMaintain
       delete maintenanceInfo.IsDoing
       delete maintenanceInfo.IsEmergency
@@ -43,7 +43,7 @@ var Kancolle = {
   },
 
   getWorldServerId: function(gadgetInfo) {
-    var options = {
+    const options = {
       uri: sprintf('%s/kcsapi/api_world/get_id/%s/1/%d', this.ENTRY_HOST, gadgetInfo.VIEWER_ID, Date.now()),
     }
     appLog.verbose('request to %s', options.uri)
@@ -59,12 +59,12 @@ var Kancolle = {
       appLog.debug('parsed result', response)
 
       if(response.api_result != 1) {
-        var error = new Error('Internal error at target server %s', this.ENTRY_HOST)
+        const error = new Error('Internal error at target server %s', this.ENTRY_HOST)
         appLog.error(error.message)
         return Promise.reject(error)
       }
 
-      var worldId = response.api_data.api_world_id
+      const worldId = response.api_data.api_world_id
       appLog.verbose('player id %d resides in world id %d', gadgetInfo.VIEWER_ID, worldId)
       return Promise.resolve(worldId)
     })

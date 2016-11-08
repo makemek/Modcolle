@@ -13,7 +13,7 @@ const should = require('should')
 
 describe('kancolle server', () => {
 
-  var agent
+  let agent
   const KANCOLLE_CONFIG = {
     baseDir: 'base',
     serv: 'http://0.0.0.0'
@@ -24,15 +24,15 @@ describe('kancolle server', () => {
   })
 
   it('download from the internet', (done) => {
-    var sensitiveParams = '?api_token=abc&api_starttime=1234'
-    var url = 'http://www.example.com/'
+    const sensitiveParams = '?api_token=abc&api_starttime=1234'
+    const url = 'http://www.example.com/'
 
     nock(url)
     .get('/')
     .reply(200)
 
     stream.end = done
-    var req = agent.download(urljoin(url, sensitiveParams))
+    const req = agent.download(urljoin(url, sensitiveParams))
     req.pipe(stream)
 
     req.uri.href.should.equal(url, 'should not contain api token query parameter')
@@ -40,16 +40,16 @@ describe('kancolle server', () => {
   })
 
   it('call API', sinon.test(function() {
-    var apiUrl = '/kcsapi/some/api'
-    var payload = {}
-    var headers = {headers: {someHeader: 'header'}}
-    var httpPost = this.stub(rp, 'post')
-    var agentUrl = new URL(agent.host)
+    const apiUrl = '/kcsapi/some/api'
+    const payload = {}
+    const headers = {headers: {someHeader: 'header'}}
+    const httpPost = this.stub(rp, 'post')
+    const agentUrl = new URL(agent.host)
 
     agent.apiRequest(apiUrl, payload, headers)
 
     sinon.assert.calledOnce(httpPost)
-    var postArgs = httpPost.firstCall.args[0]
+    const postArgs = httpPost.firstCall.args[0]
     postArgs.url.should.equal(urljoin(agent.host, apiUrl), 'should make correct post url')
     postArgs.headers.host.should.equal(agentUrl.host)
     postArgs.headers.origin.should.equal(agentUrl.origin)
@@ -69,7 +69,7 @@ describe('kancolle server', () => {
   })
 
   it('NOT generate api token for banned player', sinon.test(function(done) {
-    var body = 'svdata=' + JSON.stringify({api_result: 301})
+    const body = 'svdata=' + JSON.stringify({api_result: 301})
     this.stub(osapi, 'proxyRequest').returns(Promise.resolve({body: body}))
     agent.generateApiToken({})
     .then(player => {

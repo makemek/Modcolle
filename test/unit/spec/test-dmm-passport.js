@@ -48,8 +48,8 @@ describe('DMM passport middleware', () => {
   })
 
   it('serialize 1 session', (done) => {
-    var others = 'others=doe', foo = 'foo=bar'
-    var cookies = [nockDmmAuth.session, others, foo]
+    const others = 'others=doe', foo = 'foo=bar'
+    const cookies = [nockDmmAuth.session, others, foo]
     dmmPassport.serialize(cookies, (error, injectedCookies) => {
       if(error)
         return done(error)
@@ -64,7 +64,7 @@ describe('DMM passport middleware', () => {
   })
 
   it('deserialize session', (done) => {
-    var expectedCookies = [nockDmmAuth.session, 'others=doe']
+    const expectedCookies = [nockDmmAuth.session, 'others=doe']
     dmmPassport.deserialize(expectedCookies, (error, cookies) => {
       if(error)
         return done(error)
@@ -75,18 +75,18 @@ describe('DMM passport middleware', () => {
   })
 
   it('if authenticated, callback next middleware', sinon.test(function() {
-    var req = {isAuthenticated: function() {return true}}
-    var res = {redirect: function() {}}
-    var spyRes = this.spy(res, 'redirect'), spyNext = this.spy()
+    const req = {isAuthenticated: function() {return true}}
+    const res = {redirect: function() {}}
+    const spyRes = this.spy(res, 'redirect'), spyNext = this.spy()
     dmmPassport.isAuthenticated(req, res, spyNext)
     should(spyNext.calledOnce).be.true('callback should be called once')
     should(spyRes.called).be.false('response should never be called')
   }))
 
   it('if not authenticate, redirect to home page', sinon.test(function() {
-    var req = {isAuthenticated: function() {return false}}
-    var res = {redirect: function() {}}
-    var spyRes = this.spy(res, 'redirect'), spyNext = this.spy()
+    const req = {isAuthenticated: function() {return false}}
+    const res = {redirect: function() {}}
+    const spyRes = this.spy(res, 'redirect'), spyNext = this.spy()
     dmmPassport.isAuthenticated(req, res, spyNext)
     should(spyNext.called).be.false('callback should never be called')
     should(spyRes.calledOnce).be.true('response should be called once')

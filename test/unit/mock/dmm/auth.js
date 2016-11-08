@@ -25,9 +25,9 @@ nock(HOST)
 .persist()
 .get('/my/-/login/=/path=Sg__/')
 .reply(200, () => {
-  var htmlForm = sprintf('<input type="hidden" name="token" value="%s" id="id_token">', TOKEN.form)
-  var ajaxDmmToken = sprintf('xhr.setRequestHeader("DMM_TOKEN", "%s");', TOKEN.dmm)
-  var ajaxDataToken = sprintf('"token": "%s"', TOKEN.data)
+  const htmlForm = sprintf('<input type="hidden" name="token" value="%s" id="id_token">', TOKEN.form)
+  const ajaxDmmToken = sprintf('xhr.setRequestHeader("DMM_TOKEN", "%s");', TOKEN.dmm)
+  const ajaxDataToken = sprintf('"token": "%s"', TOKEN.data)
 
   return htmlForm + ajaxDmmToken + ajaxDataToken
 })
@@ -45,9 +45,9 @@ nock(HOST, {
 nock(HOST)
 .persist()
 .post('/my/-/login/auth/', (body) => {
-  var badAccount = body.login_id == BAD_ACCOUNT.email && body.password == BAD_ACCOUNT.password
-  var validPageToken = body.token == TOKEN.auth.token
-  var hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
+  const badAccount = body.login_id == BAD_ACCOUNT.email && body.password == BAD_ACCOUNT.password
+  const validPageToken = body.token == TOKEN.auth.token
+  const hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
 
   return badAccount && validPageToken && hasTokenForLoginInput
 })
@@ -56,8 +56,8 @@ nock(HOST)
 nock(HOST)
 .persist()
 .post('/my/-/login/auth/', (body) => {
-  var validPageToken = body.token == TOKEN.auth.token
-  var hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
+  const validPageToken = body.token == TOKEN.auth.token
+  const hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
 
   return validPageToken && hasTokenForLoginInput
 })

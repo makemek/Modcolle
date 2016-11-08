@@ -5,14 +5,14 @@ const appLog = require('winston').loggers.get('app')
 const tough = require('tough-cookie')
 const Cookie = tough.Cookie
 
-var languagePreset = {
+const languagePreset = {
   language: {
     japan: 'ja',
     english: 'en'
   }
 }
 
-var Injector = {
+const Injector = {
 
   __constructor: function(cookies, subdomains) {
     cookies = cookies || []
@@ -28,21 +28,21 @@ var Injector = {
   },
 
   revokeRegionRestriction: function() {
-    var targetCookie = {key: 'ckcy', value: 1}
+    const targetCookie = {key: 'ckcy', value: 1}
     this.cookies = removeAndInjectCookie(this, targetCookie)
     return this.cookies
   },
 
   language: function(language) {
     language = language || languagePreset.language.japan
-    var targetCookie = {key: 'cklg', value: language}
+    const targetCookie = {key: 'cklg', value: language}
     this.cookies = removeAndInjectCookie(this, targetCookie)
     return this.cookies
   }
 }
 
 function removeAndInjectCookie(self, targetCookie) {
-  var cookies
+  let cookies
   appLog.verbose('remove cookies that has value ' + targetCookie.key)
   cookies = removeCookie(self.cookies, targetCookie)
   appLog.verbose('merge generated cookies')
@@ -65,14 +65,14 @@ function generateCookies(keyVal, domains, paths) {
   appLog.debug(domains)
   appLog.debug(paths)
 
-  var cookies = []
+  const cookies = []
   domains.forEach((domain) => {
     paths.forEach((path) => {
-      var options = keyVal
+      const options = keyVal
       options.domain = domain
       options.path = path
 
-      var cookie = new Cookie(options)
+      const cookie = new Cookie(options)
       cookies.push(cookie)
     })
   })

@@ -26,9 +26,9 @@ setupDefaultLocalResponseHeader()
 setupRouting()
 
 function setupLogger() {
-  var loggers = ['app', 'router', 'agent']
+  const loggers = ['app', 'router', 'agent']
   loggers.forEach((logger) => {
-    var loggerConfig = {
+    const loggerConfig = {
       console: {
         label: logger,
         level: LOGGER_LEVEL,
@@ -76,18 +76,18 @@ function setupMiddleware() {
 }
 
 function setupTemplateEngine() {
-  var engineName = 'hbs'
-  var templateExtension = 'hbs'
-  var baseDirView = 'src/views'
+  const engineName = 'hbs'
+  const templateExtension = 'hbs'
+  const baseDirView = 'src/views'
 
-  var options = {
+  const options = {
     defaultLayout: 'defaultLayout',
     extname: templateExtension,
 
     layoutsDir: baseDirView + '/layouts',
     partialsDir: baseDirView + '/partials'
   }
-  var hbs = expressHandlebars.create(options)
+  const hbs = expressHandlebars.create(options)
 
   app.engine(engineName, hbs.engine)
   app.set('views', baseDirView)

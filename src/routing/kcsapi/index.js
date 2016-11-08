@@ -6,7 +6,7 @@ const appLog = require('winston').loggers.get('app')
 const kancolle = require('../../kancolle/')
 
 router.post('/*', extractWorldIdFromApiToken, (req, res, next) => {
-  var server = kancolle.getServer(req.body.worldId)
+  const server = kancolle.getServer(req.body.worldId)
   if(!server)
     return res.sendStatus(400)
 
@@ -27,12 +27,12 @@ router.post('/*', extractWorldIdFromApiToken, (req, res, next) => {
 })
 
 function extractWorldIdFromApiToken(req, res, next) {
-  var api_token = req.body.api_token
+  const api_token = req.body.api_token
   if(!api_token) {
     appLog.info('API token not found')
     return res.sendStatus(400)
   }
-  var extraInfos = api_token.split('_')
+  const extraInfos = api_token.split('_')
   if(extraInfos.length == 1) {
     appLog.info('there is no embeded information')
     return res.sendStatus(400)

@@ -16,14 +16,14 @@ describe('Kancolle hub', () => {
   })
 
   it('request for kancolle server by world id should return a correct server', () => {
-    var worldId = '9999', fakeKancolleServer = new Server(worldId)
+    const worldId = '9999', fakeKancolleServer = new Server(worldId)
     servers[worldId] = fakeKancolleServer
     hub.getServer(worldId).should.deepEqual(fakeKancolleServer, 'should return the same server')
     delete servers[worldId]
   })
 
   it('request for kancolle server by host name should return a correct server', () => {
-    var host = 'www.example.com', fakeKancolleServer = new Server('9999999', host)
+    const host = 'www.example.com', fakeKancolleServer = new Server('9999999', host)
     servers[host] = fakeKancolleServer
     hub.getServer(host).should.deepEqual(fakeKancolleServer, 'should return the same server')
     delete servers[host]
@@ -45,19 +45,19 @@ describe('Kancolle hub', () => {
   }))
 
   it('should return correct url to old player who launch the game', sinon.test(function(done) {
-    var player = {
+    const player = {
       isBan: false,
       api_token: 'abc',
       api_start_time: '123'
     }
-    var worldId = 1
+    const worldId = 1
     this.stub(game, 'getWorldServerId').returns(Promise.resolve(worldId))
     this.stub(Server.prototype, 'generateApiToken').returns(Promise.resolve(player))
 
     hub.launch({})
     .then((url) => {
-      var server = hub.getServer(worldId)
-      var expectUrl = urlparse(server.host)
+      const server = hub.getServer(worldId)
+      const expectUrl = urlparse(server.host)
       url = urlparse(url, true)
       url.protocol.should.equal('http:', 'should have http protocol')
       url.host.should.equal(expectUrl.host, 'should have the host')

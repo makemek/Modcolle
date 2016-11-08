@@ -36,6 +36,9 @@
             "error",
             "global"
         ],
-        "prefer-arrow-callback": "error"
+        "prefer-arrow-callback": "error",
+        "prefer-spread": "error",
+        "prefer-const": "error",
+        "no-var": "error"
     }
 }

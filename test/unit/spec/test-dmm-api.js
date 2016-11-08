@@ -8,7 +8,7 @@ require('../mock/dmm/osapi')
 
 describe('DMM API (OSAPI)', () => {
 
-  var fakeGameId, fakeCookie
+  let fakeGameId, fakeCookie
 
   beforeEach(() => {
     fakeGameId = 0
@@ -16,8 +16,8 @@ describe('DMM API (OSAPI)', () => {
   })
 
   it('get expected gadget information', sinon.test(function(done) {
-    var httpRequest = this.spy(rp, 'get')
-    var expectedParsedGadget = {
+    const httpRequest = this.spy(rp, 'get')
+    const expectedParsedGadget = {
       VIEWER_ID : 123,
       OWNER_ID  : 123,
       APP_ID    : 456,
@@ -31,7 +31,7 @@ describe('DMM API (OSAPI)', () => {
 
     DmmApi.getGameInfo(fakeGameId, fakeCookie)
     .then(gadgetInfo => {
-      var rpParam = httpRequest.firstCall.args[0]
+      const rpParam = httpRequest.firstCall.args[0]
       rpParam.uri.should.equal('http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeGameId, 'http url should match')
       rpParam.headers.cookie.should.equal(fakeCookie, 'cookie should not be altered')
       gadgetInfo.should.deepEqual(expectedParsedGadget, 'gadgetInfo should have the same expected properties and values')
@@ -51,7 +51,7 @@ describe('DMM API (OSAPI)', () => {
   }))
 
   describe('proxy request', () => {
-    var securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy'
+    const securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy'
     it('should make proxy request to the target url', (done) => {
       DmmApi.proxyRequest('http://www.example.com', {ST: securityToken})
       .then(response => {

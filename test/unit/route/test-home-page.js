@@ -45,8 +45,8 @@ describe('/index', () => {
         .expect(200)
       })
       .then(res => {
-        let $ = cheerio.load(res.text)
-        var url = $('#game').attr('data')
+        const $ = cheerio.load(res.text)
+        const url = $('#game').attr('data')
 
         should(url.startsWith(testcase.targetUrl)).ok('should start with ' + url)
         done()

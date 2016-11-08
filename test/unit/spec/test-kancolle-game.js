@@ -13,7 +13,7 @@ describe('Kancolle game', () => {
 
   describe('Maintenance test', () => {
 
-    var code
+    let code
     beforeEach(() => {
       code =
       `
@@ -27,8 +27,8 @@ describe('Kancolle game', () => {
     })
 
     it('is NOT on maintenance', (done) => {
-      var sourceText = sprintf(code, 0, 0)
-      var httpRequest = sinon.stub(rp, 'get')
+      const sourceText = sprintf(code, 0, 0)
+      const httpRequest = sinon.stub(rp, 'get')
       .returns(Promise.resolve(sourceText))
 
       Kancolle.getMaintenanceInfo()
@@ -45,8 +45,8 @@ describe('Kancolle game', () => {
     {doing: 1, emergency: 0},
     {doing: 1, emergency: 1}], (mode) => {
       it(sprintf('is on maintenance (doing = %d, emergency = %d)', mode.doing, mode.emergency), (done) => {
-        var sourceText = sprintf(code, mode.doing, mode.emergency)
-        var httpRequest = sinon.stub(rp, 'get')
+        const sourceText = sprintf(code, mode.doing, mode.emergency)
+        const httpRequest = sinon.stub(rp, 'get')
         .returns(Promise.resolve(sourceText))
 
         Kancolle.getMaintenanceInfo()
@@ -62,14 +62,14 @@ describe('Kancolle game', () => {
 
   describe('world server', () => {
 
-    var kancolleServerIpArray = []
+    const kancolleServerIpArray = []
 
     before(() => {
       Object.keys(KancolleChildServers).map((key) => {kancolleServerIpArray.push(KancolleChildServers[key].host)})
     })
 
     it('return world id 0 if player is new', (done) => {
-      var gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer.dmmId}
+      const gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer.dmmId}
       Kancolle.getWorldServerId(gadgetInfo)
       .then(worldId => {
         worldId.should.equal(0, 'world id should be 0')
@@ -79,7 +79,7 @@ describe('Kancolle game', () => {
     })
 
     it('return world id greater than 0 if player is old', (done) => {
-      var gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer.dmmId}
+      const gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer.dmmId}
       Kancolle.getWorldServerId(gadgetInfo)
       .then(worldId => {
         worldId.should.above(0, 'world id should be greater than 0')
@@ -89,8 +89,8 @@ describe('Kancolle game', () => {
     })
 
     it('should return error when internal error occurred in the target server', sinon.test(function(done) {
-      var error = {api_data: 0}
-      var errorResponse = 'svdata=' + JSON.stringify(error)
+      const error = {api_data: 0}
+      const errorResponse = 'svdata=' + JSON.stringify(error)
       this.stub(rp, 'get')
       .returns(Promise.resolve(errorResponse))
 

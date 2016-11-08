@@ -5,7 +5,7 @@ const Kancolle = require('./game')
 const urljoin = require('url-join')
 const appLog = require('winston').loggers.get('app')
 
-var Hub = {}
+const Hub = {}
 
 /**
  * Application id
@@ -47,7 +47,7 @@ Hub.launch = function(gadgetInfo) {
   }
 
   function oldPlayer(worldId) {
-    var server = Hub.getServer(worldId)
+    const server = Hub.getServer(worldId)
     return server.generateApiToken(gadgetInfo).then(player => {
       if(player.isBan)
         return Promise.resolve(urljoin(Kancolle.ENTRY_HOST, 'kcs', 'ban.swf'))

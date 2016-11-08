@@ -18,7 +18,7 @@ class KancolleServer {
   download(url) {
     agentLog.info('Download: ' + url)
     agentLog.verbose('Remove sensitive data in URL parameters')
-    var parsedUrl = removeUrlParameterSensitiveData(url)
+    const parsedUrl = removeUrlParameterSensitiveData(url)
     agentLog.debug('Parsed URL: ' + parsedUrl)
 
     return request.get({
@@ -28,9 +28,9 @@ class KancolleServer {
   }
 
   apiRequest(apiUrl, payload, initialHttpHeaders) {
-    var fullUrl = urljoin(this.host, apiUrl)
+    const fullUrl = urljoin(this.host, apiUrl)
     agentLog.info('call Kancolle API', fullUrl)
-    var options = {
+    const options = {
       url: fullUrl,
       form: payload,
       headers: forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders),
@@ -43,13 +43,13 @@ class KancolleServer {
   generateApiToken(gadgetInfo) {
     const url = sprintf('%s/kcsapi/api_auth_member/dmmlogin/%s/1/%d', this.host, gadgetInfo.VIEWER_ID, Date.now())
     return osapi.proxyRequest(url, gadgetInfo).then(response => {
-      var body = response.body
+      let body = response.body
       body = body.replace('svdata=', '')
       body = body.replace(/\\/g, '')
-      var apiResponse = JSON.parse(body)
-      var isBan = apiResponse.api_result == 301
+      const apiResponse = JSON.parse(body)
+      const isBan = apiResponse.api_result == 301
 
-      var data = {
+      const data = {
         isBan: isBan,
         api_token: apiResponse.api_token,
         api_start_time: apiResponse.api_starttime
@@ -63,7 +63,7 @@ function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders) {
   initialHttpHeaders = initialHttpHeaders || {}
   agentLog.verbose('Forge HTTP header to match with HTTP request from browser')
   agentLog.debug('URL', fullUrl)
-  var headers = initialHttpHeaders
+  const headers = initialHttpHeaders
   modifyHeader(fullUrl)
   avoidSocketHangup()
 
@@ -76,7 +76,7 @@ function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders) {
   }
 
   function modifyHeader(fullUrl) {
-    var url = urlparse(fullUrl)
+    const url = urlparse(fullUrl)
     headers.host = url.host
     headers.origin = url.origin
 

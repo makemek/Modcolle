@@ -16,10 +16,10 @@ describe('request kancolle world server image', () => {
   {case: 'host name', input: {host: 'http://www.some.site.com', worldImg: 'www_some_site_com_t.png'}}
   ].forEach(testcase => {
     it('match with ' + testcase.case, sinon.test(function(done) {
-      var host = testcase.input.host
-      var worldImg = '/kcs/resources/image/world/' + testcase.input.worldImg
-      var fakeImagePngContent = Buffer.from('1234abcdef')
-      var fakeKancolleServer = new Server(1, host)
+      const host = testcase.input.host
+      const worldImg = '/kcs/resources/image/world/' + testcase.input.worldImg
+      const fakeImagePngContent = Buffer.from('1234abcdef')
+      const fakeKancolleServer = new Server(1, host)
 
       nock(host)
       .get(worldImg)
@@ -32,8 +32,8 @@ describe('request kancolle world server image', () => {
         })
 
       this.stub(kancolle, 'getServer', _host => {
-        var resultHostname = new URL(_host).hostname
-        var expectedHostname = new URL(host).hostname
+        const resultHostname = new URL(_host).hostname
+        const expectedHostname = new URL(host).hostname
         resultHostname.should.equal(expectedHostname, 'should have the same hostname')
         return fakeKancolleServer
       })
@@ -61,8 +61,8 @@ describe('request kancolle world server image', () => {
 
 describe('request assets from Kancolle server', () => {
 
-  var kancolleGetServer
-  var nockRequest
+  let kancolleGetServer
+  let nockRequest
   const HOST = 'http://1.2.3.4'
 
   before(() => {
@@ -71,7 +71,7 @@ describe('request assets from Kancolle server', () => {
 
   beforeEach(() => {
     kancolleGetServer = sinon.stub(kancolle, 'getServer', () => {
-      var server = new Server(1, HOST)
+      const server = new Server(1, HOST)
       return server
     })
   })
@@ -80,7 +80,7 @@ describe('request assets from Kancolle server', () => {
     sinon.restore(kancolleGetServer)
   })
 
-  var fileCategory = [
+  const fileCategory = [
   {case: 'graphical image', input: '/kcs/resource/file.png'},
   {case: 'sound', input: '/kcs/sound/file.mp3'},
   {case: 'game component', input: '/kcs/file.swf'}]

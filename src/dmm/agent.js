@@ -3,14 +3,14 @@
 const rp = require('request-promise')
 const appLog = require('winston').loggers.get('app')
 
-var DmmAgent = {
+const DmmAgent = {
 
   login: function(email, password) {
     email = email.trim()
     password = password.trim()
 
-    var authenticateUser = this.authenticate.bind(null, email, password)
-    var promise = this.scrapeToken()
+    const authenticateUser = this.authenticate.bind(null, email, password)
+    const promise = this.scrapeToken()
     .then(this.authorizeToken)
     .then(authenticateUser)
 
@@ -18,7 +18,7 @@ var DmmAgent = {
   },
 
   scrapeToken: function() {
-    var options = {
+    const options = {
       uri: 'https://www.dmm.com/my/-/login/=/path=Sg__/'
     }
     appLog.info('scrape login token from ' + options.uri)
@@ -27,7 +27,7 @@ var DmmAgent = {
 
     return rp.get(options)
     .then(htmlBody => {
-      var tokens = htmlBody.match(/[a-f0-9]{32}/g)
+      const tokens = htmlBody.match(/[a-f0-9]{32}/g)
       const DMM_TOKEN = tokens[1]
       const DATA_TOKEN = tokens[2]
 
@@ -40,7 +40,7 @@ var DmmAgent = {
   },
 
   authorizeToken: function(TOKEN) {
-    var options = {
+    const options = {
       uri: 'https://www.dmm.com/my/-/login/ajax-get-token/',
       headers: {
         'DMM_TOKEN': TOKEN.DMM_TOKEN,
@@ -71,7 +71,7 @@ var DmmAgent = {
     appLog.debug('password: ' + password)
 
     appLog.verbose('prepare POST parameters')
-    var payload = {
+    const payload = {
       token: dmmAjaxToken.token,
       login_id: email,
       save_login_id: 0,
@@ -86,7 +86,7 @@ var DmmAgent = {
     payload[dmmAjaxToken.login_id] = email
     payload[dmmAjaxToken.password] = password
 
-    var options = {
+    const options = {
       uri: 'https://www.dmm.com/my/-/login/auth/',
       headers: {'Upgrade-Insecure-Requests': 1},
       form: payload,
@@ -108,8 +108,8 @@ var DmmAgent = {
       return Promise.resolve(false)
     })
     .catch((error) => {
-      var response = error.response
-      var loginGranted = error.statusCode == 302 && response.headers.hasOwnProperty('set-cookie')
+      const response = error.response
+      const loginGranted = error.statusCode == 302 && response.headers.hasOwnProperty('set-cookie')
 
       appLog.debug('status code: ' + error.statusCode)
       appLog.debug(response.headers)

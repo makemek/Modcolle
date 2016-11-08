@@ -8,7 +8,7 @@ require('should')
 
 describe('/login', () => {
 
-  var loginWithValidAccount, loginWithInvalidAccount
+  let loginWithValidAccount, loginWithInvalidAccount
 
   beforeEach(() => {
     loginWithValidAccount = request(app)
@@ -28,7 +28,7 @@ describe('/login', () => {
   it('if login success, return a session', done => {
     loginWithValidAccount
     .then(res => {
-      var cookies = res.headers['set-cookie']
+      let cookies = res.headers['set-cookie']
       cookies.should.be.ok('should have cookie header')
       cookies = cookies.map(Cookie.parse)
       cookies.filter(cookie => {
@@ -42,7 +42,7 @@ describe('/login', () => {
   it('if login fail, DONT return a session', done => {
     loginWithInvalidAccount
     .then(res => {
-      var cookies = res.headers['set-cookie']
+      let cookies = res.headers['set-cookie']
       if(!cookies)
         return done()
 
