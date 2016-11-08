@@ -16,10 +16,10 @@ nock(HOST, {
   }
 })
 .persist()
-.get(function(uri) {
+.get((uri) => {
   return /\/netgame\/social\/-\/gadgets\/=\/app_id=\d+/gi.test(uri)
 })
-.reply(200, function() {
+.reply(200, () => {
   var response =
   `
   //<![CDATA[

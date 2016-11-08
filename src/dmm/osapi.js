@@ -135,7 +135,7 @@ function getGadgetInfo(htmlString) {
   appLog.debug(varList)
 
   appLog.debug('put double quotes around the variable')
-  varList.forEach(function(property) {
+  varList.forEach((property) => {
     property = property.trim()
     gadgetInfo = gadgetInfo.replace(property, sprintf('"%s"', property))
   })

@@ -5,7 +5,7 @@ const router = express.Router()
 const appLog = require('winston').loggers.get('app')
 const kancolle = require('../../kancolle/')
 
-router.post('/*', extractWorldIdFromApiToken, function(req, res, next) {
+router.post('/*', extractWorldIdFromApiToken, (req, res, next) => {
   var server = kancolle.getServer(req.body.worldId)
   if(!server)
     return res.sendStatus(400)

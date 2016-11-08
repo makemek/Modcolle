@@ -11,7 +11,7 @@ const nock = require('nock')
 const URL = require('url-parse')
 const should = require('should')
 
-describe('kancolle server', function() {
+describe('kancolle server', () => {
 
   var agent
   const KANCOLLE_CONFIG = {
@@ -19,11 +19,11 @@ describe('kancolle server', function() {
     serv: 'http://0.0.0.0'
   }
 
-  beforeEach(function() {
+  beforeEach(() => {
     agent = new Agent(1, KANCOLLE_CONFIG.serv)
   })
 
-  it('download from the internet', function(done) {
+  it('download from the internet', (done) => {
     var sensitiveParams = '?api_token=abc&api_starttime=1234'
     var url = 'http://www.example.com/'
 
@@ -59,7 +59,7 @@ describe('kancolle server', function() {
     postArgs.headers.should.containEql(headers)
   }))
 
-  it('generate api token for non-banned player', function(done) {
+  it('generate api token for non-banned player', (done) => {
     agent.generateApiToken({VIEWER_ID: playerProfile.oldPlayer.dmmId, ST: 'xxxxxxxxx'})
     .then(player => {
       should(player.isBan).be.false('should not get banned')

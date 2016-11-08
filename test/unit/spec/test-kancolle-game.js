@@ -9,12 +9,12 @@ const apiTerminal = require('../mock/kancolle/api-terminal')
 const KancolleChildServers = require(global.SRC_ROOT + '/kancolle/server')
 const should = require('should')
 
-describe('Kancolle game', function() {
+describe('Kancolle game', () => {
 
-  describe('Maintenance test', function() {
+  describe('Maintenance test', () => {
 
     var code
-    beforeEach(function() {
+    beforeEach(() => {
       code =
       `
       var ConstServerInfo = {servFoo:"servBar"}, ConstURLInfo = {urlFoo:"urlBar"}
@@ -26,13 +26,13 @@ describe('Kancolle game', function() {
       `
     })
 
-    it('is NOT on maintenance', function(done) {
+    it('is NOT on maintenance', (done) => {
       var sourceText = sprintf(code, 0, 0)
       var httpRequest = sinon.stub(rp, 'get')
       .returns(Promise.resolve(sourceText))
 
       Kancolle.getMaintenanceInfo()
-      .then(function(maintenanceInfo) {
+      .then((maintenanceInfo) => {
         should(maintenanceInfo.isMaintain).be.false()
         httpRequest.restore()
         done()
@@ -43,14 +43,14 @@ describe('Kancolle game', function() {
     async.forEach([
     {doing: 0, emergency: 1},
     {doing: 1, emergency: 0},
-    {doing: 1, emergency: 1}], function(mode) {
-      it(sprintf('is on maintenance (doing = %d, emergency = %d)', mode.doing, mode.emergency), function(done) {
+    {doing: 1, emergency: 1}], (mode) => {
+      it(sprintf('is on maintenance (doing = %d, emergency = %d)', mode.doing, mode.emergency), (done) => {
         var sourceText = sprintf(code, mode.doing, mode.emergency)
         var httpRequest = sinon.stub(rp, 'get')
         .returns(Promise.resolve(sourceText))
 
         Kancolle.getMaintenanceInfo()
-        .then(function(maintenanceInfo) {
+        .then((maintenanceInfo) => {
           should(maintenanceInfo.isMaintain).be.true()
           httpRequest.restore()
           done()
@@ -60,15 +60,15 @@ describe('Kancolle game', function() {
     })
   })
 
-  describe('world server', function(){
+  describe('world server', () => {
 
     var kancolleServerIpArray = []
 
-    before(function() {
-      Object.keys(KancolleChildServers).map(function(key) {kancolleServerIpArray.push(KancolleChildServers[key].host)})
+    before(() => {
+      Object.keys(KancolleChildServers).map((key) => {kancolleServerIpArray.push(KancolleChildServers[key].host)})
     })
 
-    it('return world id 0 if player is new', function(done) {
+    it('return world id 0 if player is new', (done) => {
       var gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer.dmmId}
       Kancolle.getWorldServerId(gadgetInfo)
       .then(worldId => {
@@ -78,7 +78,7 @@ describe('Kancolle game', function() {
       .catch(done)
     })
 
-    it('return world id greater than 0 if player is old', function(done) {
+    it('return world id greater than 0 if player is old', (done) => {
       var gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer.dmmId}
       Kancolle.getWorldServerId(gadgetInfo)
       .then(worldId => {

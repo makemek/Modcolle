@@ -27,7 +27,7 @@ setupRouting()
 
 function setupLogger() {
   var loggers = ['app', 'router', 'agent']
-  loggers.forEach(function(logger) {
+  loggers.forEach((logger) => {
     var loggerConfig = {
       console: {
         label: logger,
@@ -43,7 +43,7 @@ function setupLogger() {
 }
 
 function setupDefaultLocalResponseHeader() {
-  app.use(function(req, res, next) {
+  app.use((req, res, next) => {
     res.set('X-Powered-By', 'ModColle')
     next()
   })

@@ -28,7 +28,7 @@ const appLog = require('winston').loggers.get('app')
  * For example, www.example.com becomes www_example_com
  **/
 const WOLRD_IMG_URL = 'resources/image/world'
-router.get('/' + WOLRD_IMG_URL + '/:worldImg', function(req, res, next) {
+router.get('/' + WOLRD_IMG_URL + '/:worldImg', (req, res, next) => {
   appLog.info('convert image name ' + req.params.worldImg + ' to acceptable format')
   var host = getHost(req.params.worldImg)
   var targetServer = kancolle.getServer(host)
@@ -75,7 +75,7 @@ function getHost(worldImageFilename) {
  * If file is not found, it will request the file from kancolle server
  **/
 var urlEndWithFileType = /^.*\.(swf|mp3|png)$/i
-router.get(urlEndWithFileType, function(req, res) {
+router.get(urlEndWithFileType, (req, res) => {
   appLog.info('received request for kancolle asset', req.originalUrl)
   var kancolleServer = kancolle.getServer(1)
   appLog.info('get kancolle server', kancolleServer.host)

@@ -24,7 +24,7 @@ const BAD_ACCOUNT = {
 nock(HOST)
 .persist()
 .get('/my/-/login/=/path=Sg__/')
-.reply(200, function() {
+.reply(200, () => {
   var htmlForm = sprintf('<input type="hidden" name="token" value="%s" id="id_token">', TOKEN.form)
   var ajaxDmmToken = sprintf('xhr.setRequestHeader("DMM_TOKEN", "%s");', TOKEN.dmm)
   var ajaxDataToken = sprintf('"token": "%s"', TOKEN.data)
@@ -44,7 +44,7 @@ nock(HOST, {
 
 nock(HOST)
 .persist()
-.post('/my/-/login/auth/', function(body) {
+.post('/my/-/login/auth/', (body) => {
   var badAccount = body.login_id == BAD_ACCOUNT.email && body.password == BAD_ACCOUNT.password
   var validPageToken = body.token == TOKEN.auth.token
   var hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
@@ -55,7 +55,7 @@ nock(HOST)
 
 nock(HOST)
 .persist()
-.post('/my/-/login/auth/', function(body) {
+.post('/my/-/login/auth/', (body) => {
   var validPageToken = body.token == TOKEN.auth.token
   var hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
 

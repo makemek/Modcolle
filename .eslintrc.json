@@ -35,6 +35,7 @@
         "strict": [
             "error",
             "global"
-        ]
+        ],
+        "prefer-arrow-callback": "error"
     }
 }

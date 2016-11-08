@@ -6,11 +6,11 @@ const rp = require('request-promise')
 require('../mock/dmm/net-game')
 require('../mock/dmm/osapi')
 
-describe('DMM API (OSAPI)', function() {
+describe('DMM API (OSAPI)', () => {
 
   var fakeGameId, fakeCookie
 
-  beforeEach(function() {
+  beforeEach(() => {
     fakeGameId = 0
     fakeCookie = 'INT_SESID=abcd; ckcy=1; cklg=ja; a=1; b=2;'
   })
@@ -50,9 +50,9 @@ describe('DMM API (OSAPI)', function() {
     })
   }))
 
-  describe('proxy request', function() {
+  describe('proxy request', () => {
     var securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy'
-    it('should make proxy request to the target url', function(done) {
+    it('should make proxy request to the target url', (done) => {
       DmmApi.proxyRequest('http://www.example.com', {ST: securityToken})
       .then(response => {
         response.should.be.Object()
@@ -65,7 +65,7 @@ describe('DMM API (OSAPI)', function() {
       .catch(done)
     })
 
-    it('invalid url ', function(done){
+    it('invalid url ', (done) => {
       DmmApi.proxyRequest('http://invlidUrl', {ST: securityToken})
       .then(response => {
         response.body.should.equal('request error')
@@ -74,7 +74,7 @@ describe('DMM API (OSAPI)', function() {
       .catch(done)
     })
 
-    it('invalid security token', function(done) {
+    it('invalid security token', (done) => {
       DmmApi.proxyRequest('', {ST: ''})
       .then(done)
       .catch(error => {

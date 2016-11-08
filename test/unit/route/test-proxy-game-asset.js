@@ -9,7 +9,7 @@ const kancolle = require(global.SRC_ROOT + '/kancolle/')
 const URL = require('url-parse')
 require('should')
 
-describe('request kancolle world server image', function() {
+describe('request kancolle world server image', () => {
 
   [
   {case: 'ip address', input: {host: 'http://1.0.1.0', worldImg: '001_000_001_000_t.png'}},
@@ -59,24 +59,24 @@ describe('request kancolle world server image', function() {
   }))
 })
 
-describe('request assets from Kancolle server', function() {
+describe('request assets from Kancolle server', () => {
 
   var kancolleGetServer
   var nockRequest
   const HOST = 'http://1.2.3.4'
 
-  before(function() {
+  before(() => {
     nockRequest = nock(HOST)
   })
 
-  beforeEach(function() {
+  beforeEach(() => {
     kancolleGetServer = sinon.stub(kancolle, 'getServer', () => {
       var server = new Server(1, HOST)
       return server
     })
   })
 
-  afterEach(function() {
+  afterEach(() => {
     sinon.restore(kancolleGetServer)
   })
 
@@ -85,9 +85,9 @@ describe('request assets from Kancolle server', function() {
   {case: 'sound', input: '/kcs/sound/file.mp3'},
   {case: 'game component', input: '/kcs/file.swf'}]
   fileCategory.forEach(testcase => {
-    describe(testcase.case, function() {
+    describe(testcase.case, () => {
 
-      it('file exists on the destinated server', function(done) {
+      it('file exists on the destinated server', (done) => {
         nockRequest
         .get(testcase.input)
         .reply(200)

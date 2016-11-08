@@ -98,7 +98,7 @@ var DmmAgent = {
     appLog.debug(options)
 
     return rp.post(options)
-    .then(function(response) {
+    .then((response) => {
       // incorrect email or password will return statusCode 200 with empty body
       appLog.verbose('response retrieved from ' + options.uri)
       appLog.debug('status code: ' + response.statusCode)
@@ -107,7 +107,7 @@ var DmmAgent = {
 
       return Promise.resolve(false)
     })
-    .catch(function(error) {
+    .catch((error) => {
       var response = error.response
       var loginGranted = error.statusCode == 302 && response.headers.hasOwnProperty('set-cookie')
 

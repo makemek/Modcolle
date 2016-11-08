@@ -10,7 +10,7 @@ const playerProfile = require('../mock/kancolle/api-terminal')
 const osapi = require(global.SRC_ROOT + '/dmm/osapi')
 const should = require('should')
 
-describe('/index', function() {
+describe('/index', () => {
 
   it('if not logged in, render a html page', done => {
     request(app)

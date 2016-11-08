@@ -6,11 +6,11 @@ const request = require('supertest-as-promised')
 const app = require(global.SRC_ROOT)
 require('should')
 
-describe('/login', function() {
+describe('/login', () => {
 
   var loginWithValidAccount, loginWithInvalidAccount
 
-  beforeEach(function() {
+  beforeEach(() => {
     loginWithValidAccount = request(app)
     .post('/login')
     .send({username: 'someone', password: 'password'})

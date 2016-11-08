@@ -10,7 +10,7 @@ const playerProfile = {
 }
 
 nock('http://203.104.209.7')
-.get(function(uri) {
+.get((uri) => {
   var newPlayer = '/kcsapi/api_world/get_id/' + playerProfile.newPlayer.dmmId + '/1'
   return uri.startsWith(newPlayer)
 })
@@ -18,14 +18,14 @@ nock('http://203.104.209.7')
 
 nock('http://203.104.209.7')
 .persist()
-.get(function(uri) {
+.get((uri) => {
   return /\/kcsapi\/api_world\/get_id\/\d+\/1/.test(uri)
 })
 .reply(200, 'svdata={"api_result": 1, "api_data": {"api_world_id": 1}}')
 
 nock('http://osapi.dmm.com:80', {'encodedQueryParams':true})
 .persist()
-.post('/gadgets/makeRequest', function(body) {
+.post('/gadgets/makeRequest', (body) => {
   var url = new URL(body.url, true)
   var samePathname = url.pathname.startsWith('/kcsapi/api_auth_member/dmmlogin/' + playerProfile.bannedPlayer.dmmId + '/1/')
   var hasSignOwner = body.signOwner === 'true'

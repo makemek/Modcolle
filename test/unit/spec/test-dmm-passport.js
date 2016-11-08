@@ -8,15 +8,15 @@ const async = require('async')
 const sinon = require('sinon')
 const should = require('should')
 
-describe('DMM passport middleware', function() {
+describe('DMM passport middleware', () => {
 
-  it('grant access', function(done) {
-    dmmPassport.authenticate('someone@example.com', 'password', function(error, cookies) {
+  it('grant access', (done) => {
+    dmmPassport.authenticate('someone@example.com', 'password', (error, cookies) => {
       if(error)
         return done(error)
 
       cookies = cookies.map(Cookie.parse)
-      cookies.filter(function(cookie) {
+      cookies.filter((cookie) => {
         return cookie.key === 'INT_SESID'
       })
       cookies.length.should.equal(1, 'should have 1 session cookie (INT_SESID)')
@@ -24,8 +24,8 @@ describe('DMM passport middleware', function() {
     })
   })
 
-  it('deny access', function(done) {
-    dmmPassport.authenticate(nockDmmAuth.badAccount.email, nockDmmAuth.badAccount.password, function(error, cookies) {
+  it('deny access', (done) => {
+    dmmPassport.authenticate(nockDmmAuth.badAccount.email, nockDmmAuth.badAccount.password, (error, cookies) => {
       if(error)
         return done(error)
       cookies.should.be.false()
@@ -37,9 +37,9 @@ describe('DMM passport middleware', function() {
   {case: 'no cookies', input: []},
   {case: 'no session', input: ['others=doe', 'foo=bar']},
   {case: 'more than 1 sessions', input: [nockDmmAuth.session, nockDmmAuth.session, nockDmmAuth.session]}
-  ], function(testcase) {
-    it('serialize ' + testcase.case + ' should return an error', function(done) {
-      dmmPassport.serialize(testcase.input, function(error, session) {
+  ], (testcase) => {
+    it('serialize ' + testcase.case + ' should return an error', (done) => {
+      dmmPassport.serialize(testcase.input, (error, session) => {
         error.should.be.an.instanceof(Error)
         should.not.exist(session, 'no session should be given')
         done()
@@ -47,10 +47,10 @@ describe('DMM passport middleware', function() {
     })
   })
 
-  it('serialize 1 session', function(done) {
+  it('serialize 1 session', (done) => {
     var others = 'others=doe', foo = 'foo=bar'
     var cookies = [nockDmmAuth.session, others, foo]
-    dmmPassport.serialize(cookies, function(error, injectedCookies) {
+    dmmPassport.serialize(cookies, (error, injectedCookies) => {
       if(error)
         return done(error)
 
@@ -63,9 +63,9 @@ describe('DMM passport middleware', function() {
     })
   })
 
-  it('deserialize session', function(done) {
+  it('deserialize session', (done) => {
     var expectedCookies = [nockDmmAuth.session, 'others=doe']
-    dmmPassport.deserialize(expectedCookies, function(error, cookies) {
+    dmmPassport.deserialize(expectedCookies, (error, cookies) => {
       if(error)
         return done(error)
 

@@ -8,7 +8,7 @@ const kancolle = require('../kancolle/')
 const URL = require('url-parse')
 const urljoin = require('url-join')
 
-router.get('/', function (req, res, next) {
+router.get('/', (req, res, next) => {
   if(!req.isAuthenticated())
     return res.render('index')
 

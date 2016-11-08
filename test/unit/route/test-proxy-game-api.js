@@ -7,16 +7,16 @@ const sinon = require('sinon')
 const kancolle = require(global.SRC_ROOT + '/kancolle/')
 const Server = require(global.SRC_ROOT + '/kancolle/server/server')
 
-describe('proxy Kancolle API', function() {
+describe('proxy Kancolle API', () => {
 
   var payload
   const EMBEDED_SYMBOL = '_'
 
-  beforeEach(function() {
+  beforeEach(() => {
     payload = {api_token: 'abcdef01234'}
   })
 
-  it('have only API token should reject request', function(done) {
+  it('have only API token should reject request', (done) => {
     request(app)
     .post('/kcsapi/some/api')
     .send(payload)
@@ -24,7 +24,7 @@ describe('proxy Kancolle API', function() {
     .end(done)
   })
 
-  it('have embeded symbol BUT no world id in API token should reject request', function(done) {
+  it('have embeded symbol BUT no world id in API token should reject request', (done) => {
     payload.api_token = ['', payload.api_token].join(EMBEDED_SYMBOL)
     request(app)
     .post('/kcsapi/some/api')
@@ -33,7 +33,7 @@ describe('proxy Kancolle API', function() {
     .end(done)
   })
 
-  describe('world id embed in API token', function() {
+  describe('world id embed in API token', () => {
 
     it('can be mapped to Kancolle server should accept request', sinon.test(function(done) {
       var host = 'http://0.0.0.0', world = '0'
@@ -53,7 +53,7 @@ describe('proxy Kancolle API', function() {
       .end(done)
     }))
 
-    it('can NOT be mapped to Kancolle server should reject request', function(done) {
+    it('can NOT be mapped to Kancolle server should reject request', (done) => {
       payload.api_token = ['!@#$%^&*()+<>?', payload.api_token].join(EMBEDED_SYMBOL)
       request(app)
       .post('/kcsapi/some/api')
