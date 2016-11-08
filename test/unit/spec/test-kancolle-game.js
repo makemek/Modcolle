@@ -1,4 +1,4 @@
-'use strcit'
+'use strict'
 
 const Kancolle = require(global.SRC_ROOT + '/kancolle/game')
 const rp = require('request-promise')

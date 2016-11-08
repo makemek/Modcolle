@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict'
+
 const winston = require('winston')
 const app = require('../src/')
 const http = require('http')

@@ -6,7 +6,7 @@
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "sourceType": "module"
+        "sourceType": "script"
     },
     "rules": {
         "indent": [
@@ -25,6 +25,16 @@
             "error",
             "never"
         ],
-        "no-trailing-spaces": "error"
+        "no-trailing-spaces": "error",
+        "no-tabs": "error",
+        "comma-spacing": [
+            "error",
+            {"before": false, "after": true}
+        ],
+        "eol-last": "error",
+        "strict": [
+            "error",
+            "global"
+        ]
     }
 }
