@@ -1,12 +1,12 @@
 'use strict'
 
-const dmmPassport = require(SRC_ROOT + '/middleware/dmm-passport')
-const dmmAgent = require(SRC_ROOT + '/dmm/agent')
+const dmmPassport = require(global.SRC_ROOT + '/middleware/dmm-passport')
 const tough = require('tough-cookie')
 const Cookie = tough.Cookie
 const nockDmmAuth = require('../mock/dmm/auth')
 const async = require('async')
 const sinon = require('sinon')
+const should = require('should')
 
 describe('DMM passport middleware', function() {
 
@@ -19,7 +19,7 @@ describe('DMM passport middleware', function() {
       cookies.filter(function(cookie) {
         return cookie.key === 'INT_SESID'
       })
-      assert.equal(cookies.length, 1, 'should have 1 session cookie (INT_SESID)')
+      cookies.length.should.equal(1, 'should have 1 session cookie (INT_SESID)')
       done()
     })
   })
@@ -28,7 +28,7 @@ describe('DMM passport middleware', function() {
     dmmPassport.authenticate(nockDmmAuth.badAccount.email, nockDmmAuth.badAccount.password, function(error, cookies) {
       if(error)
         return done(error)
-      assert.isFalse(cookies, 'cookies should be false')
+      cookies.should.be.false()
       done()
     })
   })
@@ -40,8 +40,8 @@ describe('DMM passport middleware', function() {
   ], function(testcase) {
     it('serialize ' + testcase.case + ' should return an error', function(done) {
       dmmPassport.serialize(testcase.input, function(error, session) {
-        assert.isTrue(error instanceof Error)
-        assert.isUndefined(session, 'no session should be given')
+        error.should.be.an.instanceof(Error)
+        should.not.exist(session, 'no session should be given')
         done()
       })
     })
@@ -53,12 +53,12 @@ describe('DMM passport middleware', function() {
     dmmPassport.serialize(cookies, function(error, injectedCookies) {
       if(error)
         return done(error)
-      
-      assert.isString(injectedCookies, 'session should be a string')
-      assert.include(injectedCookies, nockDmmAuth.session)
-      assert.notInclude(injectedCookies, others)
-      assert.notInclude(injectedCookies, foo)
-      assert.include(injectedCookies, 'ckcy')
+
+      should(injectedCookies).be.String('session should be a string')
+      injectedCookies.should.containEql(nockDmmAuth.session)
+      injectedCookies.should.not.containEql(others)
+      injectedCookies.should.not.containEql(foo)
+      injectedCookies.should.containEql('ckcy')
       done()
     })
   })
@@ -69,7 +69,7 @@ describe('DMM passport middleware', function() {
       if(error)
         return done(error)
 
-      assert.equal(cookies, expectedCookies, 'no cookie should be altered')
+      cookies.should.equal(expectedCookies, 'no cookie should be altered')
       done()
     })
   })
@@ -79,8 +79,8 @@ describe('DMM passport middleware', function() {
     var res = {redirect: function() {}}
     var spyRes = this.spy(res, 'redirect'), spyNext = this.spy()
     dmmPassport.isAuthenticated(req, res, spyNext)
-    assert.isTrue(spyNext.calledOnce, 'callback should be called once')
-    assert.isFalse(spyRes.called, 'response should never be called')
+    should(spyNext.calledOnce).be.true('callback should be called once')
+    should(spyRes.called).be.false('response should never be called')
   }))
 
   it('if not authenticate, redirect to home page', sinon.test(function() {
@@ -88,8 +88,8 @@ describe('DMM passport middleware', function() {
     var res = {redirect: function() {}}
     var spyRes = this.spy(res, 'redirect'), spyNext = this.spy()
     dmmPassport.isAuthenticated(req, res, spyNext)
-    assert.isFalse(spyNext.called, 'callback should never be called')
-    assert.isTrue(spyRes.calledOnce, 'response should be called once')
-    assert.equal(spyRes.firstCall.args[0], '/', 'should redirect to home page')
+    should(spyNext.called).be.false('callback should never be called')
+    should(spyRes.calledOnce).be.true('response should be called once')
+    spyRes.firstCall.args[0].should.equal('/', 'should redirect to home page')
   }))
 })

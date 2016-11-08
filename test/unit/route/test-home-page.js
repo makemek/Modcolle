@@ -1,15 +1,14 @@
 'use strict'
 
 const request = require('supertest-as-promised')
-const app = require(SRC_ROOT)
+const app = require(global.SRC_ROOT)
 const cheerio = require('cheerio')
-const validator = require('validator')
-const URL = require('url-parse')
 const async = require('async')
 const sinon = require('sinon')
-const game = require(SRC_ROOT + '/kancolle/game')
+const game = require(global.SRC_ROOT + '/kancolle/game')
 const playerProfile = require('../mock/kancolle/api-terminal')
-const osapi = require(SRC_ROOT + '/dmm/osapi')
+const osapi = require(global.SRC_ROOT + '/dmm/osapi')
+const should = require('should')
 
 describe('/index', function() {
 
@@ -27,10 +26,10 @@ describe('/index', function() {
     {case: 'banned player', targetUrl: 'http://203.104.209.7/kcs/ban.swf', account: {username: 'badTeitoku', password: 'T^T'}, playerProfile: playerProfile.bannedPlayer}],
   testcase => {
     it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, sinon.test(function(done) {
-      this.stub(game, 'getWorldServerId', gadget => {
+      this.stub(game, 'getWorldServerId', () => {
         return Promise.resolve(testcase.playerProfile.world)
       })
-      this.stub(osapi, 'getGameInfo', _ => {
+      this.stub(osapi, 'getGameInfo', () => {
         return Promise.resolve({VIEWER_ID: testcase.playerProfile.dmmId, ST: 'abcd'})
       })
 
@@ -46,11 +45,10 @@ describe('/index', function() {
         .expect(200)
       })
       .then(res => {
-        var startupFiles = ['ban.swf', 'world.swf']
         let $ = cheerio.load(res.text)
         var url = $('#game').attr('data')
 
-        assert.isTrue(url.startsWith(testcase.targetUrl), 'should start with ' + url)
+        should(url.startsWith(testcase.targetUrl)).ok('should start with ' + url)
         done()
       })
       .catch(done)

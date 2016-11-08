@@ -1,11 +1,9 @@
 'use strict'
 
 const nock = require('nock')
-const sprintf = require('sprintf-js').sprintf
-
 const HOST = 'http://osapi.dmm.com'
 const SECURITY_TOKEN_PATTERN = /^[a-zA-Z0-9/=+]{220}$/
-const DONT_BE_EVIL = "throw 1; < don't be evil' >"
+const DONT_BE_EVIL = 'throw 1; < don\'t be evil\' >'
 
 nock(HOST)
 .post('/gadgets/makeRequest', {
@@ -23,7 +21,7 @@ nock(HOST)
   authz: 'signed',
   signOwner: 'true'
 })
-.reply(200, DONT_BE_EVIL + `{"http:\/\/invlidUrl":{"rc":500,"body":"request error","headers":[]}}`)
+.reply(200, DONT_BE_EVIL + '{"http:\/\/invlidUrl":{"rc":500,"body":"request error","headers":[]}}')
 
 nock(HOST)
 .post('/gadgets/makeRequest', {

@@ -48,7 +48,7 @@ nock(HOST)
   var badAccount = body.login_id == BAD_ACCOUNT.email && body.password == BAD_ACCOUNT.password
   var validPageToken = body.token == TOKEN.auth.token
   var hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
-  
+
   return badAccount && validPageToken && hasTokenForLoginInput
 })
 .reply(200)
@@ -66,7 +66,7 @@ nock(HOST)
 })
 
 module.exports = exports = {
-  token: TOKEN, 
+  token: TOKEN,
   session: SESSION_COOKIE,
   badAccount: BAD_ACCOUNT
 }

@@ -13,7 +13,7 @@ var DmmAgent = {
     var promise = this.scrapeToken()
     .then(this.authorizeToken)
     .then(authenticateUser)
-    
+
     return promise
   },
 
@@ -35,7 +35,7 @@ var DmmAgent = {
       appLog.debug(tokens)
       appLog.debug('DMM_TOKEN: ' + DMM_TOKEN)
       appLog.debug('DATA_TOKEN: ' + DATA_TOKEN)
-      return Promise.resolve({DMM_TOKEN, DATA_TOKEN}) 
+      return Promise.resolve({DMM_TOKEN, DATA_TOKEN})
     })
   },
 
@@ -123,7 +123,7 @@ var DmmAgent = {
         appLog.error(error)
         return Promise.reject(error)
       }
-    })  
+    })
   }
 }
 

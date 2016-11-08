@@ -3,7 +3,6 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
-const dmmAuthenticator = require('../middleware/dmm-passport')
 const osapi = require('../dmm/osapi')
 const kancolle = require('../kancolle/')
 const URL = require('url-parse')

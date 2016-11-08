@@ -1,9 +1,9 @@
 'use strict'
 
 const Cookie = require('tough-cookie').Cookie
-const sprintf = require('sprintf-js').sprintf
-const Injector = require(SRC_ROOT + '/dmm/cookie-injector')
+const Injector = require(global.SRC_ROOT + '/dmm/cookie-injector')
 const async = require('async')
+require('should')
 
 describe('Region cookie generator', function() {
 
@@ -19,13 +19,13 @@ describe('Region cookie generator', function() {
       var cookies = injector.revokeRegionRestriction()
 
       var ckcy = cookies.filter(function(cookie) { return cookie.key == 'ckcy' })
-      assert.equal(ckcy.length, dmmDomainPath.length)
+      ckcy.length.should.equal(dmmDomainPath.length)
 
       ckcy.forEach(function(cookie) {
-        assert.equal(cookie.key, 'ckcy')
-        assert.equal(cookie.value, 1)
-        assert.equal(cookie.domain, 'dmm.com')
-        assert.include(dmmDomainPath, cookie.path)
+        cookie.key.should.equal('ckcy')
+        cookie.value.should.equal(1)
+        cookie.domain.should.equal('dmm.com')
+        dmmDomainPath.should.containEql(cookie.path)
       })
     })
   })
@@ -33,31 +33,31 @@ describe('Region cookie generator', function() {
   async.forEach([
     {case: 'Japanese', input: 'ja'},
     {case: 'English', input: 'en'}
-    ], function(lang) {
+  ], function(lang) {
     it('set language cookie to ' + lang.case, function() {
       var injector = new Injector([new Cookie({key: 'cklg', value: lang.input}).toString()], dmmDomainPath)
       var cookies = injector.language(lang.input)
 
       var cklg = cookies.filter(function(cookie) { return cookie.key == 'cklg' })
-      assert.equal(cklg.length, dmmDomainPath.length)
+      cklg.length.should.equal(dmmDomainPath.length)
 
       cklg.forEach(function(cookie) {
-        assert.equal(cookie.key, 'cklg')
-        assert.equal(cookie.value, lang.input)
-        assert.equal(cookie.domain, 'dmm.com')
-        assert.include(dmmDomainPath, cookie.path)
+        cookie.key.should.equal('cklg')
+        cookie.value.should.equal(lang.input)
+        cookie.domain.should.equal('dmm.com')
+        dmmDomainPath.should.containEql(cookie.path)
       })
     })
   })
 
   it('should set default cookie to empty array', function() {
     var injector = new Injector()
-    assert.deepEqual(injector.cookies, [], 'should be empty array')
+    injector.cookies.should.deepEqual([], 'should be empty array')
   })
-  
+
   it('should set default sub domain to root page', function() {
     var injector = new Injector()
-    assert.equal(injector.subdomains, '/', 'should be a root page')
+    injector.subdomains.should.containEql('/')
   })
 
   it('should set default language to Japanese', function() {
@@ -65,7 +65,7 @@ describe('Region cookie generator', function() {
     var cookies = injector.language()
 
     cookies.forEach(function(cookie) {
-      assert.equal(cookie.value, Injector.language.japan)
+      cookie.value.should.equal(Injector.language.japan)
     })
   })
 })

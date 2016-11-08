@@ -1,8 +1,5 @@
 'use strict'
 
-const request = require('request')
-const inherit = require('inherit')
-const async = require('async')
 const sprintf = require('sprintf-js').sprintf
 const rp = require('request-promise')
 const appLog = require('winston').loggers.get('app')
@@ -52,8 +49,8 @@ var API = {
    *  "body": #response
    *  "headers": #headers
    *  "rc": #status
-   * } 
-   * where 
+   * }
+   * where
    * #response is the response from a the target url
    * #headers are http response header from the target server
    * #status is the http status code from the target server
@@ -87,14 +84,14 @@ var API = {
       appLog.info('response received from %s', options.url)
       appLog.verbose('response: %s', response)
 
-      var wrapper = "throw 1; < don't be evil' >"
-      appLog.verbose("remove response wrapper (%s)", wrapper)
+      var wrapper = 'throw 1; < don\'t be evil\' >'
+      appLog.verbose('remove response wrapper (%s)', wrapper)
       var dmmResponse = response.slice(response.search(wrapper) + wrapper.length)
       appLog.debug(dmmResponse)
 
       appLog.verbose('extract raw body')
-      var startBody = '"body":"', endBody = '","headers":{'
-      var rawBody = dmmResponse.slice(dmmResponse.search('"body":"') + startBody.length, dmmResponse.search('","headers":', -1))
+      var startBody = '"body":"', endBody = '","headers":'
+      var rawBody = dmmResponse.slice(dmmResponse.search('"body":"') + startBody.length, dmmResponse.search(endBody, -1))
       appLog.debug('rawbody', rawBody)
 
       appLog.verbose('replace body with escape strings')
@@ -143,7 +140,7 @@ function getGadgetInfo(htmlString) {
     gadgetInfo = gadgetInfo.replace(property, sprintf('"%s"', property))
   })
   appLog.debug(gadgetInfo)
-  
+
   appLog.debug('convert to json')
   gadgetInfo = JSON.parse(gadgetInfo)
   appLog.debug(gadgetInfo)

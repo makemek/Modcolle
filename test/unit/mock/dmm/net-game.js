@@ -20,24 +20,24 @@ nock(HOST, {
   return /\/netgame\/social\/-\/gadgets\/=\/app_id=\d+/gi.test(uri)
 })
 .reply(200, function() {
-    var response = 
-    `
-    //<![CDATA[
-    var foo = {}
-    var bar = {a:1, b:2, c:3}
+  var response =
+  `
+  //<![CDATA[
+  var foo = {}
+  var bar = {a:1, b:2, c:3}
 
-    var gadgetInfo = {
-        VIEWER_ID : 123,
-        OWNER_ID  : 123,
-        APP_ID    : 456,
-        URL       : "http://www.example.com",
-        FRAME_ID  : "game_frame",
-        ST        : "0123456789abcdefghijklmnopqrstuvwxyz",
-        TIME      : 1467570034,
-        TYPE      : "",
-        SV_CD     : "xx_xxxxxx"
-    }
-    //]]>
-    `
-    return response
+  var gadgetInfo = {
+      VIEWER_ID : 123,
+      OWNER_ID  : 123,
+      APP_ID    : 456,
+      URL       : "http://www.example.com",
+      FRAME_ID  : "game_frame",
+      ST        : "0123456789abcdefghijklmnopqrstuvwxyz",
+      TIME      : 1467570034,
+      TYPE      : "",
+      SV_CD     : "xx_xxxxxx"
+  }
+  //]]>
+  `
+  return response
 })

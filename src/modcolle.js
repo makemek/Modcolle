@@ -27,25 +27,25 @@ setupRouting()
 
 function setupLogger() {
   var loggers = ['app', 'router', 'agent']
-    loggers.forEach(function(logger) {
-      var loggerConfig = {
-        console: {
-          label: logger,
-          level: LOGGER_LEVEL,
-          colorize: 'all',
-          silent: LOGGER_SILENT === 'true',
-          timestamp: LOGGER_TIMESTAMP === 'true',
-          prettyPrint: LOGGER_PRETTY_PRINT === 'true',
-        }
+  loggers.forEach(function(logger) {
+    var loggerConfig = {
+      console: {
+        label: logger,
+        level: LOGGER_LEVEL,
+        colorize: 'all',
+        silent: LOGGER_SILENT === 'true',
+        timestamp: LOGGER_TIMESTAMP === 'true',
+        prettyPrint: LOGGER_PRETTY_PRINT === 'true',
       }
-      winston.loggers.add(logger, loggerConfig)
+    }
+    winston.loggers.add(logger, loggerConfig)
   })
 }
 
 function setupDefaultLocalResponseHeader() {
   app.use(function(req, res, next) {
-     res.set('X-Powered-By', 'ModColle')
-     next()
+    res.set('X-Powered-By', 'ModColle')
+    next()
   })
 }
 
@@ -68,9 +68,9 @@ function setupMiddleware() {
   passport.deserializeUser(dmmAuthenticator.deserialize)
 
   routerLogger.stream = {
-      write: function(message, encoding){
-          routerLogger.info(message)
-      }
+    write: function(message){
+      routerLogger.info(message)
+    }
   }
   app.use(morgan('combined', {stream: routerLogger.stream}))
 }
@@ -81,7 +81,7 @@ function setupTemplateEngine() {
   var baseDirView = 'src/views'
 
   var options = {
-    defaultLayout: 'defaultLayout', 
+    defaultLayout: 'defaultLayout',
     extname: templateExtension,
 
     layoutsDir: baseDirView + '/layouts',

@@ -1,17 +1,13 @@
 'use strict'
 
-const async = require('async')
 const request = require('supertest-as-promised')
-const sprintf = require('sprintf-js').sprintf
-const app = require(SRC_ROOT)
+const app = require(global.SRC_ROOT)
 const sinon = require('sinon')
 const nock = require('nock')
-const Server = require(SRC_ROOT + '/kancolle/server/server')
-const kancolle = require(SRC_ROOT + '/kancolle/')
-const path = require('path')
+const Server = require(global.SRC_ROOT + '/kancolle/server/server')
+const kancolle = require(global.SRC_ROOT + '/kancolle/')
 const URL = require('url-parse')
-const urljoin = require('url-join')
-
+require('should')
 
 describe('request kancolle world server image', function() {
 
@@ -32,13 +28,13 @@ describe('request kancolle world server image', function() {
           'content-type': 'image/png',
           connection: 'close',
           pragma: 'public',
-          'accept-ranges': 'bytes' 
+          'accept-ranges': 'bytes'
         })
 
       this.stub(kancolle, 'getServer', _host => {
         var resultHostname = new URL(_host).hostname
         var expectedHostname = new URL(host).hostname
-        assert.equal(resultHostname, expectedHostname, 'should have the same hostname')
+        resultHostname.should.equal(expectedHostname, 'should have the same hostname')
         return fakeKancolleServer
       })
 
@@ -47,7 +43,7 @@ describe('request kancolle world server image', function() {
       .expect(200)
       .expect('content-type', 'image/png')
       .then(res => {
-        assert.equal(res.body.toString(), fakeImagePngContent.toString(), 'should be the same image')
+        res.body.toString().should.equal(fakeImagePngContent.toString(), 'should be the same image')
         done()
       })
       .catch(done)
@@ -63,7 +59,7 @@ describe('request kancolle world server image', function() {
   }))
 })
 
-describe(`request assets from Kancolle server`, function() {
+describe('request assets from Kancolle server', function() {
 
   var kancolleGetServer
   var nockRequest
@@ -74,7 +70,7 @@ describe(`request assets from Kancolle server`, function() {
   })
 
   beforeEach(function() {
-    kancolleGetServer = sinon.stub(kancolle, 'getServer', _ => {
+    kancolleGetServer = sinon.stub(kancolle, 'getServer', () => {
       var server = new Server(1, HOST)
       return server
     })

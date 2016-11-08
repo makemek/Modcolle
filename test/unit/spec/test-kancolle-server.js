@@ -1,14 +1,15 @@
 'use strict'
 
-const Agent = require(SRC_ROOT + '/kancolle/server/server')
+const Agent = require(global.SRC_ROOT + '/kancolle/server/server')
 const sinon = require('sinon')
 const rp = require('request-promise')
-const osapi = require(SRC_ROOT + '/dmm/osapi')
+const osapi = require(global.SRC_ROOT + '/dmm/osapi')
 const playerProfile = require('../mock/kancolle/api-terminal')
 const urljoin = require('url-join')
 const stream = new require('stream').Readable()
 const nock = require('nock')
 const URL = require('url-parse')
+const should = require('should')
 
 describe('kancolle server', function() {
 
@@ -34,8 +35,8 @@ describe('kancolle server', function() {
     var req = agent.download(urljoin(url, sensitiveParams))
     req.pipe(stream)
 
-    assert.equal(req.uri.href, url, 'should not contain api token query parameter')
-    assert.isTrue(req.headers['x-requested-with'].startsWith('ShockwaveFlash/'), 'should set header x-requested-with ShockwaveFlash')
+    req.uri.href.should.equal(url, 'should not contain api token query parameter')
+    req.headers['x-requested-with'].should.startWith('ShockwaveFlash/', 'should set header x-requested-with ShockwaveFlash')
   })
 
   it('call API', sinon.test(function() {
@@ -49,19 +50,19 @@ describe('kancolle server', function() {
 
     sinon.assert.calledOnce(httpPost)
     var postArgs = httpPost.firstCall.args[0]
-    assert.equal(postArgs.url, urljoin(agent.host, apiUrl), 'should make correct post url')
-    assert.equal(postArgs.headers.host, agentUrl.host)
-    assert.equal(postArgs.headers.origin, agentUrl.origin)
-    assert.isUndefined(postArgs.headers['connection'])
-    assert.isUndefined(postArgs.headers['content-length'])
-    assert.isUndefined(postArgs.headers['content-type'])
-    assert.include(postArgs.headers, headers)
+    postArgs.url.should.equal(urljoin(agent.host, apiUrl), 'should make correct post url')
+    postArgs.headers.host.should.equal(agentUrl.host)
+    postArgs.headers.origin.should.equal(agentUrl.origin)
+    postArgs.headers.should.not.ownProperty('connection')
+    postArgs.headers.should.not.ownProperty('content-length')
+    postArgs.headers.should.not.ownProperty('content-type')
+    postArgs.headers.should.containEql(headers)
   }))
 
   it('generate api token for non-banned player', function(done) {
     agent.generateApiToken({VIEWER_ID: playerProfile.oldPlayer.dmmId, ST: 'xxxxxxxxx'})
     .then(player => {
-      assert.isFalse(player.isBan, 'should not get banned')
+      should(player.isBan).be.false('should not get banned')
       done()
     })
     .catch(done)
@@ -69,12 +70,12 @@ describe('kancolle server', function() {
 
   it('NOT generate api token for banned player', sinon.test(function(done) {
     var body = 'svdata=' + JSON.stringify({api_result: 301})
-    var stub = this.stub(osapi, 'proxyRequest').returns(Promise.resolve({body: body}))
+    this.stub(osapi, 'proxyRequest').returns(Promise.resolve({body: body}))
     agent.generateApiToken({})
     .then(player => {
-      assert.isTrue(player.isBan, 'this player should be banned')
-      assert.isUndefined(player.api_token, 'no api token should be given')
-      assert.isUndefined(player.api_start_time, 'no api start time should be given')
+      should(player.isBan).be.true('this player should be banned')
+      should.not.exist(player.api_token, 'no api token should be given')
+      should.not.exist(player.api_start_time, 'no api start time should be given')
       done()
     })
     .catch(done)

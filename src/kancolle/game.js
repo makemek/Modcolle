@@ -18,7 +18,7 @@ var Kancolle = {
     return rp.get(options)
     .then(jsCode => {
       appLog.verbose('append js code to output variable value')
-      var var2export = sprintf("JSON.stringify({%s, %s, %s})", 
+      var var2export = sprintf('JSON.stringify({%s, %s, %s})',
         'ConstServerInfo', 'ConstURLInfo', 'MaintenanceInfo')
       jsCode += ';' + var2export
 
@@ -67,7 +67,7 @@ var Kancolle = {
       var worldId = response.api_data.api_world_id
       appLog.verbose('player id %d resides in world id %d', gadgetInfo.VIEWER_ID, worldId)
       return Promise.resolve(worldId)
-    })    
+    })
   }
 }
 

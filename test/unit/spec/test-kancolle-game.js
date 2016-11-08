@@ -1,12 +1,13 @@
 'use strcit'
 
-const Kancolle = require(SRC_ROOT + '/kancolle/game')
+const Kancolle = require(global.SRC_ROOT + '/kancolle/game')
 const rp = require('request-promise')
 const sinon = require('sinon')
 const async = require('async')
 const sprintf = require('sprintf-js').sprintf
 const apiTerminal = require('../mock/kancolle/api-terminal')
-const KancolleChildServers = require(SRC_ROOT + '/kancolle/server')
+const KancolleChildServers = require(global.SRC_ROOT + '/kancolle/server')
+const should = require('should')
 
 describe('Kancolle game', function() {
 
@@ -14,27 +15,25 @@ describe('Kancolle game', function() {
 
     var code
     beforeEach(function() {
-    code = 
-    `
-    var ConstServerInfo = {servFoo:"servBar"}, ConstURLInfo = {urlFoo:"urlBar"}
-    var MaintenanceInfo = {}
-    MaintenanceInfo.IsDoing       = %d
-    MaintenanceInfo.IsEmergency   = %d
-    MaintenanceInfo.StartDateTime = Date.parse("2016/07/15 11:00:00")
-    MaintenanceInfo.EndDateTime   = Date.parse("2016/07/15 17:50:00")
-    `
+      code =
+      `
+      var ConstServerInfo = {servFoo:"servBar"}, ConstURLInfo = {urlFoo:"urlBar"}
+      var MaintenanceInfo = {}
+      MaintenanceInfo.IsDoing       = %d
+      MaintenanceInfo.IsEmergency   = %d
+      MaintenanceInfo.StartDateTime = Date.parse("2016/07/15 11:00:00")
+      MaintenanceInfo.EndDateTime   = Date.parse("2016/07/15 17:50:00")
+      `
     })
 
     it('is NOT on maintenance', function(done) {
       var sourceText = sprintf(code, 0, 0)
       var httpRequest = sinon.stub(rp, 'get')
-      .returns(new Promise(function(resolve, reject) {
-        return resolve(sourceText)
-      }))
+      .returns(Promise.resolve(sourceText))
 
       Kancolle.getMaintenanceInfo()
       .then(function(maintenanceInfo) {
-        assert.isFalse(maintenanceInfo.isMaintain)
+        should(maintenanceInfo.isMaintain).be.false()
         httpRequest.restore()
         done()
       })
@@ -48,13 +47,11 @@ describe('Kancolle game', function() {
       it(sprintf('is on maintenance (doing = %d, emergency = %d)', mode.doing, mode.emergency), function(done) {
         var sourceText = sprintf(code, mode.doing, mode.emergency)
         var httpRequest = sinon.stub(rp, 'get')
-        .returns(new Promise(function(resolve, reject) {
-          return resolve(sourceText)
-        }))
+        .returns(Promise.resolve(sourceText))
 
         Kancolle.getMaintenanceInfo()
         .then(function(maintenanceInfo) {
-          assert.isTrue(maintenanceInfo.isMaintain)
+          should(maintenanceInfo.isMaintain).be.true()
           httpRequest.restore()
           done()
         })
@@ -75,7 +72,7 @@ describe('Kancolle game', function() {
       var gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer.dmmId}
       Kancolle.getWorldServerId(gadgetInfo)
       .then(worldId => {
-        assert.equal(worldId, 0, 'world id should be 0')
+        worldId.should.equal(0, 'world id should be 0')
         done()
       })
       .catch(done)
@@ -85,7 +82,7 @@ describe('Kancolle game', function() {
       var gadgetInfo = {VIEWER_ID: apiTerminal.oldPlayer.dmmId}
       Kancolle.getWorldServerId(gadgetInfo)
       .then(worldId => {
-        assert.isAbove(worldId, 0, 'world id should be greater than 0')
+        worldId.should.above(0, 'world id should be greater than 0')
         done()
       })
       .catch(done)
@@ -95,16 +92,13 @@ describe('Kancolle game', function() {
       var error = {api_data: 0}
       var errorResponse = 'svdata=' + JSON.stringify(error)
       this.stub(rp, 'get')
-      .returns(new Promise(function(resolve, reject) {
-        return resolve(errorResponse)
-      }))
-      
+      .returns(Promise.resolve(errorResponse))
+
       Kancolle.getWorldServerId({})
       .catch(error => {
-        assert.isDefined(error)
+        should(error).be.ok()
         done()
       })
     }))
   })
 })
-

@@ -1,9 +1,7 @@
 'use strict'
 
-const KANCOLLE_BASE_DIR = process.env.KANCOLLE_BASE_DIR
 const request = require('request')
 const rp = require('request-promise')
-const path = require('path')
 const urljoin = require('url-join')
 const urlparse = require('url-parse')
 const agentLog = require('winston').loggers.get('agent')
@@ -33,7 +31,7 @@ class KancolleServer {
     var fullUrl = urljoin(this.host, apiUrl)
     agentLog.info('call Kancolle API', fullUrl)
     var options = {
-      url: fullUrl, 
+      url: fullUrl,
       form: payload,
       headers: forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders),
       gzip: true
@@ -75,10 +73,6 @@ function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders) {
     delete headers['connection']
     delete headers['content-length']
     delete headers['content-type']
-  }
-
-  function cloneHeader(header) {
-    return JSON.parse(JSON.stringify(header))
   }
 
   function modifyHeader(fullUrl) {
