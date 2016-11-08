@@ -16,7 +16,7 @@ describe('proxy Kancolle API', () => {
     payload = {api_token: 'abcdef01234'}
   })
 
-  it('have only API token should reject request', (done) => {
+  it('have only API token should reject request', done => {
     request(app)
     .post('/kcsapi/some/api')
     .send(payload)
@@ -24,7 +24,7 @@ describe('proxy Kancolle API', () => {
     .end(done)
   })
 
-  it('have embeded symbol BUT no world id in API token should reject request', (done) => {
+  it('have embeded symbol BUT no world id in API token should reject request', done => {
     payload.api_token = ['', payload.api_token].join(EMBEDED_SYMBOL)
     request(app)
     .post('/kcsapi/some/api')
@@ -53,7 +53,7 @@ describe('proxy Kancolle API', () => {
       .end(done)
     }))
 
-    it('can NOT be mapped to Kancolle server should reject request', (done) => {
+    it('can NOT be mapped to Kancolle server should reject request', done => {
       payload.api_token = ['!@#$%^&*()+<>?', payload.api_token].join(EMBEDED_SYMBOL)
       request(app)
       .post('/kcsapi/some/api')

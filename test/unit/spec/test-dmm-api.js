@@ -52,7 +52,7 @@ describe('DMM API (OSAPI)', () => {
 
   describe('proxy request', () => {
     const securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy'
-    it('should make proxy request to the target url', (done) => {
+    it('should make proxy request to the target url', done => {
       DmmApi.proxyRequest('http://www.example.com', {ST: securityToken})
       .then(response => {
         response.should.be.Object()
@@ -65,7 +65,7 @@ describe('DMM API (OSAPI)', () => {
       .catch(done)
     })
 
-    it('invalid url ', (done) => {
+    it('invalid url ', done => {
       DmmApi.proxyRequest('http://invlidUrl', {ST: securityToken})
       .then(response => {
         response.body.should.equal('request error')
@@ -74,7 +74,7 @@ describe('DMM API (OSAPI)', () => {
       .catch(done)
     })
 
-    it('invalid security token', (done) => {
+    it('invalid security token', done => {
       DmmApi.proxyRequest('', {ST: ''})
       .then(done)
       .catch(error => {

@@ -44,7 +44,7 @@ nock(HOST, {
 
 nock(HOST)
 .persist()
-.post('/my/-/login/auth/', (body) => {
+.post('/my/-/login/auth/', body => {
   const badAccount = body.login_id == BAD_ACCOUNT.email && body.password == BAD_ACCOUNT.password
   const validPageToken = body.token == TOKEN.auth.token
   const hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
@@ -55,7 +55,7 @@ nock(HOST)
 
 nock(HOST)
 .persist()
-.post('/my/-/login/auth/', (body) => {
+.post('/my/-/login/auth/', body => {
   const validPageToken = body.token == TOKEN.auth.token
   const hasTokenForLoginInput = body[TOKEN.auth.login_id] == body.login_id && body[TOKEN.auth.password] == body.password
 

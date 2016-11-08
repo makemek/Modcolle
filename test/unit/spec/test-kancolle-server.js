@@ -23,7 +23,7 @@ describe('kancolle server', () => {
     agent = new Agent(1, KANCOLLE_CONFIG.serv)
   })
 
-  it('download from the internet', (done) => {
+  it('download from the internet', done => {
     const sensitiveParams = '?api_token=abc&api_starttime=1234'
     const url = 'http://www.example.com/'
 
@@ -59,7 +59,7 @@ describe('kancolle server', () => {
     postArgs.headers.should.containEql(headers)
   }))
 
-  it('generate api token for non-banned player', (done) => {
+  it('generate api token for non-banned player', done => {
     agent.generateApiToken({VIEWER_ID: playerProfile.oldPlayer.dmmId, ST: 'xxxxxxxxx'})
     .then(player => {
       should(player.isBan).be.false('should not get banned')

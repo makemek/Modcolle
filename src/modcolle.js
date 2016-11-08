@@ -27,7 +27,7 @@ setupRouting()
 
 function setupLogger() {
   const loggers = ['app', 'router', 'agent']
-  loggers.forEach((logger) => {
+  loggers.forEach(logger => {
     const loggerConfig = {
       console: {
         label: logger,

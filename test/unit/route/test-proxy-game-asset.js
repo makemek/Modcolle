@@ -87,7 +87,7 @@ describe('request assets from Kancolle server', () => {
   fileCategory.forEach(testcase => {
     describe(testcase.case, () => {
 
-      it('file exists on the destinated server', (done) => {
+      it('file exists on the destinated server', done => {
         nockRequest
         .get(testcase.input)
         .reply(200)

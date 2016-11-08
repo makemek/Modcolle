@@ -9,14 +9,14 @@ const auth = {}
 
 auth.authenticate = function(username, password, done) {
   dmmAgent.login(username, password)
-  .then((cookie) => {
+  .then(cookie => {
     return done(null, cookie)
   })
   .catch(done)
 }
 
 auth.serialize = function(dmmCookies, done) {
-  let session = dmmCookies.filter((cookie) => {
+  let session = dmmCookies.filter(cookie => {
     cookie = Cookie.parse(cookie)
     return cookie.key === 'INT_SESID'
   })

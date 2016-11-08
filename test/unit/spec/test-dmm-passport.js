@@ -10,13 +10,13 @@ const should = require('should')
 
 describe('DMM passport middleware', () => {
 
-  it('grant access', (done) => {
+  it('grant access', done => {
     dmmPassport.authenticate('someone@example.com', 'password', (error, cookies) => {
       if(error)
         return done(error)
 
       cookies = cookies.map(Cookie.parse)
-      cookies.filter((cookie) => {
+      cookies.filter(cookie => {
         return cookie.key === 'INT_SESID'
       })
       cookies.length.should.equal(1, 'should have 1 session cookie (INT_SESID)')
@@ -24,7 +24,7 @@ describe('DMM passport middleware', () => {
     })
   })
 
-  it('deny access', (done) => {
+  it('deny access', done => {
     dmmPassport.authenticate(nockDmmAuth.badAccount.email, nockDmmAuth.badAccount.password, (error, cookies) => {
       if(error)
         return done(error)
@@ -37,8 +37,8 @@ describe('DMM passport middleware', () => {
   {case: 'no cookies', input: []},
   {case: 'no session', input: ['others=doe', 'foo=bar']},
   {case: 'more than 1 sessions', input: [nockDmmAuth.session, nockDmmAuth.session, nockDmmAuth.session]}
-  ], (testcase) => {
-    it('serialize ' + testcase.case + ' should return an error', (done) => {
+  ], testcase => {
+    it('serialize ' + testcase.case + ' should return an error', done => {
       dmmPassport.serialize(testcase.input, (error, session) => {
         error.should.be.an.instanceof(Error)
         should.not.exist(session, 'no session should be given')
@@ -47,7 +47,7 @@ describe('DMM passport middleware', () => {
     })
   })
 
-  it('serialize 1 session', (done) => {
+  it('serialize 1 session', done => {
     const others = 'others=doe', foo = 'foo=bar'
     const cookies = [nockDmmAuth.session, others, foo]
     dmmPassport.serialize(cookies, (error, injectedCookies) => {
@@ -63,7 +63,7 @@ describe('DMM passport middleware', () => {
     })
   })
 
-  it('deserialize session', (done) => {
+  it('deserialize session', done => {
     const expectedCookies = [nockDmmAuth.session, 'others=doe']
     dmmPassport.deserialize(expectedCookies, (error, cookies) => {
       if(error)

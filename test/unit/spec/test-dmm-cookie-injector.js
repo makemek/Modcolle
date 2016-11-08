@@ -13,15 +13,15 @@ describe('Region cookie generator', () => {
   {case: 'no cookie', input: []},
   {case: 'valid pre-existing cookie', input: [new Cookie({key: 'ckcy', value: 1}).toString()]},
   {case: 'invalid pre-existing cookie', input: [new Cookie({key: 'ckcy', value: 9999}).toString()]}
-  ], (item) => {
+  ], item => {
     it('should revoke region restriction with ' + item.case, () => {
       const injector = new Injector(item.input, dmmDomainPath)
       const cookies = injector.revokeRegionRestriction()
 
-      const ckcy = cookies.filter((cookie) => { return cookie.key == 'ckcy' })
+      const ckcy = cookies.filter(cookie => { return cookie.key == 'ckcy' })
       ckcy.length.should.equal(dmmDomainPath.length)
 
-      ckcy.forEach((cookie) => {
+      ckcy.forEach(cookie => {
         cookie.key.should.equal('ckcy')
         cookie.value.should.equal(1)
         cookie.domain.should.equal('dmm.com')
@@ -33,15 +33,15 @@ describe('Region cookie generator', () => {
   async.forEach([
     {case: 'Japanese', input: 'ja'},
     {case: 'English', input: 'en'}
-  ], (lang) => {
+  ], lang => {
     it('set language cookie to ' + lang.case, () => {
       const injector = new Injector([new Cookie({key: 'cklg', value: lang.input}).toString()], dmmDomainPath)
       const cookies = injector.language(lang.input)
 
-      const cklg = cookies.filter((cookie) => { return cookie.key == 'cklg' })
+      const cklg = cookies.filter(cookie => { return cookie.key == 'cklg' })
       cklg.length.should.equal(dmmDomainPath.length)
 
-      cklg.forEach((cookie) => {
+      cklg.forEach(cookie => {
         cookie.key.should.equal('cklg')
         cookie.value.should.equal(lang.input)
         cookie.domain.should.equal('dmm.com')
@@ -64,7 +64,7 @@ describe('Region cookie generator', () => {
     const injector = new Injector()
     const cookies = injector.language()
 
-    cookies.forEach((cookie) => {
+    cookies.forEach(cookie => {
       cookie.value.should.equal(Injector.language.japan)
     })
   })

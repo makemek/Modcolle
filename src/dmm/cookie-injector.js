@@ -52,7 +52,7 @@ function removeAndInjectCookie(self, targetCookie) {
 }
 
 function removeCookie(cookies, targetCookie) {
-  cookies = cookies.filter((cookie) => {
+  cookies = cookies.filter(cookie => {
     return cookie.key != targetCookie.key
   })
   appLog.debug(cookies)
@@ -66,8 +66,8 @@ function generateCookies(keyVal, domains, paths) {
   appLog.debug(paths)
 
   const cookies = []
-  domains.forEach((domain) => {
-    paths.forEach((path) => {
+  domains.forEach(domain => {
+    paths.forEach(path => {
       const options = keyVal
       options.domain = domain
       options.path = path

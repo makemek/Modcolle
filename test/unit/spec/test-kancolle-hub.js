@@ -37,7 +37,7 @@ describe('Kancolle hub', () => {
   it('should return correct url to new player who launch the game', sinon.test(function(done) {
     this.stub(game, 'getWorldServerId').returns(Promise.resolve(0))
     hub.launch({})
-    .then((url) => {
+    .then(url => {
       url.should.equal('http://203.104.209.7/kcs/world.swf')
       done()
     })
@@ -55,7 +55,7 @@ describe('Kancolle hub', () => {
     this.stub(Server.prototype, 'generateApiToken').returns(Promise.resolve(player))
 
     hub.launch({})
-    .then((url) => {
+    .then(url => {
       const server = hub.getServer(worldId)
       const expectUrl = urlparse(server.host)
       url = urlparse(url, true)
@@ -75,7 +75,7 @@ describe('Kancolle hub', () => {
     .returns(Promise.resolve({isBan: true}))
 
     hub.launch({})
-    .then((url) => {
+    .then(url => {
       url.should.equal('http://203.104.209.7/kcs/ban.swf', 'url should match')
       done()
     })

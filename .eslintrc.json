@@ -36,6 +36,10 @@
             "error",
             "global"
         ],
+        "arrow-parens": [
+            "error",
+            "as-needed"
+        ],
         "prefer-arrow-callback": "error",
         "prefer-spread": "error",
         "prefer-const": "error",
