@@ -32,9 +32,8 @@ describe('request kancolle world server image', () => {
         })
 
       this.stub(kancolle, 'getServer', _host => {
-        const resultHostname = new URL(_host).hostname
         const expectedHostname = new URL(host).hostname
-        resultHostname.should.equal(expectedHostname, 'should have the same hostname')
+        _host.should.equal(expectedHostname)
         return fakeKancolleServer
       })
 
