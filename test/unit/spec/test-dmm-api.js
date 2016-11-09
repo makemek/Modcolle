@@ -1,99 +1,86 @@
-'use strict';
+'use strict'
 
-const DmmApi = require(SRC_ROOT + '/dmm/osapi');
-const sinon = require('sinon');
-const async = require('async');
-const rp = require('request-promise');
-const netGame = require('../mock/dmm/net-game');
-const osapiNock = require('../mock/dmm/osapi');
+const DmmApi = require(global.SRC_ROOT + '/dmm/osapi')
+const sinon = require('sinon')
+const rp = require('request-promise')
+require('../mock/dmm/net-game')
+require('../mock/dmm/osapi')
 
-describe('DMM API (OSAPI)', function() {
+describe('DMM API (OSAPI)', () => {
 
-	var fakeGameId, fakeCookie;
+  let fakeGameId, fakeCookie
 
-	beforeEach(function() {
-		fakeGameId = 0;
-		fakeCookie = 'INT_SESID=abcd; ckcy=1; cklg=ja; a=1; b=2;';
-	})
+  beforeEach(() => {
+    fakeGameId = 0
+    fakeCookie = 'INT_SESID=abcd; ckcy=1; cklg=ja; a=1; b=2;'
+  })
 
-	it('get expected gadget information', sinon.test(function(done) {
+  it('get expected gadget information', sinon.test(function(done) {
+    const httpRequest = this.spy(rp, 'get')
+    const expectedParsedGadget = {
+      VIEWER_ID : 123,
+      OWNER_ID  : 123,
+      APP_ID    : 456,
+      URL       : 'http://www.example.com',
+      FRAME_ID  : 'game_frame',
+      ST        : '0123456789abcdefghijklmnopqrstuvwxyz',
+      TIME      : 1467570034,
+      TYPE      : '',
+      SV_CD     : 'xx_xxxxxx'
+    }
 
-		var httpRequest = this.spy(rp, 'get');
+    DmmApi.getGameInfo(fakeGameId, fakeCookie)
+    .then(gadgetInfo => {
+      const rpParam = httpRequest.firstCall.args[0]
+      rpParam.uri.should.equal('http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeGameId, 'http url should match')
+      rpParam.headers.cookie.should.equal(fakeCookie, 'cookie should not be altered')
+      gadgetInfo.should.deepEqual(expectedParsedGadget, 'gadgetInfo should have the same expected properties and values')
+      done()
+    })
+    .catch(done)
+  }))
 
-		DmmApi.getGameInfo(fakeGameId, fakeCookie)
-		.then(gadgetInfo => {
-			var rpParam = httpRequest.firstCall.args[0];
-			var expectedParsedGadget = {
-			    VIEWER_ID : 123,
-			    OWNER_ID  : 123,
-			    APP_ID    : 456,
-			    URL       : "http://www.example.com",
-			    FRAME_ID  : "game_frame",
-			    ST        : "0123456789abcdefghijklmnopqrstuvwxyz",
-			    TIME      : 1467570034,
-			    TYPE      : "",
-			    SV_CD     : "xx_xxxxxx"
-			};
+  it('should return error when there is no gadgetInfo variable', sinon.test(function(done) {
+    this.stub(rp, 'get').returns(Promise.resolve(''))
+    DmmApi.getGameInfo(fakeGameId, fakeCookie)
+    .then(done)
+    .catch(error => {
+      error.should.be.ok()
+      done()
+    })
+  }))
 
-			assert.equal(rpParam.uri, 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id=' + fakeGameId, 'http url should match');
-			assert.equal(rpParam.headers.cookie, fakeCookie, 'cookie should not be altered');
-			assert.deepEqual(gadgetInfo, expectedParsedGadget, 'gadgetInfo should have the same expected properties and values');	
-			done();
-		})
-		.catch(done);
-	}))
+  describe('proxy request', () => {
+    const securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy'
+    it('should make proxy request to the target url', done => {
+      DmmApi.proxyRequest('http://www.example.com', {ST: securityToken})
+      .then(response => {
+        response.should.be.Object()
+        response.should.have.hasOwnProperty('body')
+        response.should.have.hasOwnProperty('headers')
+        response.should.have.hasOwnProperty('rc')
+        response.rc.should.be.Number()
+        done()
+      })
+      .catch(done)
+    })
 
-	it('should return error when there is no gadgetInfo variable', sinon.test(function(done) {
-		var httpRequest = this.stub(rp, 'get')
-		.returns(getFakeResponse(''));
+    it('invalid url ', done => {
+      DmmApi.proxyRequest('http://invlidUrl', {ST: securityToken})
+      .then(response => {
+        response.body.should.equal('request error')
+        done()
+      })
+      .catch(done)
+    })
 
-		DmmApi.getGameInfo(fakeGameId, fakeCookie)
-		.then(done)
-		.catch(error => {
-			assert.isDefined(error);
-			done();
-		})
-	}))
-
-	describe('proxy request', function() {
-		var securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy';
-		it('should make proxy request to the target url', function(done) {
-			DmmApi.proxyRequest('http://www.example.com', {ST: securityToken})
-			.then(response => {
-				assert.isObject(response, 'response should be an object');
-				assert.isTrue(response.hasOwnProperty('body'), 'should have a body (.body) property');
-				assert.isDefined(response.hasOwnProperty('headers'), 'should have a headers (.headers) property');
-				assert.isDefined(response.hasOwnProperty('rc'), 'should have http status (.rc) property');
-				assert.isNumber(response.rc, 'http status value (.rc) should be a number');
-				done();
-			})
-			.catch(done);
-		})
-
-		it('invalid url ', function(done){
-			DmmApi.proxyRequest('http://invlidUrl', {ST: securityToken})
-			.then(response => {
-				assert.equal(response.body, 'request error');
-				done();
-			})
-			.catch(done);
-		})
-
-		it('invalid security token', function(done) {
-			DmmApi.proxyRequest('', {ST: ''})
-			.then(done)
-			.catch(error => {
-				assert.equal(error.statusCode, 500, 'http status code should be internal server error (500)');
-				done();
-			})
-		})
-	})
-
+    it('invalid security token', done => {
+      DmmApi.proxyRequest('', {ST: ''})
+      .then(done)
+      .catch(error => {
+        error.statusCode.should.equal(500, 'http status code should be internal server error (500)')
+        done()
+      })
+    })
+  })
 })
-
-function getFakeResponse(htmlBody) {
-	return {
-		then: function(htmlCallback) { htmlCallback(htmlBody); return this; },
-		catch: function() {}
-	}
-}

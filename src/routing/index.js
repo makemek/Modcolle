@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-router.use('/', require('./game'));
-router.use('/kcs', require('./assets'));
-router.use('/kcsapi', require('./kcsapi/'));
+router.use('/', require('./game'))
+router.use('/kcs', require('./assets'))
+router.use('/kcsapi', require('./kcsapi/'))
 
-module.exports = exports = router;
+module.exports = exports = router

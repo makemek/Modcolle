@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-var sinon = require('sinon');
+const sinon = require('sinon')
 sinon.config = {
-	useFakeTimers: false,
-	useFakeServer: false
-};
+  useFakeTimers: false,
+  useFakeServer: false
+}
