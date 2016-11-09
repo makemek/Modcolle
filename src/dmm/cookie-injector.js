@@ -81,4 +81,4 @@ function generateCookies(keyVal, domains, paths) {
   return cookies
 }
 
-module.exports = exports = inherit(Injector, languagePreset)
+module.exports = inherit(Injector, languagePreset)

@@ -57,4 +57,4 @@ Hub.launch = function(gadgetInfo) {
   }
 }
 
-module.exports = exports = Hub
+module.exports = Hub

@@ -86,4 +86,4 @@ router.get(urlEndWithFileType, (req, res) => {
   return fileStream.pipe(res)
 })
 
-module.exports = exports = router
+module.exports = router

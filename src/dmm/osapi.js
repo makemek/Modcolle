@@ -148,4 +148,4 @@ function getGadgetInfo(htmlString) {
   return gadgetInfo
 }
 
-module.exports = exports = API
+module.exports = API

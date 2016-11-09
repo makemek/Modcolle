@@ -43,4 +43,4 @@ function extractWorldIdFromApiToken(req, res, next) {
   return next()
 }
 
-module.exports = exports = router
+module.exports = router

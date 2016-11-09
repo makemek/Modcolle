@@ -94,4 +94,4 @@ function removeUrlParameterSensitiveData(url) {
   return url.toString()
 }
 
-module.exports = exports = KancolleServer
+module.exports = KancolleServer

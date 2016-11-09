@@ -7,4 +7,4 @@ process.env.LOGGER_SILENT = (process.env.LOGGER_SILENT || 'true').toLowerCase().
 process.env.LOGGER_TIMESTAMP = (process.env.LOGGER_TIMESTAMP || 'false').toLowerCase().trim()
 process.env.LOGGER_PRETTY_PRINT = (process.env.LOGGER_PRETTY_PRINT || 'false').toLowerCase().trim()
 
-module.exports = exports = require('./modcolle')
+module.exports = require('./modcolle')

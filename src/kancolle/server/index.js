@@ -12,4 +12,4 @@ for(let worldId = 1; process.env.hasOwnProperty(ACCESS_KEY + worldId); ++worldId
   servers[url.hostname] = kancolleServer
 }
 
-module.exports = exports = servers
+module.exports = servers

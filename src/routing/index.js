@@ -7,4 +7,4 @@ router.use('/', require('./game'))
 router.use('/kcs', require('./assets'))
 router.use('/kcsapi', require('./kcsapi/'))
 
-module.exports = exports = router
+module.exports = router

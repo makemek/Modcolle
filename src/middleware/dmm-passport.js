@@ -48,4 +48,4 @@ auth.isAuthenticated = function(req, res, next) {
   res.redirect('/')
 }
 
-module.exports = exports = auth
+module.exports = auth

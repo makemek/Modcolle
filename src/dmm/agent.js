@@ -126,4 +126,4 @@ const DmmAgent = {
   }
 }
 
-module.exports = exports = DmmAgent
+module.exports = DmmAgent

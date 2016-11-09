@@ -71,4 +71,4 @@ const Kancolle = {
   }
 }
 
-module.exports = exports = Kancolle
+module.exports = Kancolle

@@ -94,4 +94,4 @@ function setupTemplateEngine() {
   app.set('view engine', engineName)
 }
 
-module.exports = exports = app
+module.exports = app
