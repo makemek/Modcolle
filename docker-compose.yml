@@ -1,0 +1,11 @@
+nginx:
+  build: ./deployment/nginx
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - /etc/nginx/psw:/etc/nginx/psw
+    - /etc/nginx/ssl:/etc/nginx/ssl
+  environment:
+    - DOMAIN_NAME=localhost
+
