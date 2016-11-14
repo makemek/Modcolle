@@ -1,7 +1,7 @@
 'use strict'
 
 const rp = require('request-promise')
-const appLog = require('../logger')('service:dmm')
+const log = require('../logger')('service:dmm')
 
 const DmmAgent = {
 
@@ -18,23 +18,16 @@ const DmmAgent = {
   },
 
   scrapeToken: function() {
-    const options = {
-      uri: 'https://www.dmm.com/my/-/login/=/path=Sg__/'
-    }
-    appLog.info('scrape login token from ' + options.uri)
-    appLog.debug('options to module request')
-    appLog.debug(options)
-
-    return rp.get(options)
+    const uri = 'https://www.dmm.com/my/-/login/=/path=Sg__/'
+    log.info('scrape login token from %s', uri)
+    return rp.get({uri})
     .then(htmlBody => {
-      const tokens = htmlBody.match(/[a-f0-9]{32}/g)
+      const tokenPattern = /[a-f0-9]{32}/g
+      const tokens = htmlBody.match(tokenPattern)
       const DMM_TOKEN = tokens[1]
       const DATA_TOKEN = tokens[2]
 
-      appLog.debug('token from scraping')
-      appLog.debug(tokens)
-      appLog.debug('DMM_TOKEN: ' + DMM_TOKEN)
-      appLog.debug('DATA_TOKEN: ' + DATA_TOKEN)
+      log.info('token matched with regex pattern %s', tokenPattern, tokens)
       return Promise.resolve({DMM_TOKEN, DATA_TOKEN})
     })
   },
@@ -48,29 +41,14 @@ const DmmAgent = {
       },
       form: {
         token: TOKEN.DATA_TOKEN
-      }
+      },
+      transform: JSON.parse
     }
-    appLog.debug('DMM_TOKEN: ' + TOKEN.DMM_TOKEN)
-    appLog.debug('DATA_TOKEN: ' + TOKEN.DATA_TOKEN)
-    appLog.info('authorize DMM Token and Data Token at ' + options.uri)
-    appLog.debug('options to module request')
-    appLog.debug(options)
-
+    log.info('%s authorize DMM Token "%s" and Data Token "%s"', options.uri, TOKEN.DMM_TOKEN, TOKEN.DATA_TOKEN)
     return rp.post(options)
-    .then(tokens => {
-      appLog.verbose('token received from ' + options.uri)
-      appLog.debug(tokens)
-      return Promise.resolve(JSON.parse(tokens))
-    })
   },
 
   authenticate: function(email, password, dmmAjaxToken) {
-    appLog.debug('JSON token')
-    appLog.debug(dmmAjaxToken)
-    appLog.debug('email: ' + email)
-    appLog.debug('password: ' + password)
-
-    appLog.verbose('prepare POST parameters')
     const payload = {
       token: dmmAjaxToken.token,
       login_id: email,
@@ -92,34 +70,23 @@ const DmmAgent = {
       form: payload,
       resolveWithFullResponse: true
     }
-
-    appLog.info('authenticate email and password to ' + options.uri)
-    appLog.debug('options to module request')
-    appLog.debug(options)
-
+    log.info('%s authenticate email "%s", password, and token "%s"', options.uri, email, dmmAjaxToken.token)
     return rp.post(options)
-    .then(response => {
+    .then( () => {
       // incorrect email or password will return statusCode 200 with empty body
-      appLog.verbose('response retrieved from ' + options.uri)
-      appLog.debug('status code: ' + response.statusCode)
-      appLog.debug(response.headers)
-      appLog.warn('login rejected')
-
+      log.info('%s deny access due to incorrect email "%s", password, or token "%s"', options.uri, email, dmmAjaxToken.token)
       return Promise.resolve(false)
     })
     .catch(error => {
       const response = error.response
       const loginGranted = error.statusCode == 302 && response.headers.hasOwnProperty('set-cookie')
 
-      appLog.debug('status code: ' + error.statusCode)
-      appLog.debug(response.headers)
-      appLog.debug('login granted: ' + loginGranted)
-
       if(loginGranted) {
-        appLog.info('login success')
+        log.info('%s granted access to user %s', options.uri, email)
+        log.verbose('get "%s"\'s cookies given by %s', email, options.uri)
         return Promise.resolve(response.headers['set-cookie'])
       } else {
-        appLog.error(error)
+        log.error(error)
         return Promise.reject(error)
       }
     })
