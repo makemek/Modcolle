@@ -1,7 +1,7 @@
 'use strict'
 
 const inherit = require('inherit')
-const appLog = require('../logger')('service:dmm')
+const log = require('../logger')('service:dmm')
 const tough = require('tough-cookie')
 const Cookie = tough.Cookie
 
@@ -18,9 +18,7 @@ const Injector = {
     cookies = cookies || []
     subdomains = subdomains || ['/']
 
-    appLog.verbose('parse cookie')
     cookies = cookies.map(Cookie.parse)
-    appLog.debug(cookies)
 
     this.cookies = cookies
     this.subdomains = subdomains
@@ -29,6 +27,9 @@ const Injector = {
 
   revokeRegionRestriction: function() {
     const targetCookie = {key: 'ckcy', value: 1}
+
+    log.info('revoke foriegner (non-japan) access restriction')
+    log.verbose('include to original cookie', targetCookie)
     this.cookies = removeAndInjectCookie(this, targetCookie)
     return this.cookies
   },
@@ -36,6 +37,9 @@ const Injector = {
   language: function(language) {
     language = language || languagePreset.language.japan
     const targetCookie = {key: 'cklg', value: language}
+
+    log.info(`set http://www.dmm.com to display language ${language}`)
+    log.verbose('include to original cookie', targetCookie)
     this.cookies = removeAndInjectCookie(this, targetCookie)
     return this.cookies
   }
@@ -43,11 +47,10 @@ const Injector = {
 
 function removeAndInjectCookie(self, targetCookie) {
   let cookies
-  appLog.verbose('remove cookies that has value ' + targetCookie.key)
+  log.verbose(`remove cookie ${targetCookie.key}`)
   cookies = removeCookie(self.cookies, targetCookie)
-  appLog.verbose('merge generated cookies')
+  log.verbose(`${targetCookie.key} include target domain and subdomains`, self.domain, self.subdomains)
   cookies = cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains))
-  appLog.debug(self.cookies)
   return cookies
 }
 
@@ -55,15 +58,12 @@ function removeCookie(cookies, targetCookie) {
   cookies = cookies.filter(cookie => {
     return cookie.key != targetCookie.key
   })
-  appLog.debug(cookies)
+  log.debug(cookies)
   return cookies
 }
 
 function generateCookies(keyVal, domains, paths) {
-  appLog.verbose('create cookies')
-  appLog.debug(keyVal)
-  appLog.debug(domains)
-  appLog.debug(paths)
+  log.debug('create cookies', keyVal, domains, paths)
 
   const cookies = []
   domains.forEach(domain => {
@@ -77,7 +77,7 @@ function generateCookies(keyVal, domains, paths) {
     })
   })
 
-  appLog.debug(cookies)
+  log.debug(cookies)
   return cookies
 }
 

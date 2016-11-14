@@ -2,7 +2,7 @@
 
 const KANCOLLE_MASTER_SERVER = process.env.KANCOLLE_SERVER_MASTER
 const rp = require('request-promise')
-const appLog = require('../logger')('service:kancolle')
+const log = require('../logger')('service:kancolle')
 const sprintf = require('sprintf-js').sprintf
 
 const Kancolle = {
@@ -10,27 +10,26 @@ const Kancolle = {
   ENTRY_HOST: KANCOLLE_MASTER_SERVER,
 
   fetchConfig: function() {
-    const options = {
-      url: 'http://' + this.ENTRY_HOST + '/gadget/js/kcs_const.js'
-    }
+    const url = `http://${this.ENTRY_HOST}/gadget/js/kcs_const.js`
 
-    appLog.info('load scripts from ' + options.url)
-    return rp.get(options)
+    log.info('get Kancolle configuration file', url)
+    return rp.get({url})
     .then(jsCode => {
-      appLog.verbose('append js code to output variable value')
+      log.info('extract Kancolle server IP addresses, URL info, and maintenance info')
+      log.verbose('append js code to output variable value')
       const var2export = sprintf('JSON.stringify({%s, %s, %s})',
         'ConstServerInfo', 'ConstURLInfo', 'MaintenanceInfo')
       jsCode += ';' + var2export
 
-      appLog.info('emulate javascripts assuming that code from ' + options.url + ' is trusted')
+      log.verbose(`emulate javascripts assuming that code from ${url} is trusted`)
       const json = JSON.parse(eval(jsCode))
-      appLog.debug('parsed json result')
-      appLog.debug(json)
+      log.debug('parsed json result', json)
       return Promise.resolve(json)
     })
   },
 
   getMaintenanceInfo: function() {
+    log.info('get maintenance information')
     return this.fetchConfig()
     .then(kcs_config => {
       const maintenanceInfo = kcs_config.MaintenanceInfo
@@ -43,29 +42,25 @@ const Kancolle = {
   },
 
   getWorldServerId: function(gadgetInfo) {
-    const options = {
-      uri: sprintf('%s/kcsapi/api_world/get_id/%s/1/%d', this.ENTRY_HOST, gadgetInfo.VIEWER_ID, Date.now()),
-    }
-    appLog.verbose('request to %s', options.uri)
-    appLog.debug('options', options)
-    return rp.get(options)
-    .then(response => {
-      appLog.verbose('response received from %s', options.uri)
-      appLog.debug('response', response)
+    const now = Date.now()
+    const uri = `${this.ENTRY_HOST}/kcsapi/api_world/get_id/${gadgetInfo.VIEWER_ID}/1/${now}`
 
-      appLog.verbose('remove "svndata=" and parse JSON')
+    log.info(`call ${uri} to findout ${gadgetInfo.VIEWER_ID} reside in which Kancolle server`)
+    return rp.get({uri})
+    .then(response => {
+      log.debug('remove "svndata=" and parse JSON')
       response = response.replace('svdata=', '')
       response = JSON.parse(response)
-      appLog.debug('parsed result', response)
+      log.debug('parsed result', response)
 
       if(response.api_result != 1) {
         const error = new Error('Internal error at target server %s', this.ENTRY_HOST)
-        appLog.error(error.message)
+        log.error(error.message)
         return Promise.reject(error)
       }
 
       const worldId = response.api_data.api_world_id
-      appLog.verbose('player id %d resides in world id %d', gadgetInfo.VIEWER_ID, worldId)
+      log.info(`${gadgetInfo.VIEWER_ID} reside in world id ${worldId}`)
       return Promise.resolve(worldId)
     })
   }

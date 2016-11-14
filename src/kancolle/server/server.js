@@ -4,9 +4,8 @@ const request = require('request')
 const rp = require('request-promise')
 const urljoin = require('url-join')
 const urlparse = require('url-parse')
-const agentLog = require('../../logger')('service:kancolle')
+const log = require('../../logger')('service:kancolle')
 const osapi = require('../../dmm/osapi')
-const sprintf = require('sprintf-js').sprintf
 
 class KancolleServer {
 
@@ -16,32 +15,31 @@ class KancolleServer {
   }
 
   download(url) {
-    agentLog.info('Download: ' + url)
-    agentLog.verbose('Remove sensitive data in URL parameters')
-    const parsedUrl = removeUrlParameterSensitiveData(url)
-    agentLog.debug('Parsed URL: ' + parsedUrl)
+    url = removeUrlParameterSensitiveData(url)
 
+    log.info('download asset %s', url)
     return request.get({
-      url: parsedUrl,
+      url,
       headers: {'x-requested-with': 'ShockwaveFlash/22.0.0.192'}
     })
   }
 
   apiRequest(apiUrl, payload, initialHttpHeaders) {
     const fullUrl = urljoin(this.host, apiUrl)
-    agentLog.info('call Kancolle API', fullUrl)
+    log.info('call Kancolle API %s', fullUrl)
     const options = {
       url: fullUrl,
       form: payload,
       headers: forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders),
       gzip: true
     }
-    agentLog.debug('POST options', options)
     return rp.post(options)
   }
 
   generateApiToken(gadgetInfo) {
-    const url = sprintf('%s/kcsapi/api_auth_member/dmmlogin/%s/1/%d', this.host, gadgetInfo.VIEWER_ID, Date.now())
+    const now = Date.now()
+    const url = `${this.host}/kcsapi/api_auth_member/dmmlogin/${gadgetInfo.VIEWER_ID}/1/${now}`
+    log.info(`${url} generate API token for Kancolle user id ${gadgetInfo.VIEWER_ID}`)
     return osapi.proxyRequest(url, gadgetInfo).then(response => {
       let body = response.body
       body = body.replace('svdata=', '')
@@ -49,41 +47,43 @@ class KancolleServer {
       const apiResponse = JSON.parse(body)
       const isBan = apiResponse.api_result == 301
 
-      const data = {
+      return Promise.resolve({
         isBan: isBan,
         api_token: apiResponse.api_token,
         api_start_time: apiResponse.api_starttime
-      }
-      return Promise.resolve(data)
+      })
     })
   }
 }
 
 function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders) {
   initialHttpHeaders = initialHttpHeaders || {}
-  agentLog.verbose('Forge HTTP header to match with HTTP request from browser')
-  agentLog.debug('URL', fullUrl)
-  const headers = initialHttpHeaders
-  modifyHeader(fullUrl)
-  avoidSocketHangup()
+  log.verbose('forge HTTP header as if it comes from a browser')
+
+  let headers = initialHttpHeaders
+  headers = asIfInitiateByBrowser(headers, fullUrl)
+  headers = avoidSocketHangup(headers)
 
   return headers
 
-  function avoidSocketHangup() {
-    delete headers.connection
-    delete headers['content-length']
-    delete headers['content-type']
-  }
+}
 
-  function modifyHeader(fullUrl) {
-    const url = urlparse(fullUrl)
-    headers.host = url.host
-    headers.origin = url.origin
+function avoidSocketHangup(headers) {
+  log.debug('avoid socket hangup', headers)
+  delete headers.connection
+  delete headers['content-length']
+  delete headers['content-type']
+  return headers
+}
 
-    delete headers.referer
-    headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36'
-    agentLog.debug('modified http headers', headers)
-  }
+function asIfInitiateByBrowser(headers, fullUrl) {
+  const url = urlparse(fullUrl)
+  headers.host = url.host
+  headers.origin = url.origin
+
+  delete headers.referer
+  headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36'
+  return headers
 }
 
 function removeUrlParameterSensitiveData(url) {

@@ -10,6 +10,8 @@ const should = require('should')
 
 describe('Kancolle hub', () => {
 
+  const gadgetInfo = {VIEWER_ID: 1234}
+
   it('return correcct game ID', () => {
     const ID = 854854
     hub.appId.should.equal(ID, 'Kancolle app id should be ' + ID)
@@ -36,7 +38,7 @@ describe('Kancolle hub', () => {
 
   it('should return correct url to new player who launch the game', sinon.test(function(done) {
     this.stub(game, 'getWorldServerId').returns(Promise.resolve(0))
-    hub.launch({})
+    hub.launch(gadgetInfo)
     .then(url => {
       url.should.equal('http://203.104.209.7/kcs/world.swf')
       done()
@@ -54,7 +56,7 @@ describe('Kancolle hub', () => {
     this.stub(game, 'getWorldServerId').returns(Promise.resolve(worldId))
     this.stub(Server.prototype, 'generateApiToken').returns(Promise.resolve(player))
 
-    hub.launch({})
+    hub.launch(gadgetInfo)
     .then(url => {
       const server = hub.getServer(worldId)
       const expectUrl = urlparse(server.host)
@@ -74,7 +76,7 @@ describe('Kancolle hub', () => {
     this.stub(Server.prototype, 'generateApiToken')
     .returns(Promise.resolve({isBan: true}))
 
-    hub.launch({})
+    hub.launch(gadgetInfo)
     .then(url => {
       url.should.equal('http://203.104.209.7/kcs/ban.swf', 'url should match')
       done()

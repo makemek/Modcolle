@@ -9,15 +9,20 @@ const LocalStrategy = require('passport-local').Strategy
 const dmmAuthenticator = require('./middleware/dmm-passport')
 const morgan = require('morgan')
 const app = express()
-const routerLogger = require('./logger')('app:router')
+const log = require('./logger')('app:router')
 const router = require('./routing/')
 
+const SESSION_SECRET = process.env.SESSION_SECRET
+
+log.info('=== Welcome to Modcolle ===')
 setupMiddleware()
 setupTemplateEngine()
 setupDefaultLocalResponseHeader()
 setupRouting()
+log.info('=== Finished App Configuration ===')
 
 function setupDefaultLocalResponseHeader() {
+  log.info('setup defult response header')
   app.use((req, res, next) => {
     res.set('X-Powered-By', 'ModColle')
     next()
@@ -25,29 +30,35 @@ function setupDefaultLocalResponseHeader() {
 }
 
 function setupRouting() {
+  log.info('setup routing')
   app.use('/', router)
 }
 
 function setupMiddleware() {
+  log.info('setup middlewares')
+  log.verbose('setup POST body parser')
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
+  log.verbose(`setup session using session secret ${SESSION_SECRET}`)
   app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: SESSION_SECRET,
     resave: true,
     saveUninitialized: false
   }))
+  log.verbose('initialize passport')
   app.use(passport.initialize())
   app.use(passport.session())
   passport.use(new LocalStrategy(dmmAuthenticator.authenticate))
   passport.serializeUser(dmmAuthenticator.serialize)
   passport.deserializeUser(dmmAuthenticator.deserialize)
 
-  routerLogger.stream = {
+  log.verbose('configure stream log messages from morgan')
+  log.stream = {
     write: function(message){
-      routerLogger.info(message)
+      log.info(message)
     }
   }
-  app.use(morgan('combined', {stream: routerLogger.stream}))
+  app.use(morgan('combined', {stream: log.stream}))
 }
 
 function setupTemplateEngine() {
@@ -62,6 +73,7 @@ function setupTemplateEngine() {
     layoutsDir: baseDirView + '/layouts',
     partialsDir: baseDirView + '/partials'
   }
+  log.info(`setup template engine ${engineName}`, options)
   const hbs = expressHandlebars.create(options)
 
   app.engine(engineName, hbs.engine)

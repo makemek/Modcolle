@@ -2,36 +2,29 @@
 
 const sprintf = require('sprintf-js').sprintf
 const rp = require('request-promise')
-const appLog = require('../logger')('service:dmm')
+const log = require('../logger')('service:dmm')
 
 const API = {
   getGameInfo: function(gameId, dmmCookies) {
-    appLog.verbose('Get game metadata')
-    const url = createGameUrl(gameId)
+    const url = `http://www.dmm.com/netgame/social/-/gadgets/=/app_id=${gameId}`
     let cookies = dmmCookies
 
     if(Array.isArray(dmmCookies))
       cookies = cookies.join('; ')
 
-    const fromJapan = cookies.match(/ckcy\w*=\w*1/g)
-    if(!fromJapan)
-      appLog.warn('User does not login from Japan. DMM may reject the access')
-
     const options = {
       uri: url,
       headers: {cookie: cookies}
     }
-    appLog.info('request page ' + options.uri)
-    appLog.debug(options)
-
+    log.info(`request game metadata from ${url}`)
     return rp.get(options)
     .then(htmlBody => {
-      appLog.info('response received from ' + options.uri)
+      log.info(`search for gadgetInfo inside HTML ${url}`)
       const gadgetInfo = getGadgetInfo(htmlBody)
 
       if(!gadgetInfo) {
         const error = new Error('gadget info not found')
-        appLog.error(error.message)
+        log.error(error.message)
         return Promise.reject(error)
       } else {
         return Promise.resolve(gadgetInfo)
@@ -65,60 +58,53 @@ const API = {
    * @param {proxyRequestCallback} done - a callback function
    */
   proxyRequest: function(targetUrl, gadgetInfo) {
-    appLog.info('create proxy request to %s', targetUrl)
     const payload = {
       url: targetUrl,
       st: gadgetInfo.ST,
       authz: 'signed',
       signOwner: true
     }
-
     const options = {
       url: 'http://osapi.dmm.com/gadgets/makeRequest',
       form: payload
     }
 
-    appLog.debug('POST options', options)
+    log.info('proxy request to %s', targetUrl)
     return rp.post(options)
     .then(response => {
-      appLog.info('response received from %s', options.url)
-      appLog.verbose('response: %s', response)
+      log.info('unwrap response from %s', options.url)
+      log.verbose(response)
 
       const wrapper = 'throw 1; < don\'t be evil\' >'
-      appLog.verbose('remove response wrapper (%s)', wrapper)
+      log.debug('remove response wrapper (%s)', wrapper)
       let dmmResponse = response.slice(response.search(wrapper) + wrapper.length)
-      appLog.debug(dmmResponse)
+      log.debug(dmmResponse)
 
-      appLog.verbose('extract raw body')
+      log.debug('extract raw body')
       const startBody = '"body":"', endBody = '","headers":'
       const rawBody = dmmResponse.slice(dmmResponse.search('"body":"') + startBody.length, dmmResponse.search(endBody, -1))
-      appLog.debug('rawbody', rawBody)
+      log.debug('rawbody', rawBody)
 
-      appLog.verbose('replace body with escape strings')
+      log.debug('replace body with escape strings')
       dmmResponse = dmmResponse.replace(rawBody, escape(rawBody))
 
-      appLog.verbose('convert to JSON format')
+      log.debug('convert to JSON format')
       const jsonDmmResponse = JSON.parse(dmmResponse)
       const urlWrapperKeyName = Object.keys(jsonDmmResponse)[0]
-      appLog.verbose('unwrap JSON property %s', urlWrapperKeyName)
+      log.debug('unwrap JSON property %s', urlWrapperKeyName)
       const targetResponse = jsonDmmResponse[urlWrapperKeyName]
 
-      appLog.verbose('unescape body')
+      log.debug('unescape body')
       targetResponse.body = unescape(targetResponse.body)
-      appLog.debug(targetResponse)
 
+      log.info(`successfully get ${targetUrl} raw response`, targetResponse)
       return Promise.resolve(targetResponse)
     })
   }
 }
 
-function createGameUrl(gameId) {
-  const URL = 'http://www.dmm.com/netgame/social/-/gadgets/=/app_id='
-  return URL.concat(gameId)
-}
-
 function getGadgetInfo(htmlString) {
-  appLog.info('get unparsed json from variable gadgetInfo')
+  log.verbose('get unparsed json from variable gadgetInfo')
   const varName = 'gadgetInfo = '
   let gadgetInfo = htmlString.match(new RegExp(varName + '{([^}]*)}', 'g'))
   if(!gadgetInfo)
@@ -126,24 +112,24 @@ function getGadgetInfo(htmlString) {
   else
     gadgetInfo = gadgetInfo[0]
 
-  appLog.debug(sprintf('remove prefix "%s"', varName))
+  log.debug(sprintf('remove prefix "%s"', varName))
   gadgetInfo = gadgetInfo.replace(varName, '')
-  appLog.debug(gadgetInfo)
+  log.debug(gadgetInfo)
 
-  appLog.debug('get variable name')
+  log.debug('get variable name')
   const varList = gadgetInfo.match(/\w+ /g)
-  appLog.debug(varList)
+  log.debug(varList)
 
-  appLog.debug('put double quotes around the variable')
+  log.debug('put double quotes around the variable')
   varList.forEach(property => {
     property = property.trim()
     gadgetInfo = gadgetInfo.replace(property, sprintf('"%s"', property))
   })
-  appLog.debug(gadgetInfo)
+  log.debug(gadgetInfo)
 
-  appLog.debug('convert to json')
+  log.debug('convert to json')
   gadgetInfo = JSON.parse(gadgetInfo)
-  appLog.debug(gadgetInfo)
+  log.debug(gadgetInfo)
 
   return gadgetInfo
 }

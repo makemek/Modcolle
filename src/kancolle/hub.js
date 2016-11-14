@@ -3,7 +3,7 @@
 const servers = require('./server/')
 const Kancolle = require('./game')
 const urljoin = require('url-join')
-const appLog = require('../logger')('service:kancolle')
+const log = require('../logger')('service:kancolle')
 
 const Hub = {}
 
@@ -19,7 +19,7 @@ Hub.appId = 854854
  * @return {object} server - a Kancolle server object
  */
 Hub.getServer = function(key) {
-  appLog.info('request Kancolle server ', key)
+  log.info(`get server from key ${key}`)
   return servers[key]
 }
 
@@ -34,27 +34,36 @@ Hub.getServer = function(key) {
  * @return {Promise<Url>}
  */
 Hub.launch = function(gadgetInfo) {
+  log.info(`DMM ID ${gadgetInfo.VIEWER_ID} launch Kancolle`)
   return Kancolle.getWorldServerId(gadgetInfo)
   .then(worldId => {
     if(worldId == 0)
-      return newPlayer()
+      return newPlayer(gadgetInfo)
     else
-      return oldPlayer(worldId)
+      return oldPlayer(gadgetInfo, worldId)
   })
+}
 
-  function newPlayer() {
-    return Promise.resolve(urljoin(Kancolle.ENTRY_HOST, 'kcs', 'world.swf'))
-  }
+function newPlayer(gadgetInfo) {
+  const worldSelection = urljoin(Kancolle.ENTRY_HOST, 'kcs', 'world.swf')
+  log.info(`DMM ID ${gadgetInfo.VIEWER_ID} is a new player. Display world selection ${worldSelection}`)
+  return Promise.resolve(worldSelection)
+}
 
-  function oldPlayer(worldId) {
-    const server = Hub.getServer(worldId)
-    return server.generateApiToken(gadgetInfo).then(player => {
-      if(player.isBan)
-        return Promise.resolve(urljoin(Kancolle.ENTRY_HOST, 'kcs', 'ban.swf'))
-      else
-        return Promise.resolve(urljoin(server.host, 'kcs', 'mainD2.swf', '?api_token=' + player.api_token, '?api_starttime=' + player.api_start_time))
-    })
-  }
+function oldPlayer(gadgetInfo, worldId) {
+  log.info(`DMM ID ${gadgetInfo.VIEWER_ID} is an old player (has already select a world)`)
+  const server = Hub.getServer(worldId)
+  return server.generateApiToken(gadgetInfo).then(player => {
+    if(player.isBan) {
+      const screenBan = urljoin(Kancolle.ENTRY_HOST, 'kcs', 'ban.swf')
+      log.info(`${gadgetInfo.VIEWER_ID} is banned by the game. Display a ban screen ${screenBan}`)
+      return Promise.resolve(screenBan)
+    } else {
+      const gameMain = urljoin(server.host, 'kcs', 'mainD2.swf')
+      log.info(`DMM ID ${gadgetInfo.VIEWER_ID} is not banned. Launch Kancolle (API token not shown due to privacy)`, gameMain)
+      return Promise.resolve(urljoin(gameMain, `?api_token=${player.api_token}`, `?api_starttime=${player.api_start_time}`))
+    }
+  })
 }
 
 module.exports = Hub
