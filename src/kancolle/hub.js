@@ -3,7 +3,7 @@
 const servers = require('./server/')
 const Kancolle = require('./game')
 const urljoin = require('url-join')
-const appLog = require('winston').loggers.get('app')
+const appLog = require('../logger')('service:kancolle')
 
 const Hub = {}
 

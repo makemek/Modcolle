@@ -10,7 +10,7 @@ const path = require('path')
 const validator = require('validator')
 const urljoin = require('url-join')
 const kancolle = require('../kancolle/')
-const appLog = require('winston').loggers.get('app')
+const appLog = require('../logger')('app:router')
 
 /**
  * Handle http GET request to server flag image

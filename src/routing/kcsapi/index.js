@@ -2,7 +2,7 @@
 
 const express = require('express')
 const router = express.Router()
-const appLog = require('winston').loggers.get('app')
+const appLog = require('../../logger')('app:router')
 const kancolle = require('../../kancolle/')
 
 router.post('/*', extractWorldIdFromApiToken, (req, res, next) => {

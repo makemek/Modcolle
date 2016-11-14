@@ -1,13 +1,5 @@
 'use strict'
 
-const LOGGER_SILENT = process.env.LOGGER_SILENT
-const LOGGER_LEVEL = process.env.LOGGER_LEVEL
-const LOGGER_TIMESTAMP = process.env.LOGGER_TIMESTAMP
-const LOGGER_PRETTY_PRINT = process.env.LOGGER_PRETTY_PRINT
-
-const winston = require('winston')
-setupLogger()
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const expressHandlebars = require('express-handlebars')
@@ -17,30 +9,13 @@ const LocalStrategy = require('passport-local').Strategy
 const dmmAuthenticator = require('./middleware/dmm-passport')
 const morgan = require('morgan')
 const app = express()
-const routerLogger = winston.loggers.get('router')
+const routerLogger = require('./logger')('app:router')
 const router = require('./routing/')
 
 setupMiddleware()
 setupTemplateEngine()
 setupDefaultLocalResponseHeader()
 setupRouting()
-
-function setupLogger() {
-  const loggers = ['app', 'router', 'agent']
-  loggers.forEach(logger => {
-    const loggerConfig = {
-      console: {
-        label: logger,
-        level: LOGGER_LEVEL,
-        colorize: 'all',
-        silent: LOGGER_SILENT === 'true',
-        timestamp: LOGGER_TIMESTAMP === 'true',
-        prettyPrint: LOGGER_PRETTY_PRINT === 'true',
-      }
-    }
-    winston.loggers.add(logger, loggerConfig)
-  })
-}
 
 function setupDefaultLocalResponseHeader() {
   app.use((req, res, next) => {

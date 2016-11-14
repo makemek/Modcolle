@@ -4,7 +4,7 @@ const request = require('request')
 const rp = require('request-promise')
 const urljoin = require('url-join')
 const urlparse = require('url-parse')
-const agentLog = require('winston').loggers.get('agent')
+const agentLog = require('../../logger')('service:kancolle')
 const osapi = require('../../dmm/osapi')
 const sprintf = require('sprintf-js').sprintf
 

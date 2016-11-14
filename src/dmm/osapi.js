@@ -2,7 +2,7 @@
 
 const sprintf = require('sprintf-js').sprintf
 const rp = require('request-promise')
-const appLog = require('winston').loggers.get('app')
+const appLog = require('../logger')('service:dmm')
 
 const API = {
   getGameInfo: function(gameId, dmmCookies) {

@@ -1,7 +1,7 @@
 'use strict'
 
 const inherit = require('inherit')
-const appLog = require('winston').loggers.get('app')
+const appLog = require('../logger')('service:dmm')
 const tough = require('tough-cookie')
 const Cookie = tough.Cookie
 

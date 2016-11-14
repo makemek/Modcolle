@@ -2,7 +2,7 @@
 
 const KANCOLLE_MASTER_SERVER = process.env.KANCOLLE_SERVER_MASTER
 const rp = require('request-promise')
-const appLog = require('winston').loggers.get('app')
+const appLog = require('../logger')('service:kancolle')
 const sprintf = require('sprintf-js').sprintf
 
 const Kancolle = {
