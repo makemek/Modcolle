@@ -54,8 +54,8 @@ const Kancolle = {
       log.debug('parsed result', response)
 
       if(response.api_result != 1) {
-        const error = new Error('Internal error at target server %s', this.ENTRY_HOST)
-        log.error(error.message)
+        const error = new Error(`Internal error at target server ${this.ENTRY_HOST}`)
+        log.error(`${error.message} -- On maintenance?`, response)
         return Promise.reject(error)
       }
 
