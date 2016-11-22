@@ -2,49 +2,58 @@
 [![Build Status](https://travis-ci.org/makemek/Modcolle.svg?branch=dev)](https://travis-ci.org/makemek/Modcolle)
 [![Coverage Status](https://coveralls.io/repos/github/makemek/Modcolle/badge.svg?branch=dev)](https://coveralls.io/github/makemek/Modcolle?branch=dev)
 
-> **This is a pre-release version. Some feature may not be stable and require some configuration beforehand.**
-
 Modcolle is a proxy server for playing [Kantai Collection (艦隊これくしょん ～艦これ～)](http://www.dmm.com/netgame_s/kancolle/).
-Unlike [Kancolle Viewer](https://github.com/Grabacr07/KanColleViewer) that wraps IE browser and listens to outgoing traffic, Modcolle intercepts network traffic sent between the game and its destinated server directly.
-Thus, it can do something before and after the game makes API calls to the server or even manipulates the API data itself.
+The main goal of Modcolle is to provide in-game translation displaying in the flash client directly. 
+Unlike [Kancolle Viewer](https://github.com/Grabacr07/KanColleViewer) that wraps IE browser and listens to outgoing traffic, Modcolle, acting as a web server, makes Kancolle send all HTTP requests to Modcolle instead.
+Thus, it has the opportunity to process requests before forwarding them to destinated Kancolle servers or response back to clients.
+In this case, Modcolle is a middleman between client and Kancolle servers.
+Client can access modcolle without having to configure proxy connection.
+No more cookie injection, ~~Japan timezone synchronization~~, or VPN connection in order to play the game.
+Modcolle do all those messy things for you.
+Since the processes involves calling DMM API directly, no bloating javascript is executed, it is faster than accessing from [DMM website](http://www.dmm.com).
+Modcolle also distributes game asset requests .png, .mp3, and .swf among multiple Kancolle servers to relief traffic bottle neck.
+Ensures that all assets will be delivered as fast as possible.
 
 ## Feature
-* Adaptive fullscreen gameplay
-* Place custom content to be displayed inside a game such as ships, musics, or any game assets similar to [KancolleCacher](https://github.com/df32/KanColleCacher).
-* Display translations inside the game **[Possible, but not ready for general usage]**
-* Realtime logging. See what Kancolle makes requests to the server including decoded API requests and responses
+* Enjoy playing the game on full screen
+* ~~Place custom content to be displayed inside a game such as ships, musics, or any game assets similar to [KancolleCacher](https://github.com/df32/KanColleCacher).~~ **this feature is suspeneded, will implement sometime later**
+* Display translations inside the game **Just for a proof of concept. No full translation are implemented in this release**
+* Realtime logging. See what Kancolle makes requests to the server including decoded API requests and responses for statistical analysis
 
 ## Installation
+Modcolle is a Node.js server application, not a desktop application.
+There is no executable launcher.
+It is intended to run on a web server.
+However, you can setup your machine as a web server to run Modcolle locally.
+
+Modcolle needs to run together with [Nginx](https://www.nginx.com/) in order to operate normally.
 Please follows steps below to run Modcolle
 
-1. Download and install [Node.js](https://nodejs.org/en/) version >= 5.0.0 (preferably 6)
-2. Download and extract Modcolle
-3. Go scripts/config copy ``settings.json.template``. Paste it in the same directory and rename it to ``settings.json``
-4. Open ``settings.json`` and put your World server IP address in ``MY_WORLD_SERVER`` and your api token in ``API_TOKEN``
-5. Go to extracted directory, open the commandline and type ``npm install``
-6. Type ``npm start``
-7. Wait for message "modcolle is ready". Then, open the browser and type ``localhost`` or ``127.0.0.1`` to URL.
+### On Mac and Linux
 
-## Modding
-Please see [this](http://himeuta.org/showthread.php?4880-Guide-Mod-Your-Game-Guide) on how to mod game assets.
-You need flash decompiler program in order to modify swf files.
-[JPEX Flash Decomplier](https://www.free-decompiler.com/flash/download/) is free of charge and has straight forward interface.
+1. Install [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/)
+2. Clone this repository `git clone git@github.com:makemek/Modcolle.git`
+3. Copy `.env.template` to `.env` and configure
+  - SESSION_SECRET: a key for computing hash to generate a session. Can be any string
+  - LOGGER_SILENT: if `false` enables log, `true` disables log
+  - LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
+4. Open terminal and run `docker-compose up`. You can add `-d` flag to detach the process and run as a daemon.
+5. Open a web browser and type `localhost` in the url
 
-Prior the game requesting resource, Modcolle will look for files inside /kancolle folder.
-If the file is not found, Modcolle will request resource from Kancolle server.
-All you have to do is place your files inside a correct directory.
-So make sure that your files reflect the same path as it resides in Kancolle server.
-You can see where to place your file from logging information when the game requests resource.
+### On windows
+Unfortunately, Docker is not natively supported on Windows.
+Also there is a shell script that be executed only in linux environment.
+You have to install Nginx and Modcolle manually.
 
-Please note that once Modcolle sends resource back to the game, your browser cache it as soon as the download is complete unless you disable caching.
-There will be no request to Modcolle because the browser has already load from its cache.
-If you update the mod file, please either restart the server or clear browser cache.
-
-## Modifying API Response and In-game Translation
-Inside ``/scripts/routing/kcsapi/index.js``, the code
-```javascript
-decodeResponse(httpResponse, body, function(response) {
-	var jsonResponse = JSON.parse(response.replace('svdata=', ''));
-	// modify json here
-}
-```
+1. Install Nginx and Node.js (v. 6.9.1)
+2. Clone this repository `git clone git@github.com:makemek/Modcolle.git`
+3. Copy `.env.template` to `.env` and configure
+  - SESSION_SECRET: a key for computing hash to generate a session. Can be any string
+  - LOGGER_SILENT: if `false` enables log, `true` disables log
+  - LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
+4. Copy `/deployment/nginx/nginx.conf` to `C:\nginx\`. Make sure to backup nginx.conf first before overwrite.
+5. Inside nginx.conf replace `app1` and `DOMAIN_NAME` with `localhost`
+6. Open terminal and start Nginx `start C:\nginx\nginx.exe`
+7. `cd` to modcolle directory and run `npm install`
+8. Type `npm start`
+9. Open a browser and type `localhost` in the url 
