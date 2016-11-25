@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "index.js",
   "author": "MakeMEK",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "description": "A proxy server for playing Kancolle",
   "bin": {
     "mocha": "./node_modules/mocha/bin/mocha",
