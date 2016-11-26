@@ -1,0 +1,16 @@
+nginx:
+  build: ./deployment/nginx
+  links:
+    - app1:app1
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - /etc/nginx/psw:/etc/nginx/psw
+    - /etc/nginx/ssl:/etc/nginx/ssl
+  environment:
+    - DOMAIN_NAME=localhost
+app1:
+  build: .
+  ports:
+    - "5000"

@@ -1,5 +1,5 @@
-# This code is developed by yukixz
-# https://gist.github.com/yukixz/eb8c7a87b0f59ff540a7
+# The code is originally developed by Dazzy Ding
+# See http://blog.dazzyd.org/blog/kancolle-obfuscation/
 
 #!/usr/bin/env python3
 

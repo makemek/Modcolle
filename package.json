@@ -1,28 +1,62 @@
 {
   "name": "modcolle",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
-  },
   "author": "MakeMEK",
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "private": true,
   "description": "A proxy server for playing Kancolle",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/makemek/Modcolle.git"
+  },
+  "bin": {
+    "mocha": "./node_modules/mocha/bin/mocha",
+    "istanbul": "./node_modules/.bin/istanbul",
+    "eslint": "./node_modules/.bin/eslint"
+  },
+  "scripts": {
+    "start": "nf start",
+    "dev": "nf run nodemon ./bin/www",
+    "coverage": "nf run istanbul cover ./node_modules/mocha/bin/_mocha",
+    "eslint": "eslint src/**/*.js test/**/*.js bin/**",
+    "utest": "nf run mocha",
+    "pretest": "npm run eslint",
+    "test": "npm run utest"
+  },
   "dependencies": {
-    "body-parser": "^1.15.1",
-    "express": "^4.13.4",
-    "express-handlebars": "^3.0.0",
-    "inherit": "^2.2.3",
-    "moment-timezone": "^0.5.4",
-    "nconf": "^0.8.4",
-    "request": "^2.72.0",
-    "url-join": "^1.1.0",
-    "url-parse": "^1.1.1",
-    "validator": "^5.4.0",
-    "winston": "^2.2.0"
+    "async": "2.1.2",
+    "body-parser": "1.15.2",
+    "express": "4.14.0",
+    "express-handlebars": "3.0.0",
+    "express-session": "1.14.2",
+    "foreman": "2.0.0",
+    "inherit": "2.2.6",
+    "morgan": "1.7.0",
+    "passport": "0.3.2",
+    "passport-local": "1.0.0",
+    "request": "2.78.0",
+    "request-promise": "4.1.1",
+    "sprintf-js": "1.0.3",
+    "tough-cookie": "2.3.2",
+    "url-join": "1.1.0",
+    "url-parse": "1.1.7",
+    "validator": "6.1.0",
+    "winston": "2.3.0"
   },
   "devDependencies": {
-    "nodemon": "^1.9.2"
+    "app-root-path": "2.0.1",
+    "cheerio": "0.22.0",
+    "coveralls": "2.11.14",
+    "eslint": "3.9.1",
+    "istanbul": "0.4.5",
+    "mocha": "3.1.2",
+    "nock": "9.0.2",
+    "nodemon": "1.11.0",
+    "should": "11.1.1",
+    "sinon": "1.17.6",
+    "slash": "1.0.0",
+    "supertest": "2.0.1",
+    "supertest-as-promised": "4.0.2"
   }
 }

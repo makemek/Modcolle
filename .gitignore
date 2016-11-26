@@ -1,5 +1,6 @@
 # Project gitignore
-scripts/config/settings.json
+src/config/settings.json
+.env
 
 ## Mod content file type
 *.swf

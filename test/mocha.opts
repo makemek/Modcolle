@@ -1,0 +1,3 @@
+test/unit/**/*.js
+--reporter spec
+--require test/helper/
