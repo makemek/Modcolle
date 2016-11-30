@@ -33,7 +33,7 @@ auth.serialize = function(dmmCookies, done) {
   session = session[0]
   log.info(`apply DMM subdomain ${dmmSubDomains} to DMM session cookie INT_SESSID in order to have access to those sub domains`)
   session = injectCookies(session, dmmSubDomains)
-  return done(null, session.join(';'))
+  return done(null, session)
 }
 
 function injectCookies(session, subdomains) {

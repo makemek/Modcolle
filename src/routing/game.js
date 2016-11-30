@@ -8,26 +8,36 @@ const kancolle = require('../kancolle/')
 const URL = require('url-parse')
 const urljoin = require('url-join')
 const log = require('../logger')('app:router')
+const dmmPassport = require('../middleware/dmm-passport')
 
 router.get('/', (req, res, next) => {
   if(!req.isAuthenticated())
     return res.render('index')
 
-  log.info(`OSAPI: get DMM game metadata of app id ${kancolle.appId}`)
-  osapi.getGameInfo(kancolle.appId, req.user)
-  .then(kancolle.launch)
-  .then(redirectKancolleNetworkTraffic)
-  .then(url => {
-    log.info('render HTML template "kancolle" with Kancolle game url')
-    return res.render('kancolle', {flashUrl: url})
-  })
-  .catch(next)
-})
+  req.body.dmm_session = req.user.find(cookie => cookie.key === 'INT_SESID').value
+  next()
+}, loginByDmmSession)
+
+router.post('/dmm-session', loginByDmmSession)
 
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/'
 }))
+
+function loginByDmmSession(req, res, next) {
+  dmmPassport.serialize([`INT_SESID=${req.body.dmm_session}`], (error, cookies) => {
+    log.info(`OSAPI: get DMM game metadata of app id ${kancolle.appId}`)
+    osapi.getGameInfo(kancolle.appId, cookies)
+    .then(kancolle.launch)
+    .then(redirectKancolleNetworkTraffic)
+    .then(url => {
+      log.info('render HTML template "kancolle" with Kancolle game url')
+      return res.render('kancolle', {flashUrl: url})
+    })
+    .catch(next)
+  })
+}
 
 function redirectKancolleNetworkTraffic(url) {
   const TARGET_FILE = 'mainD2.swf'

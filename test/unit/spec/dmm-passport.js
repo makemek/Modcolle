@@ -48,17 +48,22 @@ describe('DMM passport middleware', () => {
   })
 
   it('serialize 1 session', done => {
-    const others = 'others=doe', foo = 'foo=bar'
-    const cookies = [nockDmmAuth.session, others, foo]
+    const others = Cookie.parse('others=doe')
+    const foo = Cookie.parse('foo=bar')
+    const session = Cookie.parse(nockDmmAuth.session)
+
+    const cookies = [nockDmmAuth.session, others.toString(), foo.toString()]
     dmmPassport.serialize(cookies, (error, injectedCookies) => {
       if(error)
         return done(error)
 
-      should(injectedCookies).be.String('session should be a string')
-      injectedCookies.should.containEql(nockDmmAuth.session)
-      injectedCookies.should.not.containEql(others)
-      injectedCookies.should.not.containEql(foo)
-      injectedCookies.should.containEql('ckcy')
+      const serializedSession = injectedCookies.filter(cookie => cookie.key === session.key)
+      serializedSession.length.should.eql(1)
+      serializedSession[0].value.should.eql(session.value)
+
+      injectedCookies.filter(cookie => cookie.key === others.key).length.should.eql(0)
+      injectedCookies.filter(cookie => cookie.key === foo.key).length.should.eql(0)
+      injectedCookies.filter(cookie => cookie.key === 'ckcy').length.should.above(0)
       done()
     })
   })
