@@ -47,10 +47,7 @@ function setupMiddleware() {
   }))
   log.verbose('initialize passport')
   app.use(passport.initialize())
-  app.use(passport.session())
   passport.use(new LocalStrategy(dmmAuthenticator.authenticate))
-  passport.serializeUser(dmmAuthenticator.serialize)
-  passport.deserializeUser(dmmAuthenticator.deserialize)
 
   log.verbose('configure stream log messages from morgan')
   log.stream = {

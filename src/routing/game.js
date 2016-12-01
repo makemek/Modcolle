@@ -9,21 +9,22 @@ const URL = require('url-parse')
 const urljoin = require('url-join')
 const log = require('../logger')('app:router')
 const dmmPassport = require('../middleware/dmm-passport')
+const Cookie = require('tough-cookie').Cookie
 
-router.get('/', (req, res, next) => {
-  if(!req.isAuthenticated())
-    return res.render('index')
+router.get('/', (req, res) => {
+  res.render('index')
+})
 
-  req.body.dmm_session = req.user.find(cookie => cookie.key === 'INT_SESID').value
+router.post('/dmm-account', passport.authenticate('local', {
+  failureRedirect: '/',
+  session: false
+}), (req, res, next) => {
+  const dmmCookies = req.user.map(Cookie.parse)
+  req.body.dmm_session = dmmCookies.find(cookie => cookie.key === 'INT_SESID').value
   next()
 }, loginByDmmSession)
 
 router.post('/dmm-session', loginByDmmSession)
-
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/'
-}))
 
 function loginByDmmSession(req, res, next) {
   dmmPassport.serialize([`INT_SESID=${req.body.dmm_session}`], (error, cookies) => {

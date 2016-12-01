@@ -1,57 +1,41 @@
 'use strict'
 
-const nockDmmAuth = require('../mock/dmm/auth')
-const Cookie = require('tough-cookie').Cookie
 const request = require('supertest-as-promised')
 const app = require(global.SRC_ROOT)
-require('should')
+const cheerio = require('cheerio')
+const async = require('async')
+const sinon = require('sinon')
+const game = require(global.SRC_ROOT + '/kancolle/game')
+const playerProfile = require('../mock/kancolle/api-terminal')
+const osapi = require(global.SRC_ROOT + '/dmm/osapi')
+const should = require('should')
 
-describe('/login', () => {
+describe('/dmm-account', () => {
+  async.forEach([
+    {case: 'old player', targetUrl: '/kcs/mainD2.swf', account: {username: 'shimakaze', password: 'desu'}, playerProfile: playerProfile.oldPlayer},
+    {case: 'new player', targetUrl: 'http://203.104.209.7/kcs/world.swf', account: {username: 'poi', password: 'poipoipoi'}, playerProfile: playerProfile.newPlayer},
+    {case: 'banned player', targetUrl: 'http://203.104.209.7/kcs/ban.swf', account: {username: 'badTeitoku', password: 'T^T'}, playerProfile: playerProfile.bannedPlayer}],
+  testcase => {
+    it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, sinon.test(function(done) {
+      this.stub(game, 'getWorldServerId', () => {
+        return Promise.resolve(testcase.playerProfile.world)
+      })
+      this.stub(osapi, 'getGameInfo', () => {
+        return Promise.resolve({VIEWER_ID: testcase.playerProfile.dmmId, ST: 'abcd'})
+      })
 
-  let loginWithValidAccount, loginWithInvalidAccount
+      request(app)
+      .post('/dmm-account')
+      .expect(200)
+      .send(testcase.account)
+      .then(res => {
+        const $ = cheerio.load(res.text)
+        const url = $('#game').attr('data')
 
-  beforeEach(() => {
-    loginWithValidAccount = request(app)
-    .post('/login')
-    .send({username: 'someone', password: 'password'})
-    .expect(302)
-    .expect('location', '/')
-    loginWithInvalidAccount = request(app)
-    .post('/login')
-    .send({
-      username: nockDmmAuth.badAccount.email,
-      password: nockDmmAuth.badAccount.password})
-    .expect(302)
-    .expect('location', '/')
-  })
-
-  it('if login success, return a session', done => {
-    loginWithValidAccount
-    .then(res => {
-      let cookies = res.headers['set-cookie']
-      cookies.should.be.ok('should have cookie header')
-      cookies = cookies.map(Cookie.parse)
-      cookies.filter(cookie => {
-        return cookie.key === 'connect.sid'
-      }).length.should.equal(1, 'should have 1 session')
-      done()
-    })
-    .catch(done)
-  })
-
-  it('if login fail, DONT return a session', done => {
-    loginWithInvalidAccount
-    .then(res => {
-      let cookies = res.headers['set-cookie']
-      if(!cookies)
-        return done()
-
-      cookies = cookies.map(Cookie.parse)
-      cookies.filter(cookie => {
-        return cookie.key === 'connect.sid'
-      }).length.should.equal(0, 'should have no session')
-      done()
-    })
-    .catch(done)
+        should(url.startsWith(testcase.targetUrl)).ok('should start with ' + url)
+        done()
+      })
+      .catch(done)
+    }))
   })
 })
