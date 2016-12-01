@@ -48,6 +48,9 @@ function setupMiddleware() {
   log.verbose('initialize passport')
   app.use(passport.initialize())
   passport.use('dmm-account', new LocalStrategy(loginStrategy.dmmAccount))
+  passport.use('dmm-session', new LocalStrategy({
+    usernameField: 'dmm_session', passwordField: 'dmm_session'},
+  loginStrategy.dmmSession))
 
   log.verbose('configure stream log messages from morgan')
   log.stream = {

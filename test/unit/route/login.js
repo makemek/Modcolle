@@ -3,39 +3,91 @@
 const request = require('supertest-as-promised')
 const app = require(global.SRC_ROOT)
 const cheerio = require('cheerio')
-const async = require('async')
 const sinon = require('sinon')
 const game = require(global.SRC_ROOT + '/kancolle/game')
 const playerProfile = require('../mock/kancolle/api-terminal')
 const osapi = require(global.SRC_ROOT + '/dmm/osapi')
 const should = require('should')
+const errors = require(global.SRC_ROOT + '/errors')
+
+const sandbox = sinon.sandbox.create()
+
+const testcases = [
+  {case: 'old player', targetUrl: '/kcs/mainD2.swf', account: {username: 'shimakaze', password: 'desu'}, playerProfile: playerProfile.oldPlayer},
+  {case: 'new player', targetUrl: 'http://203.104.209.7/kcs/world.swf', account: {username: 'poi', password: 'poipoipoi'}, playerProfile: playerProfile.newPlayer},
+  {case: 'banned player', targetUrl: 'http://203.104.209.7/kcs/ban.swf', account: {username: 'badTeitoku', password: 'T^T'}, playerProfile: playerProfile.bannedPlayer}
+]
 
 describe('/dmm-account', () => {
-  async.forEach([
-    {case: 'old player', targetUrl: '/kcs/mainD2.swf', account: {username: 'shimakaze', password: 'desu'}, playerProfile: playerProfile.oldPlayer},
-    {case: 'new player', targetUrl: 'http://203.104.209.7/kcs/world.swf', account: {username: 'poi', password: 'poipoipoi'}, playerProfile: playerProfile.newPlayer},
-    {case: 'banned player', targetUrl: 'http://203.104.209.7/kcs/ban.swf', account: {username: 'badTeitoku', password: 'T^T'}, playerProfile: playerProfile.bannedPlayer}],
-  testcase => {
-    it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, sinon.test(function(done) {
-      this.stub(game, 'getWorldServerId', () => {
-        return Promise.resolve(testcase.playerProfile.world)
-      })
-      this.stub(osapi, 'getGameInfo', () => {
-        return Promise.resolve({VIEWER_ID: testcase.playerProfile.dmmId, ST: 'abcd'})
-      })
 
-      request(app)
-      .post('/dmm-account')
-      .expect(200)
-      .send(testcase.account)
-      .then(res => {
-        const $ = cheerio.load(res.text)
-        const url = $('#game').attr('data')
+  afterEach(() => {
+    sandbox.restore()
+  })
 
-        should(url.startsWith(testcase.targetUrl)).ok('should start with ' + url)
-        done()
-      })
-      .catch(done)
-    }))
+  testcases.forEach(testcase => {
+    it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, () => {
+      stubNetworkRelatedMethods(testcase.playerProfile.world, testcase.playerProfile.dmmId)
+      return assertGameLink('/dmm-account', testcase.account, testcase.targetUrl)
+    })
   })
 })
+
+describe('/dmm-session', () => {
+
+  afterEach(() => {
+    sandbox.restore()
+  })
+
+  testcases.forEach(testcase => {
+    it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, () => {
+      stubNetworkRelatedMethods(testcase.playerProfile.world, testcase.playerProfile.dmmId)
+      return assertGameLink('/dmm-session', {dmm_session: 'session'}, testcase.targetUrl)
+    })
+  })
+
+  it('fail to get gadgetInfo should fail authenthentication', () => {
+    sandbox.stub(osapi, 'getGameInfo', () => {
+      return Promise.reject(new errors.DmmError())
+    })
+
+    return request(app)
+    .post('/dmm-session')
+    .send({dmm_session: 'session'})
+    .expect(302)
+    .expect('location', '/')
+  })
+
+  it('other errors occured should be handled by done() callback', () => {
+    sandbox.stub(osapi, 'getGameInfo', () => {
+      return Promise.reject(new Error())
+    })
+
+    return request(app)
+    .post('/dmm-session')
+    .send({dmm_session: 'session'})
+    .expect(500)
+  })
+})
+
+function assertGameLink(appLink, payload, expectedLink) {
+  return request(app)
+  .post(appLink)
+  .expect(200)
+  .send(payload)
+  .then(res => {
+    const $ = cheerio.load(res.text)
+    const url = $('#game').attr('data')
+
+    url.should.be.String()
+    should(url.startsWith(expectedLink))
+  })
+}
+
+function stubNetworkRelatedMethods(fakeWorldId, fakeDmmId) {
+  sandbox.stub(game, 'getWorldServerId', () => {
+    return Promise.resolve(fakeWorldId)
+  })
+  sandbox.stub(osapi, 'getGameInfo', () => {
+    return Promise.resolve({VIEWER_ID: fakeDmmId, ST: 'abcd'})
+  })
+}

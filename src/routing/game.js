@@ -3,13 +3,10 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
-const osapi = require('../dmm/osapi')
 const kancolle = require('../kancolle/')
 const URL = require('url-parse')
 const urljoin = require('url-join')
 const log = require('../logger')('app:router')
-const Cookie = require('tough-cookie').Cookie
-const CookieInjector = require('../dmm/cookie-injector')
 
 router.get('/', (req, res) => {
   res.render('index')
@@ -18,19 +15,15 @@ router.get('/', (req, res) => {
 router.post('/dmm-account', passport.authenticate('dmm-account', {
   failureRedirect: '/',
   session: false
-}), (req, res, next) => {
-  const dmmCookies = req.user.map(Cookie.parse)
-  req.body.dmm_session = dmmCookies.find(cookie => cookie.key === 'INT_SESID').value
-  next()
-}, launchKancolle)
+}), launchKancolle)
 
-router.post('/dmm-session', launchKancolle)
+router.post('/dmm-session', passport.authenticate('dmm-session', {
+  failureRedirect: '/',
+  session: false
+}), launchKancolle)
 
 function launchKancolle(req, res, next) {
-  const cookies = injectCookies(`INT_SESID=${req.body.dmm_session}`, ['/', '/netgame/', '/netgame_s/'])
-  log.info(`OSAPI: get DMM game metadata of app id ${kancolle.appId}`)
-  osapi.getGameInfo(kancolle.appId, cookies)
-  .then(kancolle.launch)
+  kancolle.launch(req.user)
   .then(redirectKancolleNetworkTraffic)
   .then(url => {
     log.info('render HTML template "kancolle" with Kancolle game url')
@@ -60,15 +53,6 @@ function redirectKancolleNetworkTraffic(url) {
     `?api_starttime=${url.query.api_starttime}`)
 
   return Promise.resolve(interceptedUrl)
-}
-
-function injectCookies(session, subdomains) {
-  const injector = new CookieInjector([session], subdomains)
-  log.verbose('set DMM to display language in Japanese')
-  injector.language(CookieInjector.language.japan)
-  log.verbose('revoke region restriction')
-  injector.revokeRegionRestriction()
-  return injector.cookies
 }
 
 module.exports = router
