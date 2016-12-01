@@ -6,7 +6,7 @@ const expressHandlebars = require('express-handlebars')
 const passport = require('passport')
 const session = require('express-session')
 const LocalStrategy = require('passport-local').Strategy
-const dmmAuthenticator = require('./middleware/dmm-passport')
+const loginStrategy = require('./login-strategy')
 const morgan = require('morgan')
 const app = express()
 const log = require('./logger')('app:router')
@@ -47,7 +47,7 @@ function setupMiddleware() {
   }))
   log.verbose('initialize passport')
   app.use(passport.initialize())
-  passport.use(new LocalStrategy(dmmAuthenticator.authenticate))
+  passport.use('dmm-account', new LocalStrategy(loginStrategy.dmmAccount))
 
   log.verbose('configure stream log messages from morgan')
   log.stream = {
