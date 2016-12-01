@@ -3,6 +3,7 @@
 const sprintf = require('sprintf-js').sprintf
 const rp = require('request-promise')
 const log = require('../logger')('service:dmm')
+const errors = require('../errors')
 
 const API = {
   getGameInfo: function(gameId, dmmCookies) {
@@ -20,15 +21,7 @@ const API = {
     return rp.get(options)
     .then(htmlBody => {
       log.info(`search for gadgetInfo inside HTML ${url}`)
-      const gadgetInfo = getGadgetInfo(htmlBody)
-
-      if(!gadgetInfo) {
-        const error = new Error('gadget info not found')
-        log.error(error.message)
-        return Promise.reject(error)
-      } else {
-        return Promise.resolve(gadgetInfo)
-      }
+      return getGadgetInfo(htmlBody)
     })
   },
 
@@ -108,7 +101,7 @@ function getGadgetInfo(htmlString) {
   const varName = 'gadgetInfo = '
   let gadgetInfo = htmlString.match(new RegExp(varName + '{([^}]*)}', 'g'))
   if(!gadgetInfo)
-    return null
+    return Promise.reject(new errors.DmmError('gadgetInfo not found'))
   else
     gadgetInfo = gadgetInfo[0]
 
@@ -131,7 +124,7 @@ function getGadgetInfo(htmlString) {
   gadgetInfo = JSON.parse(gadgetInfo)
   log.debug(gadgetInfo)
 
-  return gadgetInfo
+  return Promise.resolve(gadgetInfo)
 }
 
 module.exports = API
