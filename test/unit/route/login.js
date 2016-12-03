@@ -68,7 +68,7 @@ describe('/dmm-session', () => {
 
   it('other errors occured should be handled by done() callback', () => {
     sandbox.stub(osapi, 'getGameInfo', () => {
-      return Promise.reject(new Error())
+      return Promise.reject('an error occured')
     })
 
     return request(app)
