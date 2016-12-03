@@ -9,6 +9,7 @@ const playerProfile = require('../mock/kancolle/api-terminal')
 const osapi = require(global.SRC_ROOT + '/dmm/osapi')
 const should = require('should')
 const errors = require(global.SRC_ROOT + '/errors')
+const nockAuth = require('../mock/dmm/auth')
 
 const sandbox = sinon.sandbox.create()
 
@@ -29,6 +30,14 @@ describe('/dmm-account', () => {
       stubNetworkRelatedMethods(testcase.playerProfile.world, testcase.playerProfile.dmmId)
       return assertGameLink('/dmm-account', testcase.account, testcase.targetUrl)
     })
+  })
+
+  it('should redirect to / if username and password is incorrect', () => {
+    return request(app)
+    .post('/dmm-account')
+    .send({username: nockAuth.badAccount.email, password: nockAuth.badAccount.password})
+    .expect(302)
+    .expect('location', '/')
   })
 })
 

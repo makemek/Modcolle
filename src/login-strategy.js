@@ -2,7 +2,6 @@
 
 const dmmAgent = require('./dmm/agent')
 const errors = require('./errors')
-const Cookie = require('tough-cookie').Cookie
 const CookieInjector = require('./dmm/cookie-injector')
 const osapi = require('./dmm/osapi')
 const log = require('./logger')('service:dmm')
@@ -15,10 +14,10 @@ module.exports = {
 
 function dmmAccount(username, password, done) {
   dmmAgent.login(username, password)
-  .then(cookies => {
-    cookies = cookies.map(Cookie.parse)
-    const session = cookies.find(cookie => cookie.key === 'INT_SESID').value
-    dmmSession(session, null, done)
+  .then(session => {
+    if(!session)
+      return done(null, false)
+    dmmSession(session.value, null, done)
   })
   .catch(done)
 }

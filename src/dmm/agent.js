@@ -2,6 +2,7 @@
 
 const rp = require('request-promise')
 const log = require('../logger')('service:dmm')
+const Cookie = require('tough-cookie').Cookie
 
 const DmmAgent = {
 
@@ -75,7 +76,7 @@ const DmmAgent = {
     .then( () => {
       // incorrect email or password will return statusCode 200 with empty body
       log.info('%s deny access due to incorrect email "%s", password, or token "%s"', options.uri, email, dmmAjaxToken.token)
-      return Promise.resolve(false)
+      return Promise.resolve(null)
     })
     .catch(error => {
       const response = error.response
@@ -84,7 +85,10 @@ const DmmAgent = {
       if(loginGranted) {
         log.info('%s granted access to user %s', options.uri, email)
         log.verbose('get "%s"\'s cookies given by %s', email, options.uri)
-        return Promise.resolve(response.headers['set-cookie'])
+
+        const cookies = response.headers['set-cookie'].map(Cookie.parse)
+        const session = cookies.find(cookie => cookie.key === 'INT_SESID')
+        return Promise.resolve(session)
       } else {
         log.error(error)
         return Promise.reject(error)
