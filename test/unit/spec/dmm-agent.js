@@ -48,23 +48,4 @@ describe('DMM agent', () => {
     })
     .catch(done)
   })
-
-  it('login success', done => {
-    agent.login('some@one.com', 'password')
-    .then(session => {
-      session.key.should.eql(expectedSession.key)
-      session.value.should.eql(expectedSession.value)
-      done()
-    })
-    .catch(done)
-  })
-
-  it('login fail', done => {
-    agent.login(dmmAuth.badAccount.email, dmmAuth.badAccount.password)
-    .then(session => {
-      should(session).be.Null()
-      done()
-    })
-    .catch(done)
-  })
 })

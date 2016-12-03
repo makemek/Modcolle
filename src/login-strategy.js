@@ -13,7 +13,9 @@ module.exports = {
 }
 
 function dmmAccount(username, password, done) {
-  dmmAgent.login(username, password)
+  dmmAgent.scrapeToken()
+  .then(dmmAgent.authorizeToken)
+  .then(token => dmmAgent.authenticate(username, password, token))
   .then(session => {
     if(!session)
       return done(null, false)

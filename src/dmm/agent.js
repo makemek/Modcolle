@@ -6,18 +6,6 @@ const Cookie = require('tough-cookie').Cookie
 
 const DmmAgent = {
 
-  login: function(email, password) {
-    email = email.trim()
-    password = password.trim()
-
-    const authenticateUser = this.authenticate.bind(null, email, password)
-    const promise = this.scrapeToken()
-    .then(this.authorizeToken)
-    .then(authenticateUser)
-
-    return promise
-  },
-
   scrapeToken: function() {
     const uri = 'https://www.dmm.com/my/-/login/=/path=Sg__/'
     log.info('scrape login token from %s', uri)
