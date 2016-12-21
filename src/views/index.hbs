@@ -1,12 +1,21 @@
 <h1>Modcolle - Kancolle Proxy Server<h1>
 
-<form action="/login" method="POST">
+<form action="/dmm-account" method="POST">
   <fieldset>
     <legend>Login by DMM Account</legend>
     <label>Email:</br>
     <input type="email" name="username" size="30" required="required"></br></label>
     <label>Password:</br>
     <input type="password" name="password" size="30" required="required"></br></label>
+    <input type="submit" name="submit" value="Login">
+  </fieldset>
+</form>
+
+<form action="/dmm-session" method="POST">
+  <fieldset>
+    <legend>Login by DMM Session</legend>
+    <label>Session ID</br>
+    <textarea rows="10" cols="50" name="dmm_session"></textarea></br>
     <input type="submit" name="submit" value="Login">
   </fieldset>
 </form>
