@@ -51,9 +51,9 @@ You have to install Nginx and Modcolle manually.
   - SESSION_SECRET: a key for computing hash to generate a session. Can be any string
   - LOGGER_SILENT: if `false` enables log, `true` disables log
   - LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
-4. Copy `/deployment/nginx/nginx.conf` to `C:\nginx\`. Make sure to backup nginx.conf first before overwrite.
+4. Copy `/deployment/nginx/nginx.conf` to `\path\to\nginx\conf`. Make sure to backup nginx.conf first before overwrite.
 5. Inside nginx.conf replace `app1` and `DOMAIN_NAME` with `localhost`
-6. Open terminal and start Nginx `start C:\nginx\nginx.exe`
+6. Start nginx
 7. `cd` to modcolle directory and run `npm install`
 8. Type `npm start`
-9. Open a browser and type `localhost` in the url 
+9. Open a browser and type `localhost` in the url
