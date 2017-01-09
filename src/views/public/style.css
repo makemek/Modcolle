@@ -1,0 +1,96 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  background-color: #F5F5F5;
+  font-family: 'FontAwesome', san-serif;
+  margin: 0;
+}
+
+.clearfix {
+  clear: both;
+}
+
+header {
+  overflow: auto;
+}
+
+#header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#logo {
+  float: left;
+  width: 200px;
+  height: 60px;
+  background: url(http://placehold.it/80x80?text=logo) no-repeat center;
+  margin-top: 10px;
+}
+
+/*--- Start Navigation Style ---*/
+nav {
+  float: right;
+  padding: 25px 20px;
+}
+
+ul {
+  list-style: none;
+}
+
+nav ul li {
+  font-size: 150%;
+  display: inline-block;
+  float: left;
+  padding: 0px 20px;
+  letter-spacing: 2px;
+}
+
+nav ul li a {
+  text-decoration: none;
+}
+/*--- End Navigation Style ---*/
+
+.banner {
+  position: relative;
+  font-size: 3.5em;
+  text-decoration: none;
+}
+
+.banner-bg {
+  background:url(https://wallpaperscraft.com/image/kouji_astral_reverie_kantai_collection_amatsukaze_rensouhou_kun_102668_1920x1080.jpg) no-repeat center center / cover;
+  position: relative;
+  height: 90vh;
+}
+
+.banner-content {
+  position: absolute;
+  width: 100%;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+  text-align: center;
+  margin: auto;
+  top: 20px;
+}
+
+.btn-play {
+  width: 100%;
+  top: 75%;
+  position: absolute;
+  text-align: center;
+}
+
+.btn-play a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.one-third {
+  float: left;
+  width: 33.33%;
+  padding: 40px 0;
+  text-align: center;
+}
