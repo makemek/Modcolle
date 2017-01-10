@@ -5,7 +5,7 @@
 }
 
 body {
-  background-color: #F5F5F5;
+  background-color: #eee;
   font-family: 'FontAwesome', san-serif;
   margin: 0;
 }
@@ -23,49 +23,32 @@ header {
   margin: 0 auto;
 }
 
-#logo {
-  float: left;
-  width: 200px;
-  height: 60px;
-  background: url(http://placehold.it/80x80?text=logo) no-repeat center;
-  margin-top: 10px;
+.container {
+  overflow: auto;
+  background-color: #fff;
+  width: 95%;
+  margin: 30px auto;
+  border-radius: 25px;
 }
 
-/*--- Start Navigation Style ---*/
-nav {
-  float: right;
-  padding: 25px 20px;
+/* Start Banner */
+.text-overlay {
+  background-color: rgba(0,0,0,.4);
+  padding:  0 20px;
 }
-
-ul {
-  list-style: none;
-}
-
-nav ul li {
-  font-size: 150%;
-  display: inline-block;
-  float: left;
-  padding: 0px 20px;
-  letter-spacing: 2px;
-}
-
-nav ul li a {
-  text-decoration: none;
-}
-/*--- End Navigation Style ---*/
-
 .banner {
   position: relative;
-  font-size: 3.5em;
+  font-size: 3.0em;
   text-decoration: none;
 }
-
 .banner-bg {
-  background:url(https://wallpaperscraft.com/image/kouji_astral_reverie_kantai_collection_amatsukaze_rensouhou_kun_102668_1920x1080.jpg) no-repeat center center / cover;
+  background:url(https://i.ytimg.com/vi/I85yF3NmhSs/maxresdefault.jpg) no-repeat top center / cover;
+  background-attachment:  fixed;
   position: relative;
-  height: 90vh;
-}
+  height: 100vh;
+  overflow: hidden;
 
+}
 .banner-content {
   position: absolute;
   width: 100%;
@@ -73,24 +56,56 @@ nav ul li a {
   text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
   text-align: center;
   margin: auto;
-  top: 20px;
+  top: 80px;
 }
-
 .btn-play {
   width: 100%;
   top: 75%;
   position: absolute;
   text-align: center;
 }
-
 .btn-play a {
   text-decoration: none;
   color: #fff;
+  background-color: rgba(0,0,0,.4);
+  padding: 15px 30px;
+  border-radius: 20px;
 }
+.nav-bar {
+  float: right;
+  background-color: rgba(255,255,255,0.6);
+  border-radius:  0 0 25px 25px;
+  font-size: 45%;
+  margin-right: 60px;
+}
+.nav-bar li {
+  list-style: none;
+  float: left;
+}
+.nav-bar li:hover {
+  background-color: rgba(0,0,0,.25);
+}
+.nav-bar li:first-child:hover {
+  border-radius: 0 0 0 25px;
+}
+.nav-bar li:last-child:hover {
+  border-radius: 0 0 25px 0;
+}
+.nav-bar li a {
+  text-decoration: none;
+  color: black;
+  display: inline-block;
+  padding: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+/* End Banner */
 
+/* Start Feature */
 .one-third {
   float: left;
   width: 33.33%;
   padding: 40px 0;
   text-align: center;
 }
+/* End Feature */
