@@ -17,6 +17,7 @@ body {
 .container {
   overflow: auto;
   padding: 0 4%;
+  background-color: #eee;
 }
 
 header {
@@ -34,12 +35,81 @@ header {
   font-size: 2.0em;
   text-decoration: none;
 }
-.banner-bg {
-  background:url(/res/img/banner.jpg) no-repeat top center / cover;
-  background-attachment:  fixed;
+.cover {
+  background-attachment: fixed;
   position: relative;
-  height: 100vh;
   overflow: hidden;
+  height: 100vh;
+}
+.background {
+  position: fixed;
+  z-index: -99;
+}
+.cloud {
+  height: auto;
+  top: 0;
+  left: 0;
+  min-height: 100%;
+  min-width: 1024px;
+  width: 100%;
+}
+.kaga {
+  left: 32%;
+  top: 5%;
+  width: 68%;
+  
+  will-change: transform, opacity;
+  transform: translate3d(0px,0px,0px);
+  animation:
+    fade-in .8s ease-out,
+    slide-in 1.2s ease,
+    bounce 3s 1.6s infinite;
+}
+.plane-small-alt-high {
+  left: 100%;
+  top: 30%;
+  
+  will-change: transform;
+  transform: translate3d(0px,0px,0px);
+  animation: glide 20s linear infinite;
+}
+.plane-small-alt-med {
+  left: 65%;
+  top: 40%;
+  opacity: 0;
+
+  will-change: transform, opacity;
+  transform: scale(1.5) translate3d(0px,0px,0px);
+  animation:
+    fade-in .5s 2s ease forwards,
+    glide 15s 2s linear infinite;
+}
+.plane-small-alt-low {
+  left: 65%;
+  top: 80%;
+  transform: scale(2);
+  opacity: 0;
+
+  will-change: transform, opacity;
+  transform: translate3d(0px,0px,0px);
+  animation: 
+    fade-in .5s 2s ease forwards,
+    glide 10s 4s linear infinite;
+}
+@keyframes glide {
+  100% { transform: translate3d(-1000px, -600px,0px); }
+}
+@keyframes slide-in {
+  0% { top: 100%; }
+  70% { top: 0%; }
+  100% { top: 5%; }
+}
+@keyframes fade-in {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+@keyframes bounce {
+  50% { transform: translate3d(0px,-20px,0px); }
 }
 .banner-content {
   background-color: rgba(0,0,0,0.4);
@@ -71,6 +141,17 @@ header {
   -webkit-filter: drop-shadow(0px 0px 15px #f2e1f2);
   filter: drop-shadow(0px 0px 15px #f2e1f2);
   cursor: pointer;
+
+  will-change: transform;
+  animation: swing-half .5s, swing 3s .5s infinite;
+}
+@keyframes swing-half {
+  100% { transform: rotate(-10deg); }
+}
+@keyframes swing {
+  0% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  100% { transform: rotate(-10deg); }
 }
 .hr-line {
   margin-top: 20px;
@@ -84,6 +165,7 @@ header {
   border-radius: 20%;
   padding: 10px;
   color: #fff;
+  -webkit-transition: background-color 0.2s ease;
   transition: background-color 0.2s ease;
 }
 .github:hover {
@@ -97,8 +179,6 @@ header {
   text-align: center;
   background-color: #fff;
   border-radius: 40px;
-  -webkit-box-shadow: 0px 7px 20px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 7px 20px 0px rgba(0,0,0,0.75);
   box-shadow: 5px 10px 20px 0px rgba(0,0,0,0.75);
   float: left;
   padding: 40px 0;
@@ -132,7 +212,6 @@ header {
 .modal-dialog:target {
   opacity:1;
   -webkit-transition: opacity 400ms ease-in;
-  -moz-transition: opacity 400ms ease-in;
   transition: opacity 400ms ease-in;
   pointer-events: auto;
 }
@@ -143,7 +222,6 @@ header {
   padding: 10px 20px 13px 20px;
   border-radius: 10px;
   background: #fff;
-  background: -moz-linear-gradient(#fff, #999);
   background: -webkit-linear-gradient(#fff, #999);
   background: -o-linear-gradient(#fff, #999);
 }
@@ -158,11 +236,7 @@ header {
   width: 24px;
   text-decoration: none;
   font-weight: bold;
-  -webkit-border-radius: 12px;
-  -moz-border-radius: 12px;
   border-radius: 12px;
-  -moz-box-shadow: 1px 1px 3px #000;
-  -webkit-box-shadow: 1px 1px 3px #000;
   box-shadow: 1px 1px 3px #000;
 }
 .close:hover { background: #00d9ff; }
@@ -233,6 +307,7 @@ input:checked + label.tabs {
   letter-spacing: 2px;
   background-color: #2280c3;
   color: #f5f5f5;
+  -webkit-transition: background-color 0.5s ease;
   transition: background-color 0.5s ease;
 }
 .modal-dialog button[type="submit"]:hover {
@@ -245,6 +320,7 @@ input:checked + label.tabs {
 /* Start Footer */
 footer.second {
   width: 100%;
+  background: -webkit-linear-gradient(#5070AD, #284F94);
   background: linear-gradient(#5070AD, #284F94);
   padding: 15px 0;
   letter-spacing: 2px;
