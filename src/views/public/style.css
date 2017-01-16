@@ -228,3 +228,22 @@ input:checked + label.tabs {
 }
 /* -- End Form -- */
 /* End Login Modal*/
+
+/* Start Footer */
+footer.second {
+  width: 100%;
+  background: linear-gradient(#5070AD, #284F94);
+  padding: 15px 0;
+  letter-spacing: 2px;
+  line-height: 25px;
+  border-top: 5px solid hsl(0, 0%, 80%);
+}
+footer.second p, footer.second a {
+  color: white;
+  text-align: center;
+  text-decoration: none;
+}
+footer.second a:hover {
+  color: black;
+}
+/* End Footer */
