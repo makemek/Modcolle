@@ -86,7 +86,7 @@ function setupTemplateEngine() {
 function setupStaticResourceDirectory() {
   const staticDir = path.join(__dirname, 'views/public')
   log.info('setup static directory', staticDir)
-  app.use('/res', express.static(staticDir));
+  app.use('/', express.static(staticDir));
 }
 
 module.exports = app
