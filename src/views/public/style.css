@@ -112,8 +112,7 @@ header {
   50% { transform: translate3d(0px,-20px,0px); }
 }
 .banner-content-wrapper {
-  background-color: rgba(0,0,0,0.4);
-  box-shadow: 0px 0px 40px 5px #f2e1f2;
+  background: linear-gradient(to right, rgba(54,83,156,1) 0%, rgba(54,84,156,0.5) 65%, rgba(54,83,156,0) 100%);
   padding: 0 70px 20px 70px;
   position: absolute;
   bottom: 0%;
