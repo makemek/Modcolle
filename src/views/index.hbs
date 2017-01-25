@@ -1,3 +1,41 @@
+<div id="login" class="modal-dialog">
+  <div>
+    <a href="#close" title="Close" class="close">X</a>
+
+    <input class="tabs" id="session" type="radio" name="tabs" checked>
+    <label class="tabs" for="session">By DMM Session</label>
+    <input class="tabs" id="account" type="radio" name="tabs">
+    <label class="tabs" for="account">By DMM Account</label>
+
+    <section id="form-session" class="login-form">
+      <form action="/dmm-session" method="POST">
+        <label>
+          <span>Session ID</span>
+          <input type="text" name="dmm_session" placeholder="Value of cookie INT_SESID" required autofocus>
+        </label>
+
+        <button type="submit" name="submit"><i class="fa fa-sign-in fa-lg"></i> Login</button>
+      </form>
+    </section>
+
+    <section id="form-account"  class="login-form">
+      <form action="/dmm-account" method="POST">
+        <label>
+          <span>Email</span>
+          <input type="email" name="username" size="30" required="required">
+        </label>
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" size="30" required="required">
+        </label>
+
+        <button type="submit" name="submit"><i class="fa fa-sign-in fa-lg"></i> Login</button>
+      </form>
+    </section>
+
+  </div>
+</div>
+
 <!-- Start  Banner -->
 <header class="banner">
   <div class="cover">
@@ -48,44 +86,6 @@
 </section>
 <div class="clearfix"></div>
 <!-- End Disqus Section -->
-
-<div id="login" class="modal-dialog">
-  <div>
-    <a href="#close" title="Close" class="close">X</a>
-
-    <input class="tabs" id="session" type="radio" name="tabs" checked>
-    <label class="tabs" for="session">By DMM Session</label>
-    <input class="tabs" id="account" type="radio" name="tabs">
-    <label class="tabs" for="account">By DMM Account</label>
-
-    <section id="form-session" class="login-form">
-      <form action="/dmm-session" method="POST">
-        <label>
-          <span>Session ID</span>
-          <input type="text" name="dmm_session" placeholder="Value of cookie INT_SESID" required autofocus>
-        </label>
-
-        <button type="submit" name="submit"><i class="fa fa-sign-in fa-lg"></i> Login</button>
-      </form>
-    </section>
-
-    <section id="form-account"  class="login-form">
-      <form action="/dmm-account" method="POST">
-        <label>
-          <span>Email</span>
-          <input type="email" name="username" size="30" required="required">
-        </label>
-        <label>
-          <span>Password</span>
-          <input type="password" name="password" size="30" required="required">
-        </label>
-
-        <button type="submit" name="submit"><i class="fa fa-sign-in fa-lg"></i> Login</button>
-      </form>
-    </section>
-
-  </div>
-</div>
 
 <footer class="second">
   <p>Modcolle is open-source on <a href="https://github.com/makemek/Modcolle" title="Contribute">Github <i class="fa fa-github"></i></a></p>
