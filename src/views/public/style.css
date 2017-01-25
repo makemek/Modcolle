@@ -173,6 +173,7 @@ header {
 /* Start Feature */
 .one-third {
   width: 30%;
+  height: 330px;
   text-align: center;
   background-color: #fff;
   border-radius: 40px;
@@ -181,7 +182,7 @@ header {
   padding: 40px 0;
   margin: 50px 0;
 }
-.one-third:nth-child(2n) {
+.one-third:nth-child(2) {
   margin-left: 5%;
   margin-right: 5%;
 }
@@ -191,6 +192,20 @@ header {
 }
 .one-third h1 {
   margin-top: 40px;
+}
+.one-third p {
+  width: 80%;
+  margin: 15px auto;
+  font-size: 1.25em;
+  font-weight: 550;
+}
+.one-third a {
+  text-decoration: none;
+  color: #2C417C;
+  font-weight: 800;
+}
+.one-third a:hover {
+  color: #5573c3;
 }
 /* End Feature */
 
