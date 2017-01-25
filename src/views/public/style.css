@@ -34,6 +34,7 @@ header {
   position: relative;
   font-size: 2.0em;
   text-decoration: none;
+  overflow: hidden;
 }
 .cover {
   background-attachment: fixed;
@@ -118,7 +119,6 @@ header {
   position: absolute;
   bottom: 0%;
   height: 100%;
-  overflow: auto;
 }
 .logo {
   padding-bottom: 10px;
