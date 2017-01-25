@@ -54,9 +54,10 @@ header {
   width: 100%;
 }
 .kaga {
-  left: 35%;
+  right: 0%;
   top: 5%;
-  width: 65%;
+  width: auto;
+  height: 100%;
   
   will-change: transform, opacity;
   transform: translate3d(0px,0px,0px);
@@ -66,7 +67,7 @@ header {
     bounce 3s 1.6s infinite;
 }
 .plane-small-alt-high {
-  left: 100%;
+  right: -10%;
   top: 30%;
   
   will-change: transform;
@@ -74,8 +75,8 @@ header {
   animation: glide 20s linear infinite;
 }
 .plane-small-alt-med {
-  left: 65%;
-  top: 40%;
+  right: 30%;
+  top: 45%;
   opacity: 0;
 
   will-change: transform, opacity;
@@ -85,7 +86,7 @@ header {
     glide 15s 2s linear infinite;
 }
 .plane-small-alt-low {
-  left: 65%;
+  right: 35%;
   top: 80%;
   transform: scale(2);
   opacity: 0;
