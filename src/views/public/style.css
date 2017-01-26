@@ -79,40 +79,6 @@ header {
     slide-in 1.2s ease,
     bounce 3s 1.6s infinite;
 }
-.plane-small-alt-high {
-  right: -10%;
-  top: 30%;
-  
-  will-change: transform;
-  transform: translate3d(0px,0px,0px);
-  animation: glide 20s linear infinite;
-}
-.plane-small-alt-med {
-  right: 30%;
-  top: 45%;
-  opacity: 0;
-
-  will-change: transform, opacity;
-  transform: scale(1.5) translate3d(0px,0px,0px);
-  animation:
-    fade-in .5s 2s ease forwards,
-    glide 15s 2s linear infinite;
-}
-.plane-small-alt-low {
-  right: 35%;
-  top: 80%;
-  transform: scale(2);
-  opacity: 0;
-
-  will-change: transform, opacity;
-  transform: translate3d(0px,0px,0px);
-  animation: 
-    fade-in .5s 2s ease forwards,
-    glide 10s 4s linear infinite;
-}
-@keyframes glide {
-  100% { transform: translate3d(-1000px, -600px,0px); }
-}
 @keyframes slide-in {
   0% { top: 100%; }
   70% { top: 0%; }
