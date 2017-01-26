@@ -92,6 +92,17 @@
   <p><i class="fa fa-copyright"></i> Apipol Niyomsak</p>
 </footer>
 <script>
+// bg jitter fix for ie
+if(navigator.userAgent.match(/Edge\/12\./)) {
+    $('body').on("mousewheel", function () {
+
+        event.preventDefault();
+        var wd = event.wheelDelta;
+        var csp = window.pageYOffset;
+        window.scrollTo(0, csp - wd);
+    });
+}
+
 var modal = document.getElementById('login');
 window.onclick = function(event) {
     if (event.target == modal) {

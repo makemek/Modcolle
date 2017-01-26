@@ -4,6 +4,18 @@
   border: 0;
 }
 
+/* background gitter fix for IE */
+html {
+    overflow: hidden;
+    height: 100%;
+}
+
+body {
+    overflow: auto;
+    height: 100%;
+}
+/* --------- */
+
 body {
   background-color: #eee;
   font-family: 'FontAwesome', san-serif;
