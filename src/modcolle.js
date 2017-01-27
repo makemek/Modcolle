@@ -11,6 +11,7 @@ const morgan = require('morgan')
 const app = express()
 const log = require('./logger')('app:router')
 const router = require('./routing/')
+const path = require('path')
 
 const SESSION_SECRET = process.env.SESSION_SECRET
 
@@ -19,6 +20,7 @@ setupMiddleware()
 setupTemplateEngine()
 setupDefaultLocalResponseHeader()
 setupRouting()
+setupStaticResourceDirectory()
 log.info('=== Finished App Configuration ===')
 
 function setupDefaultLocalResponseHeader() {
@@ -79,6 +81,12 @@ function setupTemplateEngine() {
   app.engine(engineName, hbs.engine)
   app.set('views', baseDirView)
   app.set('view engine', engineName)
+}
+
+function setupStaticResourceDirectory() {
+  const staticDir = path.join(__dirname, 'views/public')
+  log.info('setup static directory', staticDir)
+  app.use('/', express.static(staticDir));
 }
 
 module.exports = app
