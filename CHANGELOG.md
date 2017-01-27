@@ -1,4 +1,6 @@
 # Modcolle Changelog
+## 2017.01.27, Version 0.2.2
+* Stylize index page (not optimized for mobile site yet) #4
 
 ## 2016.12.21, Version 0.2.1
 * Add new login strategy: DMM session

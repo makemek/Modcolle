@@ -9,7 +9,7 @@ Thus, it has the opportunity to process requests before forwarding them to desti
 In this case, Modcolle is a middleman between client and Kancolle servers.
 Client can access modcolle without having to configure proxy connection.
 No more cookie injection, ~~Japan timezone synchronization~~, or VPN connection in order to play the game.
-Modcolle do all those messy things for you.
+Modcolle do all those things behind the scenes.
 Since the processes involves calling DMM API directly, no bloating javascript is executed, it is faster than accessing from [DMM website](http://www.dmm.com).
 Modcolle also distributes game asset requests .png, .mp3, and .swf among multiple Kancolle servers to relief traffic bottle neck.
 Ensures that all assets will be delivered as fast as possible.
