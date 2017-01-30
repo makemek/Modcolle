@@ -1,6 +1,7 @@
 # Project gitignore
 src/config/settings.json
 .env
+*.min.*
 
 # Nodejs gitignore template
 # Obtained from https://github.com/github/gitignore/blob/master/Node.gitignore
