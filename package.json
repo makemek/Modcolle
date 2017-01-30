@@ -16,8 +16,8 @@
     "eslint": "./node_modules/.bin/eslint"
   },
   "scripts": {
-    "start": "nf start",
-    "dev": "nf run nodemon ./bin/www",
+    "start": "gulp build && nf start",
+    "dev": "gulp build && nf run gulp browser-sync",
     "coverage": "nf run istanbul cover ./node_modules/mocha/bin/_mocha",
     "eslint": "eslint src/**/*.js test/**/*.js bin/**",
     "utest": "nf run mocha",
@@ -45,9 +45,16 @@
   },
   "devDependencies": {
     "app-root-path": "2.0.1",
+    "autoprefixer": "6.7.0",
+    "browser-sync": "2.18.6",
     "cheerio": "0.22.0",
     "coveralls": "2.11.14",
     "eslint": "3.9.1",
+    "gulp": "3.9.1",
+    "gulp-clean-css": "2.3.2",
+    "gulp-nodemon": "2.2.1",
+    "gulp-postcss": "6.3.0",
+    "gulp-rename": "1.2.2",
     "istanbul": "0.4.5",
     "mocha": "3.1.2",
     "nock": "9.0.2",
