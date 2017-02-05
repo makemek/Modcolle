@@ -16,11 +16,14 @@
     "eslint": "./node_modules/.bin/eslint"
   },
   "scripts": {
-    "start": "gulp build && nf start",
-    "dev": "gulp build && nf run gulp browser-sync",
+    "build": "gulp build",
+    "prestart": "npm run build",
+    "start": "nf start",
+    "dev": "npm run build && nf run gulp browser-sync",
     "coverage": "nf run istanbul cover ./node_modules/mocha/bin/_mocha",
     "eslint": "eslint src/**/*.js test/**/*.js bin/**",
     "utest": "nf run mocha",
+    "pretest": "npm run build",
     "test": "npm run eslint && npm run utest"
   },
   "dependencies": {
