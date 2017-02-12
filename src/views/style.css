@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+
 * {
   margin: 0;
   padding: 0;
@@ -39,6 +41,37 @@ header {
 #header-inner {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.banner-info {
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+}
+
+.countdown-timer {
+  position: absolute;
+  top: 5%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  text-align: center;
+}
+.timer {
+  display: table;
+  margin: 0 auto;
+}
+.countdown-timer header {
+  font-size: 1.5em;
+  font-weight: 800;
+}
+.countdown-timer section {
+  float: left;
+  padding: 10px 13px;
+}
+.countdown-timer section .number {
+  font-family: 'Orbitron';
+  font-size: 1.5em;
+  letter-spacing: 4px;
 }
 
 /* Start Banner */
@@ -104,9 +137,7 @@ header {
 .banner-content {
   margin-top: 40%;
   width: 100%;
-  color: #fff;
   text-align: center;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
 #launcher {
   margin-top: 40px;
