@@ -48,6 +48,9 @@ header {
   text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
 
+#maintenence-timer {
+  display: none;
+}
 .countdown-timer {
   position: absolute;
   top: 5%;
@@ -70,8 +73,8 @@ header {
 }
 .countdown-timer section .number {
   font-family: 'Orbitron';
-  font-size: 1.5em;
-  letter-spacing: 4px;
+  font-size: 1.7em;
+  letter-spacing: 2px;
 }
 
 /* Start Banner */
