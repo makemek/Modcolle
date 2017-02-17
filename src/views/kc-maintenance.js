@@ -15,15 +15,22 @@ maintenanceCheck()
 
 function maintenanceCheck() {
   const now = Date.now()
+  const willMaintenacne = now <= MaintenanceInfo.StartDateTime
   const onMaintenance = now > MaintenanceInfo.StartDateTime && now < MaintenanceInfo.EndDateTime
-  if(onMaintenance) {
-    const remaining = MaintenanceInfo.EndDateTime - now
-    maintenanceNotice.style.display = 'block'
-    tick(remaining)
-    setTimeout(maintenanceCheck, 1000)
+  let remaining = 0
+
+  if(willMaintenacne)
+    remaining = MaintenanceInfo.StartDateTime - now
+  else if(onMaintenance)
+    remaining = MaintenanceInfo.EndDateTime - now
+  else {
+    maintenanceNotice.style.display = 'none'
     return
   }
-  maintenanceNotice.style.display = 'none'
+
+  maintenanceNotice.style.display = 'block'
+  tick(remaining)
+  setTimeout(maintenanceCheck, 1000)
 }
 
 function tick(timeRemaining) {
