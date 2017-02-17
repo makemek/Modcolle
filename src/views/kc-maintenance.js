@@ -10,6 +10,7 @@ const timer = {
   second: document.getElementById('second')
 }
 const maintenanceNotice = document.getElementById('maintenance-timer')
+const state = document.getElementById('maintenance-state')
 
 maintenanceCheck()
 
@@ -19,11 +20,13 @@ function maintenanceCheck() {
   const onMaintenance = now > MaintenanceInfo.StartDateTime && now < MaintenanceInfo.EndDateTime
   let remaining = 0
 
-  if(willMaintenacne)
+  if(willMaintenacne) {
     remaining = MaintenanceInfo.StartDateTime - now
-  else if(onMaintenance)
+    state.innerHTML = 'begins'
+  } else if(onMaintenance) {
     remaining = MaintenanceInfo.EndDateTime - now
-  else {
+    state.innerHTML = 'ends'
+  } else {
     maintenanceNotice.style.display = 'none'
     return
   }
