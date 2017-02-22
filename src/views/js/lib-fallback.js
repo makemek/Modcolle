@@ -1,3 +1,7 @@
+/* global fallback */
+
+'use strict'
+
 require('fallbackjs/fallback.min')
 
 fallback.load({
