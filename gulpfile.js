@@ -4,6 +4,11 @@ const appPort = process.env.PORT
 const devPort = process.env.PORT_DEV
 const css = 'src/views/*.css'
 const htmlTemplate = 'src/views/**/*.hbs'
+const publicAssets = 'src/views/public'
+const destination = {
+  css: publicAssets + '/css',
+  fonts: publicAssets + '/fonts'
+}
 
 const gulp = require('gulp')
 const postcss = require('gulp-postcss')
@@ -20,8 +25,17 @@ gulp.task('build:css', () => {
   .pipe(rename({suffix: '.min'}))
   .pipe(postcss([autoprefixer()]))
   .pipe(cleanCSS())
-  .pipe(gulp.dest('src/views/public/css'))
+  .pipe(gulp.dest(destination.css))
   .pipe(bs.stream())
+})
+
+gulp.task('import', ['font-awesome'])
+
+gulp.task('font-awesome', () => {
+  gulp.src('node_modules/font-awesome/css/font-awesome.min.css')
+  .pipe(gulp.dest(destination.css))
+  gulp.src('node_modules/font-awesome/fonts/*')
+  .pipe(gulp.dest(destination.fonts))
 })
 
 gulp.task('nodemon', done => {

@@ -1,4 +1,5 @@
 # Project gitignore
+public
 src/config/settings.json
 .env
 *.min.*
