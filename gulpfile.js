@@ -3,11 +3,13 @@
 const appPort = process.env.PORT
 const devPort = process.env.PORT_DEV
 const css = 'src/views/*.css'
+const js = 'src/views/js/*.js'
 const htmlTemplate = 'src/views/**/*.hbs'
 const publicAssets = 'src/views/public'
 const destination = {
   css: publicAssets + '/css',
-  fonts: publicAssets + '/fonts'
+  fonts: publicAssets + '/fonts',
+  js: publicAssets + '/js'
 }
 
 const gulp = require('gulp')
@@ -17,8 +19,11 @@ const cleanCSS = require('gulp-clean-css')
 const rename = require('gulp-rename')
 const bs = require('browser-sync').create()
 const nodemon = require('gulp-nodemon')
+const gutil = require('gulp-util')
+const source = require('vinyl-source-stream')
+const browserify = require('browserify')
 
-gulp.task('build', ['build:css'])
+gulp.task('build', ['build:css', 'build:js'])
 
 gulp.task('build:css', () => {
   return gulp.src(css)
@@ -26,6 +31,15 @@ gulp.task('build:css', () => {
   .pipe(postcss([autoprefixer()]))
   .pipe(cleanCSS())
   .pipe(gulp.dest(destination.css))
+  .pipe(bs.stream())
+})
+
+gulp.task('build:js', () => {
+  browserify('src/views/js/')
+  .bundle()
+  .on('error', error => gutil.log(error))
+  .pipe(source('bundle.js'))
+  .pipe(gulp.dest(destination.js))
   .pipe(bs.stream())
 })
 
@@ -61,5 +75,6 @@ gulp.task('browser-sync', ['nodemon'], () => {
   })
 
   gulp.watch(css, ['build:css'])
+  gulp.watch(js, ['build:js'])
   gulp.watch(htmlTemplate, bs.reload)
 })
