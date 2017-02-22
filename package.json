@@ -16,7 +16,7 @@
     "eslint": "./node_modules/.bin/eslint"
   },
   "scripts": {
-    "build": "gulp build",
+    "build": "gulp build && gulp import",
     "prestart": "npm run build",
     "start": "nf start",
     "dev": "npm run build && nf run gulp browser-sync",
@@ -32,6 +32,7 @@
     "express": "4.14.0",
     "express-handlebars": "3.0.0",
     "express-session": "1.14.2",
+    "font-awesome": "4.7.0",
     "foreman": "2.0.0",
     "inherit": "2.2.6",
     "morgan": "1.7.0",
