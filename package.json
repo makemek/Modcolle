@@ -32,7 +32,6 @@
     "body-parser": "1.15.2",
     "express": "4.14.0",
     "express-handlebars": "3.0.0",
-    "express-session": "1.14.2",
     "fallbackjs": "1.1.8",
     "font-awesome": "4.7.0",
     "foreman": "2.0.0",
