@@ -11,6 +11,7 @@ const app = express()
 const log = require('./logger')('app:router')
 const router = require('./routing/')
 const path = require('path')
+require('dotenv').load()
 
 log.info('=== Welcome to Modcolle ===')
 setupMiddleware()

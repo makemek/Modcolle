@@ -1,5 +1,7 @@
 'use strict'
 
+require('dotenv').load()
+
 const appPort = process.env.PORT
 const devPort = process.env.PORT_DEV
 const css = 'src/views/*.css'
