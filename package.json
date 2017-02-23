@@ -16,7 +16,7 @@
     "eslint": "./node_modules/.bin/eslint"
   },
   "scripts": {
-    "build": "gulp build && gulp import",
+    "build": "gulp build && gulp import && cp -n .env.template .env",
     "prestart": "npm run build",
     "preinstall": "npm prune",
     "start": "node bin/www",
