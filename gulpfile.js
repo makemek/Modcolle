@@ -2,8 +2,8 @@
 
 require('dotenv').load()
 
-const appPort = process.env.PORT
-const devPort = process.env.PORT_DEV
+const appPort = process.env.PORT || '5000'
+const devPort = process.env.PORT_DEV || '3000'
 const css = 'src/views/*.css'
 const js = 'src/views/js/*.js'
 const htmlTemplate = 'src/views/**/*.hbs'
