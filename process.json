@@ -1,0 +1,17 @@
+{
+  "apps": [{
+    "name": "Modcolle",
+    "script": "bin/www",
+    "watch": false,
+    "instances": 0,
+    "merge_logs": true,
+    "exec_mode": "cluster_mode",
+    "error_file": "./log/error.log",
+    "out_file": "./log/out.log",
+    "pid_file": "./log/modcolle.pid",
+    "env": {
+      "NODE_ENV": "production",
+      "PORT": 5000
+    }
+  }]
+}
