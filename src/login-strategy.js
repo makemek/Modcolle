@@ -19,7 +19,7 @@ function dmmAccount(username, password, done) {
   .then(session => {
     if(!session)
       return done(null, false)
-    dmmSession(session.value, null, done)
+    return dmmSession(session.value, null, done)
   })
   .catch(done)
 }
@@ -27,7 +27,7 @@ function dmmAccount(username, password, done) {
 function dmmSession(session, _, done) {
   const cookies = _injectCookies(`INT_SESID=${session}`, ['/', '/netgame/', '/netgame_s/'])
   log.info(`OSAPI: get DMM game metadata of app id ${kancolle.appId}`)
-  osapi.getGameInfo(kancolle.appId, cookies)
+  return osapi.getGameInfo(kancolle.appId, cookies)
   .then(gadgetInfo => done(null, gadgetInfo))
   .catch(error => {
     if(error instanceof errors.DmmError)
