@@ -51,7 +51,13 @@ gulp.task('build:js', () => {
   .pipe(bs.stream())
 })
 
-gulp.task('import', ['font-awesome'])
+gulp.task('import', ['environment-variables', 'font-awesome'])
+
+gulp.task('environment-variables', () => {
+  gulp.src('.env.template.json')
+  .pipe(rename('.env.json'))
+  .pipe(gulp.dest('.', {overwrite: false}))
+})
 
 gulp.task('font-awesome', () => {
   gulp.src('node_modules/font-awesome/css/font-awesome.min.css')

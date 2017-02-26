@@ -4,7 +4,6 @@ node_js:
   - "5"
 
 before_install:
-  - cp .env.template.json .env.json
   - travis_retry npm install
 
 script:

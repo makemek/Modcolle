@@ -16,12 +16,12 @@
     "eslint": "./node_modules/.bin/eslint"
   },
   "scripts": {
-    "build": "gulp build && gulp import && cp -n .env.template.json .env.json",
+    "build": "gulp build && gulp import",
     "prestart": "npm run build",
     "preinstall": "npm prune",
     "start": "node bin/www",
     "dev": "npm run build && gulp browser-sync",
-    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha",
+    "coverage": "npm run pretest && istanbul cover ./node_modules/mocha/bin/_mocha",
     "eslint": "eslint src/**/*.js test/**/*.js bin/**",
     "utest": "mocha",
     "pretest": "npm run build",
