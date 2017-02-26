@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/makemek/Modcolle/badge.svg?branch=dev)](https://coveralls.io/github/makemek/Modcolle?branch=dev)
 
 Modcolle is a proxy server for playing [Kantai Collection (艦隊これくしょん ～艦これ～)](http://www.dmm.com/netgame_s/kancolle/).
-The main goal of Modcolle is to provide in-game translation displaying in the flash client directly. 
+The main goal of Modcolle is to provide in-game translation displaying in the flash client directly.
 Unlike [Kancolle Viewer](https://github.com/Grabacr07/KanColleViewer) that wraps IE browser and listens to outgoing traffic, Modcolle, acting as a web server, makes Kancolle send all HTTP requests to Modcolle instead.
 Thus, it has the opportunity to process requests before forwarding them to destinated Kancolle servers or response back to clients.
 In this case, Modcolle is a middleman between client and Kancolle servers.
@@ -33,7 +33,7 @@ Please follows steps below to run Modcolle
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/)
 2. Clone this repository `git clone git@github.com:makemek/Modcolle.git`
-3. Copy `.env.template` to `.env` and configure
+3. Copy `.env.template.json` to `.env.json` and configure
   - SESSION_SECRET: a key for computing hash to generate a session. Can be any string
   - LOGGER_SILENT: if `false` enables log, `true` disables log
   - LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
