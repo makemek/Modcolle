@@ -1,6 +1,6 @@
 'use strict'
 
-require('dotenv').load()
+require('dot-env')
 
 const appPort = process.env.PORT || '5000'
 const devPort = process.env.PORT_DEV || '3000'

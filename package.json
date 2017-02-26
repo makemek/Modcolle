@@ -16,7 +16,7 @@
     "eslint": "./node_modules/.bin/eslint"
   },
   "scripts": {
-    "build": "gulp build && gulp import && cp -n .env.template .env",
+    "build": "gulp build && gulp import && cp -n .env.template.json .env.json",
     "prestart": "npm run build",
     "preinstall": "npm prune",
     "start": "node bin/www",
@@ -30,7 +30,7 @@
   "dependencies": {
     "async": "2.1.2",
     "body-parser": "1.15.2",
-    "dotenv": "4.0.0",
+    "dot-env": "0.0.1",
     "express": "4.14.0",
     "express-handlebars": "3.0.0",
     "fallbackjs": "1.1.8",

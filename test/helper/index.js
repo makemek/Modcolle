@@ -1,6 +1,6 @@
 'use strict'
 
-require('dotenv').load()
+require('dot-env')
 require('../../src/')
 require('./approot')
 require('./sinon')
