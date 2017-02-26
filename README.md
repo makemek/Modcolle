@@ -32,13 +32,9 @@ Please follows steps below to run Modcolle
 ### On Mac and Linux
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/)
-2. Clone this repository `git clone git@github.com:makemek/Modcolle.git`
-3. Copy `.env.template.json` to `.env.json` and configure
-  - SESSION_SECRET: a key for computing hash to generate a session. Can be any string
-  - LOGGER_SILENT: if `false` enables log, `true` disables log
-  - LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
-4. Open terminal and run `docker-compose up`. You can add `-d` flag to detach the process and run as a daemon.
-5. Open a web browser and type `localhost` in the url
+2. Clone this repository `git clone git@github.com:makemek/Modcolle.git` and run `npm install`
+3. Open terminal and run `docker-compose up`. You can add `-d` flag to detach the process and run as a daemon.
+4. Open a web browser and type `localhost` in the url
 
 ### On windows
 Unfortunately, Docker is not natively supported on Windows.
@@ -46,14 +42,21 @@ Also there is a shell script that be executed only in linux environment.
 You have to install Nginx and Modcolle manually.
 
 1. Install Nginx and Node.js (v. 6.9.1)
-2. Clone this repository `git clone git@github.com:makemek/Modcolle.git`
-3. Copy `.env.template` to `.env` and configure
-  - SESSION_SECRET: a key for computing hash to generate a session. Can be any string
-  - LOGGER_SILENT: if `false` enables log, `true` disables log
-  - LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
-4. Copy `/deployment/nginx/nginx.conf` to `\path\to\nginx\conf`. Make sure to backup nginx.conf first before overwrite.
-5. Inside nginx.conf replace `app1` and `DOMAIN_NAME` with `localhost`
-6. Start nginx
-7. `cd` to modcolle directory and run `npm install`
-8. Type `npm start`
-9. Open a browser and type `localhost` in the url
+2. Clone this repository `git clone git@github.com:makemek/Modcolle.git` and run `npm install`
+3. Copy `/deployment/nginx/nginx.conf` to `\path\to\nginx\conf`. Make sure to backup nginx.conf first before overwrite.
+4. Inside nginx.conf replace `app1` and `DOMAIN_NAME` with `localhost`
+5. Start nginx
+6. Type `npm install pm2 -g` and run `pm2 start process.json`
+7. Open a browser and type `localhost` in the url
+
+## Configuration
+`.env.json` is the common configuration for Modcolle which will be created on first-time start or test by copying `.env.json.template` (no overwrite if file already exists).
+At `env` section in `process.json` are environment variables that will override `.env.json` for running in production environment.
+
+### Environment Variables
+- LOGGER_SILENT: if `false` enables log, `true` disables log
+- LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
+- PORT: application port
+- PORT_DEV: **FOR DEVELOPMENT ONLY** will take effect when run `npm run dev`
+- KANCOLLE_SERVER_MASTER: A host name for main Kancolle server that have interface`/kcsapi/api_world/get_id` for requesting players world id
+- KANCOLLE_SERVER_#: A host name for other Kancolle servers where `#` is `world id`
