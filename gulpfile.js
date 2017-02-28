@@ -6,6 +6,7 @@ const appPort = process.env.PORT || '5000'
 const devPort = process.env.PORT_DEV || '3000'
 const css = 'src/views/*.css'
 const js = 'src/views/js/*.js'
+const html = 'src/views/**/*.html'
 const htmlTemplate = 'src/views/**/*.hbs'
 const publicAssets = 'src/views/public'
 const destination = {
@@ -90,5 +91,6 @@ gulp.task('browser-sync', ['nodemon'], () => {
 
   gulp.watch(css, ['build:css'])
   gulp.watch(js, ['build:js'])
+  gulp.watch(html, bs.reload)
   gulp.watch(htmlTemplate, bs.reload)
 })
