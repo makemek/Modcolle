@@ -2,6 +2,7 @@
 
 'use strict'
 
+require('dot-env')
 const winston = require('winston')
 const app = require('../src/')
 const http = require('http')

@@ -12,5 +12,7 @@ nginx:
     - DOMAIN_NAME=localhost
 app1:
   build: .
+  volumes:
+   - /var/www/modcolle/log:/var/www/modcolle/log
   ports:
     - "5000"

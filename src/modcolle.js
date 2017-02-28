@@ -4,7 +4,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const expressHandlebars = require('express-handlebars')
 const passport = require('passport')
-const session = require('express-session')
 const LocalStrategy = require('passport-local').Strategy
 const loginStrategy = require('./login-strategy')
 const morgan = require('morgan')
@@ -12,8 +11,6 @@ const app = express()
 const log = require('./logger')('app:router')
 const router = require('./routing/')
 const path = require('path')
-
-const SESSION_SECRET = process.env.SESSION_SECRET
 
 log.info('=== Welcome to Modcolle ===')
 setupMiddleware()
@@ -41,12 +38,6 @@ function setupMiddleware() {
   log.verbose('setup POST body parser')
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
-  log.verbose(`setup session using session secret ${SESSION_SECRET}`)
-  app.use(session({
-    secret: SESSION_SECRET,
-    resave: true,
-    saveUninitialized: false
-  }))
   log.verbose('initialize passport')
   app.use(passport.initialize())
   passport.use('dmm-account', new LocalStrategy(loginStrategy.dmmAccount))
