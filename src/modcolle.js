@@ -60,7 +60,6 @@ function setupTemplateEngine() {
   const baseDirView = 'src/views'
 
   const options = {
-    defaultLayout: 'defaultLayout',
     extname: templateExtension,
 
     layoutsDir: baseDirView + '/layouts',
