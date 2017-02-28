@@ -8,10 +8,6 @@ const URL = require('url-parse')
 const urljoin = require('url-join')
 const log = require('../logger')('app:router')
 
-router.get('/', (req, res) => {
-  res.render('index')
-})
-
 router.post('/dmm-account', passport.authenticate('dmm-account', {
   failureRedirect: '/',
   session: false
