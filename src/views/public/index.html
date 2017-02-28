@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="favicon.ico">
+    <link href="css/style.min.css" rel="stylesheet"/>
+    <title>ModColle</title>
+  </head>
+
+  <body>
+    <div id="login" class="modal-dialog">
+      <div>
+        <a href="#close" title="Close" class="close">X</a>
+
+        <input class="tabs" id="session" type="radio" name="tabs" checked>
+        <label class="tabs" for="session">By DMM Session</label>
+        <input class="tabs" id="account" type="radio" name="tabs">
+        <label class="tabs" for="account">By DMM Account</label>
+
+        <section id="form-session" class="login-form">
+          <form action="/dmm-session" method="POST">
+            <label>
+              <span>Session ID</span>
+              <input type="text" name="dmm_session" placeholder="Value of cookie INT_SESID" required autofocus>
+            </label>
+
+            <button type="submit" name="submit"><i class="fa fa-sign-in fa-lg"></i> Login</button>
+          </form>
+        </section>
+
+        <section id="form-account"  class="login-form">
+          <form action="/dmm-account" method="POST">
+            <label>
+              <span>Email</span>
+              <input type="email" name="username" size="30" required="required">
+            </label>
+            <label>
+              <span>Password</span>
+              <input type="password" name="password" size="30" required="required">
+            </label>
+
+            <button type="submit" name="submit"><i class="fa fa-sign-in fa-lg"></i> Login</button>
+          </form>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Start  Banner -->
+    <header class="banner">
+      <div class="cover">
+        <img src="img/cover-bg.jpg" class="background cloud">
+        <img src="img/kaga.png" class="background kaga">
+      </div>
+      <div class="banner-content-wrapper">
+        <div class="banner-content">
+          <h1><i class="fa fa-anchor fa-2x logo"></i></h1>
+          <h1>Modcolle</h1>
+          <p>Kancolle Proxy Server</p>
+          <div class="hr-line"></div>
+          <a href="#login" title="Launch"><img id="launcher" src="img/launcher.png" alt="Launch"></a>
+        </div>
+      </div>
+      <a class="github" href="https://github.com/makemek/Modcolle" title="View on Github" target="_blank"><i class="fa fa-github"></i></a>
+    </header>
+    <div class="clearfix"></div>
+    <!-- End Banner -->
+
+    <!-- Start Features -->
+    <div class="container">
+      <section class="one-third">
+        <span class="icon"><i class="fa fa-laptop" aria-hidden="true"></i></span>
+        <h1>Full Screen<br>Gameplay</h1>
+        <p>Enjoy full screen gameplay experience</p>
+      </section>
+      <section class="one-third">
+        <span class="icon"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+        <h1>In-game Translation <br><span style="color: red; font-weight: 800">*Work in progress* </span></h1>
+        <p>Translated mission, ship lines, and items inside the game</p>
+      </section>
+      <section class="one-third">
+        <span class="icon"><i class="fa fa-connectdevelop" aria-hidden="true"></i></span>
+        <h1>Compatible with<br>Kancolle Viewer</h1>
+        <p>Support 3rd party Kancolle viewers. <a target="_blank" href="http://grabacr.net/kancolleviewer">KCV</a>, <a target="_blank" href="https://github.com/KC3Kai/KC3Kai">KC3Kai</a>, <a target="_blank" href="https://poi.io">POI</a></p>
+      </section>
+      <div class="clearfix"></div>
+    </div>
+    <!-- End Features -->
+
+    <!-- Start Disqus Section -->
+    <section class="disqus">
+
+    </section>
+    <div class="clearfix"></div>
+    <!-- End Disqus Section -->
+
+    <footer class="second">
+      <p>Modcolle is open-source on <a target="_blank" href="https://github.com/makemek/Modcolle" title="Contribute">Github <i class="fa fa-github"></i></a></p>
+      <p><i class="fa fa-copyright"></i> Apipol Niyomsak</p>
+    </footer>
+
+    <script src="js/bundle.min.js"></script>
+    <script>
+    // bg jitter fix for ie
+    if(navigator.userAgent.match(/Edge\/12\./)) {
+        $('body').on("mousewheel", function () {
+
+            event.preventDefault();
+            var wd = event.wheelDelta;
+            var csp = window.pageYOffset;
+            window.scrollTo(0, csp - wd);
+        });
+    }
+
+    var modal = document.getElementById('login');
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            window.location = "#close"
+        }
+    }
+    </script>
+  </body>
+</html>
