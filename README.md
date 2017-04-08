@@ -1,6 +1,5 @@
 # Modcolle
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/makemek/Modcolle.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/makemek/Modcolle.svg?branch=dev)](https://travis-ci.org/makemek/Modcolle)
 [![Coverage Status](https://coveralls.io/repos/github/makemek/Modcolle/badge.svg?branch=dev)](https://coveralls.io/github/makemek/Modcolle?branch=dev)
 
