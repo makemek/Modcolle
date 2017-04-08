@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+
 * {
   margin: 0;
   padding: 0;
@@ -39,6 +41,40 @@ header {
 #header-inner {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.banner-info {
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+}
+
+#maintenence-timer {
+  display: none;
+}
+.countdown-timer {
+  position: absolute;
+  top: 5%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  text-align: center;
+}
+.timer {
+  display: table;
+  margin: 0 auto;
+}
+.countdown-timer header {
+  font-size: 1.5em;
+  font-weight: 800;
+}
+.countdown-timer section {
+  float: left;
+  padding: 10px 13px;
+}
+.countdown-timer section .number {
+  font-family: 'Orbitron';
+  font-size: 1.7em;
+  letter-spacing: 2px;
 }
 
 /* Start Banner */
@@ -104,17 +140,15 @@ header {
 .banner-content {
   margin-top: 40%;
   width: 100%;
-  color: #fff;
   text-align: center;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
-#launcher {
+#launcher,
+#launcher-deny {
   margin-top: 40px;
   filter: drop-shadow(0px 0px 5px #f2e1f2);
 
   transform: scale(1);
   transition: .2s transform;
-
 }
 #launcher:hover {
   filter: drop-shadow(0px 0px 15px #f2e1f2);
@@ -122,6 +156,31 @@ header {
 
   transform: scale(1.1);
   transition: .2s transform;
+}
+#launcher-deny {
+  filter: grayscale(100%);
+}
+#launcher-deny:active,
+#launcher-deny:hover {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  cursor: pointer;
+}
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
 }
 .hr-line {
   margin-top: 20px;
