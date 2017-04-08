@@ -19,11 +19,6 @@
       "gulpfile.js"
     ]
   },
-  "greenkeeper": {
-    "ignore": [
-      "sinon"
-    ]
-  },
   "scripts": {
     "build": "gulp build && gulp import",
     "prestart": "npm run build",
