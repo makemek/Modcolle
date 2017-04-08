@@ -82,7 +82,7 @@
     "nodemon": "1.11.0",
     "nyc": "10.2.0",
     "should": "11.2.1",
-    "sinon": "1.17.7",
+    "sinon": "2.1.0",
     "slash": "1.0.0",
     "supertest": "3.0.0",
     "supertest-as-promised": "4.0.2",
