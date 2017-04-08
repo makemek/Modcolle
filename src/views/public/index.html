@@ -55,7 +55,7 @@
         <img src="img/kaga.png" class="background kaga">
       </div>
       <div class="banner-content-wrapper">
-        <div class="banner-content">
+        <div class="banner-content banner-info">
           <h1><i class="fa fa-anchor fa-2x logo"></i></h1>
           <h1>Modcolle</h1>
           <p>Kancolle Proxy Server</p>
@@ -63,6 +63,27 @@
           <a href="#login" title="Launch"><img id="launcher" src="img/launcher.png" width="75%" height="75%" alt="Launch"></a>
         </div>
       </div>
+      <aside id="maintenance-timer" class="banner-info countdown-timer">
+        <header>Kancolle Maintenence <span id="maintenance-state"></span> in</header>
+        <div class="timer">
+          <section>
+            <p id="day" class="number">88</p>
+            <p>Day</p>
+          </section>
+          <section>
+            <p id="hour" class="number">88</p>
+            <p>Hour</p>
+          </section>
+          <section>
+            <p id="minute" class="number">88</p>
+            <p>Minute</p>
+          </section>
+          <section>
+            <p id="second" class="number">88</p>
+            <p>Second</p>
+          </section>
+        </div>
+      </aside>
       <a class="github" href="https://github.com/makemek/Modcolle" title="View on Github" target="_blank"><i class="fa fa-github"></i></a>
     </header>
     <div class="clearfix"></div>
@@ -100,7 +121,7 @@
       <p>Modcolle is open-source on <a target="_blank" href="https://github.com/makemek/Modcolle" title="Contribute">Github <i class="fa fa-github"></i></a></p>
       <p><i class="fa fa-copyright"></i> Apipol Niyomsak</p>
     </footer>
-
+    <script src="http://203.104.209.7/gadget/js/kcs_const.js"></script>
     <script src="js/bundle.min.js"></script>
     <script>
     // bg jitter fix for ie
