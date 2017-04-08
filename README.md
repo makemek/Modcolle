@@ -1,4 +1,5 @@
 # Modcolle
+
 [![Build Status](https://travis-ci.org/makemek/Modcolle.svg?branch=dev)](https://travis-ci.org/makemek/Modcolle)
 [![Coverage Status](https://coveralls.io/repos/github/makemek/Modcolle/badge.svg?branch=dev)](https://coveralls.io/github/makemek/Modcolle?branch=dev)
 
