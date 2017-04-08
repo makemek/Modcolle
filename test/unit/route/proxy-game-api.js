@@ -7,6 +7,8 @@ const sinon = require('sinon')
 const kancolle = require(global.SRC_ROOT + '/kancolle/')
 const Server = require(global.SRC_ROOT + '/kancolle/server/server')
 
+const sandbox = sinon.sandbox.create()
+
 describe('proxy Kancolle API', () => {
 
   let payload
@@ -35,9 +37,13 @@ describe('proxy Kancolle API', () => {
 
   describe('world id embed in API token', () => {
 
-    it('can be mapped to Kancolle server should accept request', sinon.test(function(done) {
+    afterEach(() => {
+      sandbox.restore()
+    })
+
+    it('can be mapped to Kancolle server should accept request', done => {
       const host = 'http://0.0.0.0', world = '0'
-      this.stub(kancolle, 'getServer', () => {
+      sandbox.stub(kancolle, 'getServer').callsFake(() => {
         return new Server(world, host)
       })
       const embededPayload = {api_token: [world, payload.api_token].join(EMBEDED_SYMBOL)}
@@ -51,7 +57,7 @@ describe('proxy Kancolle API', () => {
       .send(embededPayload)
       .expect(200)
       .end(done)
-    }))
+    })
 
     it('can NOT be mapped to Kancolle server should reject request', done => {
       payload.api_token = ['!@#$%^&*()+<>?', payload.api_token].join(EMBEDED_SYMBOL)

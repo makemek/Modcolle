@@ -6,6 +6,8 @@ const rp = require('request-promise')
 require('../mock/dmm/net-game')
 require('../mock/dmm/osapi')
 
+const sandbox = sinon.sandbox.create()
+
 describe('DMM API (OSAPI)', () => {
 
   let fakeGameId, fakeCookie
@@ -15,8 +17,12 @@ describe('DMM API (OSAPI)', () => {
     fakeCookie = 'INT_SESID=abcd; ckcy=1; cklg=ja; a=1; b=2;'
   })
 
-  it('get expected gadget information', sinon.test(function(done) {
-    const httpRequest = this.spy(rp, 'get')
+  afterEach(() => {
+    sandbox.restore()
+  })
+
+  it('get expected gadget information', done => {
+    const httpRequest = sandbox.spy(rp, 'get')
     const expectedParsedGadget = {
       VIEWER_ID : 123,
       OWNER_ID  : 123,
@@ -38,17 +44,17 @@ describe('DMM API (OSAPI)', () => {
       done()
     })
     .catch(done)
-  }))
+  })
 
-  it('should return error when there is no gadgetInfo variable', sinon.test(function(done) {
-    this.stub(rp, 'get').returns(Promise.resolve(''))
+  it('should return error when there is no gadgetInfo variable', done => {
+    sandbox.stub(rp, 'get').returns(Promise.resolve(''))
     DmmApi.getGameInfo(fakeGameId, fakeCookie)
     .then(done)
     .catch(error => {
       error.should.be.ok()
       done()
     })
-  }))
+  })
 
   describe('proxy request', () => {
     const securityToken = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/=+abcdefghijklmnopqrstuvwxy'
