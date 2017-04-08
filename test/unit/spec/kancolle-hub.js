@@ -8,9 +8,15 @@ const sinon = require('sinon')
 const game = require(global.SRC_ROOT + '/kancolle/game')
 const should = require('should')
 
+const sandbox = sinon.sandbox.create()
+
 describe('Kancolle hub', () => {
 
   const gadgetInfo = {VIEWER_ID: 1234}
+
+  afterEach(() => {
+    sandbox.restore()
+  })
 
   it('return correcct game ID', () => {
     const ID = 854854
@@ -36,25 +42,25 @@ describe('Kancolle hub', () => {
     should.not.exist(hub.getServer(invalidValue))
   })
 
-  it('should return correct url to new player who launch the game', sinon.test(function(done) {
-    this.stub(game, 'getWorldServerId').returns(Promise.resolve(0))
+  it('should return correct url to new player who launch the game', done => {
+    sandbox.stub(game, 'getWorldServerId').returns(Promise.resolve(0))
     hub.launch(gadgetInfo)
     .then(url => {
       url.should.equal('http://203.104.209.7/kcs/world.swf')
       done()
     })
     .catch(done)
-  }))
+  })
 
-  it('should return correct url to old player who launch the game', sinon.test(function(done) {
+  it('should return correct url to old player who launch the game', done => {
     const player = {
       isBan: false,
       api_token: 'abc',
       api_start_time: '123'
     }
     const worldId = 1
-    this.stub(game, 'getWorldServerId').returns(Promise.resolve(worldId))
-    this.stub(Server.prototype, 'generateApiToken').returns(Promise.resolve(player))
+    sandbox.stub(game, 'getWorldServerId').returns(Promise.resolve(worldId))
+    sandbox.stub(Server.prototype, 'generateApiToken').returns(Promise.resolve(player))
 
     hub.launch(gadgetInfo)
     .then(url => {
@@ -69,11 +75,11 @@ describe('Kancolle hub', () => {
       done()
     })
     .catch(done)
-  }))
+  })
 
-  it('should return correct url to old player who is banned from the game', sinon.test(function(done) {
-    this.stub(game, 'getWorldServerId').returns(Promise.resolve(1))
-    this.stub(Server.prototype, 'generateApiToken')
+  it('should return correct url to old player who is banned from the game', done => {
+    sandbox.stub(game, 'getWorldServerId').returns(Promise.resolve(1))
+    sandbox.stub(Server.prototype, 'generateApiToken')
     .returns(Promise.resolve({isBan: true}))
 
     hub.launch(gadgetInfo)
@@ -82,5 +88,5 @@ describe('Kancolle hub', () => {
       done()
     })
     .catch(done)
-  }))
+  })
 })
