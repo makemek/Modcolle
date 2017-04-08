@@ -9,13 +9,20 @@ const kancolle = require(global.SRC_ROOT + '/kancolle/')
 const URL = require('url-parse')
 require('should')
 
+const sandbox = sinon.sandbox.create()
+
 describe('request kancolle world server image', () => {
 
-  [
-  {case: 'ip address', input: {host: 'http://1.0.1.0', worldImg: '001_000_001_000_t.png'}},
-  {case: 'host name', input: {host: 'http://www.some.site.com', worldImg: 'www_some_site_com_t.png'}}
-  ].forEach(testcase => {
-    it('match with ' + testcase.case, sinon.test(function(done) {
+  afterEach(() => {
+    sandbox.restore()
+  })
+
+  const _testcase = [
+    {case: 'ip address', input: {host: 'http://1.0.1.0', worldImg: '001_000_001_000_t.png'}},
+    {case: 'host name', input: {host: 'http://www.some.site.com', worldImg: 'www_some_site_com_t.png'}}
+  ]
+  _testcase.forEach(testcase => {
+    it('match with ' + testcase.case, done => {
       const host = testcase.input.host
       const worldImg = '/kcs/resources/image/world/' + testcase.input.worldImg
       const fakeImagePngContent = Buffer.from('1234abcdef')
@@ -31,7 +38,7 @@ describe('request kancolle world server image', () => {
           'accept-ranges': 'bytes'
         })
 
-      this.stub(kancolle, 'getServer', _host => {
+      sandbox.stub(kancolle, 'getServer').callsFake(_host => {
         const expectedHostname = new URL(host).hostname
         _host.should.equal(expectedHostname)
         return fakeKancolleServer
@@ -46,21 +53,20 @@ describe('request kancolle world server image', () => {
         done()
       })
       .catch(done)
-    }))
+    })
   })
 
-  it('NOT match with any Kancolle server host name', sinon.test(function(done) {
-    this.stub(kancolle, 'getServer').returns(undefined)
+  it('NOT match with any Kancolle server host name', done => {
+    sandbox.stub(kancolle, 'getServer').returns(undefined)
     request(app)
     .get('/kcs/resources/image/world/xxxxxxxxxxxx.png')
     .expect(400)
     .end(done)
-  }))
+  })
 })
 
 describe('request assets from Kancolle server', () => {
 
-  let kancolleGetServer
   let nockRequest
   const HOST = 'http://1.2.3.4'
 
@@ -69,14 +75,14 @@ describe('request assets from Kancolle server', () => {
   })
 
   beforeEach(() => {
-    kancolleGetServer = sinon.stub(kancolle, 'getServer', () => {
+    sandbox.stub(kancolle, 'getServer').callsFake(() => {
       const server = new Server(1, HOST)
       return server
     })
   })
 
   afterEach(() => {
-    sinon.restore(kancolleGetServer)
+    sandbox.restore()
   })
 
   const fileCategory = [

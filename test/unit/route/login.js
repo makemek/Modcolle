@@ -12,8 +12,7 @@ const errors = require(global.SRC_ROOT + '/errors')
 const nockAuth = require('../mock/dmm/auth')
 
 const sandbox = sinon.sandbox.create()
-
-const testcases = [
+const accountTestcases = [
   {case: 'old player', targetUrl: '/kcs/mainD2.swf', account: {username: 'shimakaze', password: 'desu'}, playerProfile: playerProfile.oldPlayer},
   {case: 'new player', targetUrl: 'http://203.104.209.7/kcs/world.swf', account: {username: 'poi', password: 'poipoipoi'}, playerProfile: playerProfile.newPlayer},
   {case: 'banned player', targetUrl: 'http://203.104.209.7/kcs/ban.swf', account: {username: 'badTeitoku', password: 'T^T'}, playerProfile: playerProfile.bannedPlayer}
@@ -25,7 +24,7 @@ describe('/dmm-account', () => {
     sandbox.restore()
   })
 
-  testcases.forEach(testcase => {
+  accountTestcases.forEach(testcase => {
     it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, () => {
       stubNetworkRelatedMethods(testcase.playerProfile.world, testcase.playerProfile.dmmId)
       return assertGameLink('/dmm-account', testcase.account, testcase.targetUrl)
@@ -47,7 +46,7 @@ describe('/dmm-session', () => {
     sandbox.restore()
   })
 
-  testcases.forEach(testcase => {
+  accountTestcases.forEach(testcase => {
     it(`if ${testcase.case} logged in, launch ${testcase.targetUrl}`, () => {
       stubNetworkRelatedMethods(testcase.playerProfile.world, testcase.playerProfile.dmmId)
       return assertGameLink('/dmm-session', {dmm_session: 'session'}, testcase.targetUrl)
@@ -55,7 +54,7 @@ describe('/dmm-session', () => {
   })
 
   it('fail to get gadgetInfo should fail authenthentication', () => {
-    sandbox.stub(osapi, 'getGameInfo', () => {
+    sandbox.stub(osapi, 'getGameInfo').callsFake(() => {
       return Promise.reject(new errors.DmmError())
     })
 
@@ -67,7 +66,7 @@ describe('/dmm-session', () => {
   })
 
   it('other errors occured should be handled by done() callback', () => {
-    sandbox.stub(osapi, 'getGameInfo', () => {
+    sandbox.stub(osapi, 'getGameInfo').callsFake(() => {
       return Promise.reject('an error occured')
     })
 
@@ -93,10 +92,10 @@ function assertGameLink(appLink, payload, expectedLink) {
 }
 
 function stubNetworkRelatedMethods(fakeWorldId, fakeDmmId) {
-  sandbox.stub(game, 'getWorldServerId', () => {
+  sandbox.stub(game, 'getWorldServerId').callsFake(() => {
     return Promise.resolve(fakeWorldId)
   })
-  sandbox.stub(osapi, 'getGameInfo', () => {
+  sandbox.stub(osapi, 'getGameInfo').callsFake(() => {
     return Promise.resolve({VIEWER_ID: fakeDmmId, ST: 'abcd'})
   })
 }
