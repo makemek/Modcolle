@@ -48,7 +48,7 @@
     "request-promise": "4.2.0",
     "sprintf-js": "1.0.3",
     "tough-cookie": "2.3.2",
-    "url-join": "1.1.0",
+    "url-join": "2.0.0",
     "url-parse": "1.1.8",
     "validator": "7.0.0",
     "winston": "2.3.1"
