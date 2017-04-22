@@ -30,17 +30,14 @@ However, you can setup your machine as a web server to run Modcolle locally.
 Modcolle needs to run together with [Nginx](https://www.nginx.com/) in order to operate normally.
 Please follows steps below to run Modcolle
 
-### On Mac and Linux
+### Docker
 
 1. Install [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/)
 2. Clone this repository `git clone git@github.com:makemek/Modcolle.git` and run `npm install`
 3. Open terminal and run `docker-compose up`. You can add `-d` flag to detach the process and run as a daemon.
 4. Open a web browser and type `localhost` in the url
 
-### On windows
-Unfortunately, Docker is not natively supported on Windows.
-Also there is a shell script that be executed only in linux environment.
-You have to install Nginx and Modcolle manually.
+### Manual Installation
 
 1. Install Nginx and Node.js (v. 6.9.1)
 2. Clone this repository `git clone git@github.com:makemek/Modcolle.git` and run `npm install`
@@ -49,6 +46,23 @@ You have to install Nginx and Modcolle manually.
 5. Start nginx
 6. Type `npm install pm2 -g` and run `pm2 start process.json`
 7. Open a browser and type `localhost` in the url
+
+## Starting the Application
+
+As a single instance
+```
+npm start
+```
+
+In cluster mode using [PM2](https://npmjs.org/packages/pm2)
+```
+pm2 start process.json
+```
+
+In development mode with [nodemon](https://npmjs.org/packages/nodemon) and [browser-sync](https://npmjs.org/packages/browser-sync)
+```
+npm run dev
+```
 
 ## Configuration
 `.env.json` is the common configuration for Modcolle which will be created on first-time start or test by copying `.env.json.template` (no overwrite if file already exists).
