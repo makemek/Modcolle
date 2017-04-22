@@ -1,22 +1,25 @@
-FROM node:6.9.1
+FROM node:6-alpine
 
-MAINTAINER Apipol Niyomsak
+LABEL maintainer "Apipol Niyomsak"
 
-RUN npm install -g pm2
+ENV PORT=5000 \
+    DEPLOY_DIR=/var/www/modcolle \
+    USER=www
 
-RUN mkdir -p /var/www/modcolle
+ADD . ${DEPLOY_DIR}
 
-# Define working directory
-WORKDIR /var/www/modcolle
+RUN adduser -S $USER && \
+    chown -R $USER \
+      $DEPLOY_DIR \
+      /usr/local/lib \
+      /usr/local/bin
 
-ADD . /var/www/modcolle/
+USER ${USER}
+WORKDIR ${DEPLOY_DIR}
+RUN npm install --only=production -g pm2 && \
+    npm install && \
+    npm run build
 
-VOLUME ["/var/www/modcolle/log"]
+EXPOSE ${PORT}
 
-RUN npm install && npm run build
-
-# Expose port
-EXPOSE 5000
-
-# Run app
 CMD pm2-docker start process.json --auto-exit
