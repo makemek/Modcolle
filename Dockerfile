@@ -2,12 +2,20 @@ FROM node:6-alpine
 
 LABEL maintainer "Apipol Niyomsak"
 
-ARG PORT
-ENV PORT=${PORT} \
-    DEPLOY_DIR=/var/www/modcolle
+ENV PORT=5000 \
+    DEPLOY_DIR=/var/www/modcolle \
+    USER=www
 
-WORKDIR ${DEPLOY_DIR}
 ADD . ${DEPLOY_DIR}
+
+RUN adduser -S $USER && \
+    chown -R $USER \
+      $DEPLOY_DIR \
+      /usr/local/lib \
+      /usr/local/bin
+
+USER ${USER}
+WORKDIR ${DEPLOY_DIR}
 RUN npm install --only=production -g pm2 && \
     npm install && \
     npm run build
