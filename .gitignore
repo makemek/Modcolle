@@ -1,6 +1,5 @@
 # Project gitignore
 src/config/settings.json
-.env.json
 
 # Public assets gitignore
 *.min.*
