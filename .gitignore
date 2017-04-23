@@ -1,6 +1,10 @@
 # Project gitignore
 src/config/settings.json
-.env
+.env.json
+
+# Public assets gitignore
+*.min.*
+fonts
 
 # Nodejs gitignore template
 # Obtained from https://github.com/github/gitignore/blob/master/Node.gitignore

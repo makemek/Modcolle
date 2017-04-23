@@ -11,6 +11,8 @@ const nock = require('nock')
 const URL = require('url-parse')
 const should = require('should')
 
+const sandbox = sinon.sandbox.create()
+
 describe('kancolle server', () => {
 
   let agent
@@ -21,6 +23,10 @@ describe('kancolle server', () => {
 
   beforeEach(() => {
     agent = new Agent(1, KANCOLLE_CONFIG.serv)
+  })
+
+  afterEach(() => {
+    sandbox.restore()
   })
 
   it('download from the internet', done => {
@@ -39,11 +45,11 @@ describe('kancolle server', () => {
     req.headers['x-requested-with'].should.startWith('ShockwaveFlash/', 'should set header x-requested-with ShockwaveFlash')
   })
 
-  it('call API', sinon.test(function() {
+  it('call API', () => {
     const apiUrl = '/kcsapi/some/api'
     const payload = {}
     const headers = {headers: {someHeader: 'header'}}
-    const httpPost = this.stub(rp, 'post')
+    const httpPost = sandbox.stub(rp, 'post')
     const agentUrl = new URL(agent.host)
 
     agent.apiRequest(apiUrl, payload, headers)
@@ -57,7 +63,7 @@ describe('kancolle server', () => {
     postArgs.headers.should.not.ownProperty('content-length')
     postArgs.headers.should.not.ownProperty('content-type')
     postArgs.headers.should.containEql(headers)
-  }))
+  })
 
   it('generate api token for non-banned player', done => {
     agent.generateApiToken({VIEWER_ID: playerProfile.oldPlayer.dmmId, ST: 'xxxxxxxxx'})
@@ -68,9 +74,9 @@ describe('kancolle server', () => {
     .catch(done)
   })
 
-  it('NOT generate api token for banned player', sinon.test(function(done) {
+  it('NOT generate api token for banned player', done => {
     const body = 'svdata=' + JSON.stringify({api_result: 301})
-    this.stub(osapi, 'proxyRequest').returns(Promise.resolve({body: body}))
+    sandbox.stub(osapi, 'proxyRequest').returns(Promise.resolve({body: body}))
     agent.generateApiToken({})
     .then(player => {
       should(player.isBan).be.true('this player should be banned')
@@ -79,6 +85,6 @@ describe('kancolle server', () => {
       done()
     })
     .catch(done)
-  }))
+  })
 
 })

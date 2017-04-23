@@ -71,7 +71,7 @@ header {
   top: 5%;
   width: auto;
   height: 100%;
-  
+
   will-change: transform, opacity;
   transform: translate3d(0px,0px,0px);
   animation:
@@ -109,25 +109,19 @@ header {
   text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 }
 #launcher {
-  margin-top: 20px;
-  -webkit-filter: drop-shadow(0px 0px 5px #f2e1f2);
+  margin-top: 40px;
   filter: drop-shadow(0px 0px 5px #f2e1f2);
+
+  transform: scale(1);
+  transition: .2s transform;
+
 }
 #launcher:hover {
-  -webkit-filter: drop-shadow(0px 0px 15px #f2e1f2);
   filter: drop-shadow(0px 0px 15px #f2e1f2);
   cursor: pointer;
 
-  will-change: transform;
-  animation: swing-half .5s, swing 3s .5s infinite;
-}
-@keyframes swing-half {
-  100% { transform: rotate(-10deg); }
-}
-@keyframes swing {
-  0% { transform: rotate(-10deg); }
-  50% { transform: rotate(10deg); }
-  100% { transform: rotate(-10deg); }
+  transform: scale(1.1);
+  transition: .2s transform;
 }
 .hr-line {
   margin-top: 20px;
@@ -141,7 +135,6 @@ header {
   border-radius: 20%;
   padding: 10px;
   color: #fff;
-  -webkit-transition: background-color 0.2s ease;
   transition: background-color 0.2s ease;
 }
 .github:hover {
@@ -202,7 +195,6 @@ header {
 }
 .modal-dialog:target {
   opacity:1;
-  -webkit-transition: opacity 400ms ease-in;
   transition: opacity 400ms ease-in;
   pointer-events: auto;
 }
@@ -213,8 +205,7 @@ header {
   padding: 10px 20px 13px 20px;
   border-radius: 10px;
   background: #F0F0F0;
-  background: -webkit-linear-gradient(#fff, #999);
-  background: -o-linear-gradient(#fff, #999);
+  background: linear-gradient(#fff, #999);
 }
 .close {
   background: #606061;
@@ -298,7 +289,6 @@ input:checked + label.tabs {
   letter-spacing: 2px;
   background-color: #2280c3;
   color: #f5f5f5;
-  -webkit-transition: background-color 0.5s ease;
   transition: background-color 0.5s ease;
 }
 .modal-dialog button[type="submit"]:hover {
@@ -311,7 +301,6 @@ input:checked + label.tabs {
 /* Start Footer */
 footer.second {
   width: 100%;
-  background: -webkit-linear-gradient(#5070AD, #284F94);
   background: linear-gradient(#5070AD, #284F94);
   padding: 15px 0;
   letter-spacing: 2px;

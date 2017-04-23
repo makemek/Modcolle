@@ -4,12 +4,11 @@ node_js:
   - "5"
 
 before_install:
-  - cp .env.template .env
   - travis_retry npm install
 
 script:
-  - npm run pretest
+  - npm run eslint
   - npm run coverage
 
-after_script:
-  - "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+after_success:
+  - npm run coveralls

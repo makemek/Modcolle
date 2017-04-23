@@ -9,6 +9,8 @@ const apiTerminal = require('../mock/kancolle/api-terminal')
 const KancolleChildServers = require(global.SRC_ROOT + '/kancolle/server')
 const should = require('should')
 
+const sandbox = sinon.sandbox.create()
+
 describe('Kancolle game', () => {
 
   describe('Maintenance test', () => {
@@ -70,6 +72,10 @@ describe('Kancolle game', () => {
       })
     })
 
+    afterEach(() => {
+      sandbox.restore()
+    })
+
     it('return world id 0 if player is new', done => {
       const gadgetInfo = {VIEWER_ID: apiTerminal.newPlayer.dmmId}
       Kancolle.getWorldServerId(gadgetInfo)
@@ -90,10 +96,10 @@ describe('Kancolle game', () => {
       .catch(done)
     })
 
-    it('should return error when internal error occurred in the target server', sinon.test(function(done) {
+    it('should return error when internal error occurred in the target server', done => {
       const error = {api_data: 0}
       const errorResponse = 'svdata=' + JSON.stringify(error)
-      this.stub(rp, 'get')
+      sandbox.stub(rp, 'get')
       .returns(Promise.resolve(errorResponse))
 
       Kancolle.getWorldServerId({})
@@ -101,6 +107,6 @@ describe('Kancolle game', () => {
         should(error).be.ok()
         done()
       })
-    }))
+    })
   })
 })
