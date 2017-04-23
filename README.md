@@ -44,7 +44,7 @@ Please follows steps below to run Modcolle
 3. Copy `/deployment/nginx/nginx.conf` to `\path\to\nginx\conf`. Make sure to backup nginx.conf first before overwrite.
 4. Inside nginx.conf replace `app1` and `DOMAIN_NAME` with `localhost`
 5. Start nginx
-6. Type `npm install pm2 -g` and run `pm2 start process.json`
+6. Type `npm install pm2 -g` and run `pm2 start process.yml`
 7. Open a browser and type `localhost` in the url
 
 ## Starting the Application
@@ -56,7 +56,7 @@ npm start
 
 In cluster mode using [PM2](https://npmjs.org/packages/pm2)
 ```
-pm2 start process.json
+pm2 start process.yml
 ```
 
 In development mode with [nodemon](https://npmjs.org/packages/nodemon) and [browser-sync](https://npmjs.org/packages/browser-sync)
@@ -66,7 +66,7 @@ npm run dev
 
 ## Configuration
 `.env.json` is the common configuration for Modcolle which will be created on first-time start or test by copying `.env.json.template` (no overwrite if file already exists).
-At `env` section in `process.json` are environment variables that will override `.env.json` for running in production environment.
+At `env` section in `process.yml` are environment variables that will override `.env.json` for running in production environment.
 
 ### Environment Variables
 - LOGGER_SILENT: if `false` enables log, `true` disables log
