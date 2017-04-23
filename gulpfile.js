@@ -1,7 +1,5 @@
 'use strict'
 
-require('dot-env')
-
 const appPort = process.env.PORT || '5000'
 const devPort = process.env.PORT_DEV || '3000'
 const css = 'src/views/*.css'
@@ -52,13 +50,7 @@ gulp.task('build:js', () => {
   .pipe(bs.stream())
 })
 
-gulp.task('import', ['environment-variables', 'font-awesome'])
-
-gulp.task('environment-variables', () => {
-  gulp.src('.env.template.json')
-  .pipe(rename('.env.json'))
-  .pipe(gulp.dest('.', {overwrite: false}))
-})
+gulp.task('import', ['font-awesome'])
 
 gulp.task('font-awesome', () => {
   gulp.src('node_modules/font-awesome/css/font-awesome.min.css')
