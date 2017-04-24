@@ -22,7 +22,7 @@
   "scripts": {
     "build": "gulp build && gulp import",
     "prestart": "npm run build",
-    "start": "node bin/www",
+    "start": "pm2 start process.yml",
     "dev": "npm run build && gulp browser-sync",
     "coverage": "nyc npm test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",

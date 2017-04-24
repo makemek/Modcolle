@@ -44,22 +44,18 @@ Please follows steps below to run Modcolle
 3. Copy `/deployment/nginx/nginx.conf` to `\path\to\nginx\conf`. Make sure to backup nginx.conf first before overwrite.
 4. Inside nginx.conf replace `app1` and `DOMAIN_NAME` with `localhost`
 5. Start nginx
-6. Type `npm install pm2 -g` and run `pm2 start process.yml`
+6. Type `npm install pm2 -g` and run `npm start`
 7. Open a browser and type `localhost` in the url
 
 ## Starting the Application
-
-As a single instance
+### Cluster Mode
+This command runs [pm2](https://npmjs.org/packages/pm2) using configuration defined in [process.yml](https://github.com/makemek/Modcolle/blob/master/process.yml).
 ```
 npm start
 ```
 
-In cluster mode using [PM2](https://npmjs.org/packages/pm2)
-```
-pm2 start process.yml
-```
-
-In development mode with [nodemon](https://npmjs.org/packages/nodemon) and [browser-sync](https://npmjs.org/packages/browser-sync)
+### Development Mode
+With [nodemon](https://npmjs.org/packages/nodemon) and [browser-sync](https://npmjs.org/packages/browser-sync)
 > **In this mode, no environment variables are loaded**.
 You can still set them inside a command line if needed.
 ```
