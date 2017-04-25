@@ -1,6 +1,5 @@
 'use strict'
 
-const sprintf = require('sprintf-js').sprintf
 const rp = require('request-promise')
 const log = require('../logger')('service:dmm')
 const errors = require('../errors')
@@ -105,7 +104,7 @@ function getGadgetInfo(htmlString) {
   else
     gadgetInfo = gadgetInfo[0]
 
-  log.debug(sprintf('remove prefix "%s"', varName))
+  log.debug(`remove prefix "${varName}"`)
   gadgetInfo = gadgetInfo.replace(varName, '')
   log.debug(gadgetInfo)
 
@@ -116,7 +115,7 @@ function getGadgetInfo(htmlString) {
   log.debug('put double quotes around the variable')
   varList.forEach(property => {
     property = property.trim()
-    gadgetInfo = gadgetInfo.replace(property, sprintf('"%s"', property))
+    gadgetInfo = gadgetInfo.replace(property, `"${property}"`)
   })
   log.debug(gadgetInfo)
 
