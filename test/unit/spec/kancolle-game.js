@@ -4,7 +4,6 @@ const Kancolle = require(global.SRC_ROOT + '/kancolle/game')
 const rp = require('request-promise')
 const sinon = require('sinon')
 const async = require('async')
-const sprintf = require('sprintf-js').sprintf
 const apiTerminal = require('../mock/kancolle/api-terminal')
 const KancolleChildServers = require(global.SRC_ROOT + '/kancolle/server')
 const should = require('should')
@@ -15,21 +14,8 @@ describe('Kancolle game', () => {
 
   describe('Maintenance test', () => {
 
-    let code
-    beforeEach(() => {
-      code =
-      `
-      var ConstServerInfo = {servFoo:"servBar"}, ConstURLInfo = {urlFoo:"urlBar"}
-      var MaintenanceInfo = {}
-      MaintenanceInfo.IsDoing       = %d
-      MaintenanceInfo.IsEmergency   = %d
-      MaintenanceInfo.StartDateTime = Date.parse("2016/07/15 11:00:00")
-      MaintenanceInfo.EndDateTime   = Date.parse("2016/07/15 17:50:00")
-      `
-    })
-
     it('is NOT on maintenance', done => {
-      const sourceText = sprintf(code, 0, 0)
+      const sourceText = createFakeMaintenanceScript(0, 0)
       const httpRequest = sinon.stub(rp, 'get')
       .returns(Promise.resolve(sourceText))
 
@@ -46,8 +32,8 @@ describe('Kancolle game', () => {
     {doing: 0, emergency: 1},
     {doing: 1, emergency: 0},
     {doing: 1, emergency: 1}], mode => {
-      it(sprintf('is on maintenance (doing = %d, emergency = %d)', mode.doing, mode.emergency), done => {
-        const sourceText = sprintf(code, mode.doing, mode.emergency)
+      it(`is on maintenance (doing = ${mode.doing}, emergency = ${mode.emergency})`, done => {
+        const sourceText = createFakeMaintenanceScript(mode.doing, mode.emergency)
         const httpRequest = sinon.stub(rp, 'get')
         .returns(Promise.resolve(sourceText))
 
@@ -109,4 +95,17 @@ describe('Kancolle game', () => {
       })
     })
   })
+
+  function createFakeMaintenanceScript(isDoing, isEmergency) {
+    const code =
+    `
+    var ConstServerInfo = {servFoo:"servBar"}, ConstURLInfo = {urlFoo:"urlBar"}
+    var MaintenanceInfo = {}
+    MaintenanceInfo.IsDoing       = ${isDoing}
+    MaintenanceInfo.IsEmergency   = ${isEmergency}
+    MaintenanceInfo.StartDateTime = Date.parse("2016/07/15 11:00:00")
+    MaintenanceInfo.EndDateTime   = Date.parse("2016/07/15 17:50:00")
+    `
+    return code
+  }
 })
