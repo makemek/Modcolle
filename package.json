@@ -32,13 +32,9 @@
     "test": "npm run eslint && npm run utest"
   },
   "dependencies": {
-    "async": "2.3.0",
     "body-parser": "1.17.1",
-    "eslint-config-modcolle": "0.1.1",
     "express": "4.15.2",
     "express-handlebars": "3.0.0",
-    "fallbackjs": "1.1.8",
-    "font-awesome": "4.7.0",
     "inherit": "2.2.6",
     "morgan": "1.8.1",
     "passport": "0.3.2",
@@ -54,6 +50,7 @@
   },
   "devDependencies": {
     "app-root-path": "2.0.1",
+    "async": "2.3.0",
     "autoprefixer": "6.7.7",
     "babel": "6.23.0",
     "babel-preset-env": "1.4.0",
@@ -63,6 +60,8 @@
     "coveralls": "2.13.0",
     "eslint": "3.19.0",
     "eslint-config-modcolle": "0.1.1",
+    "fallbackjs": "1.1.8",
+    "font-awesome": "4.7.0",
     "gulp": "3.9.1",
     "gulp-babel": "6.1.2",
     "gulp-clean-css": "3.0.4",
