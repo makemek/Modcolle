@@ -3,7 +3,6 @@
 const KANCOLLE_MASTER_SERVER = process.env.KANCOLLE_SERVER_MASTER
 const rp = require('request-promise')
 const log = require('../logger')('service:kancolle')
-const sprintf = require('sprintf-js').sprintf
 
 const Kancolle = {
 
@@ -17,8 +16,7 @@ const Kancolle = {
     .then(jsCode => {
       log.info('extract Kancolle server IP addresses, URL info, and maintenance info')
       log.verbose('append js code to output variable value')
-      const var2export = sprintf('JSON.stringify({%s, %s, %s})',
-        'ConstServerInfo', 'ConstURLInfo', 'MaintenanceInfo')
+      const var2export = 'JSON.stringify({ConstServerInfo, ConstURLInfo, MaintenanceInfo})'
       jsCode += ';' + var2export
 
       log.verbose(`emulate javascripts assuming that code from ${url} is trusted`)
