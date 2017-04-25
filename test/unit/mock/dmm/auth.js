@@ -1,7 +1,6 @@
 'use strict'
 
 const nock = require('nock')
-const sprintf = require('sprintf-js').sprintf
 
 const HOST = 'https://www.dmm.com'
 const TOKEN = {
@@ -25,9 +24,9 @@ nock(HOST)
 .persist()
 .get('/my/-/login/=/path=Sg__/')
 .reply(200, () => {
-  const htmlForm = sprintf('<input type="hidden" name="token" value="%s" id="id_token">', TOKEN.form)
-  const ajaxDmmToken = sprintf('xhr.setRequestHeader("DMM_TOKEN", "%s");', TOKEN.dmm)
-  const ajaxDataToken = sprintf('"token": "%s"', TOKEN.data)
+  const htmlForm = `<input type="hidden" name="token" value="${TOKEN.form}" id="id_token">`
+  const ajaxDmmToken = `xhr.setRequestHeader("DMM_TOKEN", "${TOKEN.dmm}");`
+  const ajaxDataToken = `"token": "${TOKEN.data}"`
 
   return htmlForm + ajaxDmmToken + ajaxDataToken
 })
