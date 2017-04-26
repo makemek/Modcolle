@@ -20,7 +20,7 @@
     ]
   },
   "scripts": {
-    "build": "gulp build && gulp import",
+    "build": "gulp",
     "prestart": "npm run build",
     "start": "pm2 start process.yml",
     "dev": "npm run build && gulp browser-sync",
