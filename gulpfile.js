@@ -27,6 +27,8 @@ const source = require('vinyl-source-stream')
 const browserify = require('browserify')
 const buffer = require('vinyl-buffer')
 
+gulp.task('default', ['build', 'import'])
+
 gulp.task('build', ['build:css', 'build:js'])
 
 gulp.task('build:css', () => {
