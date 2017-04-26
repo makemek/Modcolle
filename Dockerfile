@@ -17,8 +17,10 @@ RUN adduser -S $USER && \
 USER ${USER}
 WORKDIR ${DEPLOY_DIR}
 RUN npm install --only=production -g pm2 && \
-    npm install && \
-    npm run build
+    npm install --only=development && \
+    npm run build && \
+    rm -rf node_modules && \
+    npm install --only=production
 
 EXPOSE ${PORT}
 
