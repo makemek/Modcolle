@@ -35,7 +35,6 @@
     "body-parser": "1.17.1",
     "express": "4.15.2",
     "express-handlebars": "3.0.0",
-    "inherit": "2.2.6",
     "morgan": "1.8.1",
     "passport": "0.3.2",
     "passport-local": "1.0.0",

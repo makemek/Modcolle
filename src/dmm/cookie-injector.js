@@ -1,13 +1,12 @@
 'use strict'
 
-const inherit = require('inherit')
 const log = require('../logger')('service:dmm')
 const tough = require('tough-cookie')
 const Cookie = tough.Cookie
 
-const Injector = {
+class Injector {
 
-  __constructor: function(cookies, subdomains) {
+  constructor(cookies, subdomains) {
     cookies = cookies || []
     subdomains = subdomains || ['/']
 
@@ -16,9 +15,9 @@ const Injector = {
     this.cookies = cookies
     this.subdomains = subdomains
     this.domain = 'dmm.com'
-  },
+  }
 
-  revokeRegionRestriction: function() {
+  revokeRegionRestriction() {
     const targetCookie = {key: 'ckcy', value: 1}
 
     log.info('revoke foriegner (non-japan) access restriction')
@@ -64,4 +63,4 @@ function generateCookies(keyVal, domains, paths) {
   return cookies
 }
 
-module.exports = inherit(Injector)
+module.exports = Injector
