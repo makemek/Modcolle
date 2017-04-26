@@ -1,4 +1,25 @@
 # Modcolle Changelog
+## 2017.04.26, Version 0.3.1
+### Notable Changes
+* Maintenance Countdown Timer ([#16](https://github.com/makemek/Modcolle/pull/16))
+appears when `Maintenance.IsDoing` in [Kancolle's config](http://203.104.209.7/gadget/js/kcs_const.js) set to `1` and `Maintenance.EndDateTime` is greater than client's machine time.
+* `kancolle` folder removed ([#24](https://github.com/makemek/Modcolle/pull/24))
+Modding content by redirecting url has been suspended.
+If implement, they will be moved to a dedicated microservice.
+* Use Node Alpine docker image ([#25](https://github.com/makemek/Modcolle/pull/25))
+Smaller image size
+
+### Commits
+* [[`d8e1fda`](https://github.com/makemek/Modcolle/commit/d8e1fda)] update readme.md
+* [[`a8ef58e`](https://github.com/makemek/Modcolle/commit/a8ef58e)] use node alpine image ([#25](https://github.com/makemek/Modcolle/pull/25))
+* [[`95f97c3`](https://github.com/makemek/Modcolle/commit/95f97c3)] remove unused Kancolle folder ([#24](https://github.com/makemek/Modcolle/pull/24))
+* [[`94b8340`](https://github.com/makemek/Modcolle/commit/94b8340)] fix(package): update url-join to version 2.0.1 ([#23](https://github.com/makemek/Modcolle/pull/23))
+* [[`49f9f47`](https://github.com/makemek/Modcolle/commit/49f9f47)] chore(package): update nock to version 9.0.13 ([#22](https://github.com/makemek/Modcolle/pull/22))
+* [[`892588e`](https://github.com/makemek/Modcolle/commit/892588e)] chore(package): update babel-preset-env to version 1.4.0 ([#21](https://github.com/makemek/Modcolle/pull/21))
+* [[`c132000`](https://github.com/makemek/Modcolle/commit/c132000)] fix(package): update url-join to version 2.0.0 ([#20](https://github.com/makemek/Modcolle/pull/20))
+* [[`db982b0`](https://github.com/makemek/Modcolle/commit/db982b0)] eslint: fix single quote error
+* [[`e4feb81`](https://github.com/makemek/Modcolle/commit/e4feb81)] Maintenence countdown timer ([#16](https://github.com/makemek/Modcolle/pull/16))
+
 ## 2017.04.23, Version 0.3.0
 ### Notable Changes
 * Frontend
