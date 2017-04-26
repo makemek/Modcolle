@@ -5,13 +5,6 @@ const log = require('../logger')('service:dmm')
 const tough = require('tough-cookie')
 const Cookie = tough.Cookie
 
-const languagePreset = {
-  language: {
-    japan: 'ja',
-    english: 'en'
-  }
-}
-
 const Injector = {
 
   __constructor: function(cookies, subdomains) {
@@ -29,16 +22,6 @@ const Injector = {
     const targetCookie = {key: 'ckcy', value: 1}
 
     log.info('revoke foriegner (non-japan) access restriction')
-    log.verbose('include to original cookie', targetCookie)
-    this.cookies = removeAndInjectCookie(this, targetCookie)
-    return this.cookies
-  },
-
-  language: function(language) {
-    language = language || languagePreset.language.japan
-    const targetCookie = {key: 'cklg', value: language}
-
-    log.info(`set http://www.dmm.com to display language ${language}`)
     log.verbose('include to original cookie', targetCookie)
     this.cookies = removeAndInjectCookie(this, targetCookie)
     return this.cookies
@@ -81,4 +64,4 @@ function generateCookies(keyVal, domains, paths) {
   return cookies
 }
 
-module.exports = inherit(Injector, languagePreset)
+module.exports = inherit(Injector)
