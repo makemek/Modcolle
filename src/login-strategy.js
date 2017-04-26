@@ -39,8 +39,6 @@ function dmmSession(session, _, done) {
 
 function _injectCookies(session, subdomains) {
   const injector = new CookieInjector([session], subdomains)
-  log.verbose('set DMM to display language in Japanese')
-  injector.language(CookieInjector.language.japan)
   log.verbose('revoke region restriction')
   injector.revokeRegionRestriction()
   return injector.cookies
