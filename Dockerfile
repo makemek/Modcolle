@@ -22,4 +22,4 @@ RUN npm install --only=production -g pm2 && \
 
 EXPOSE ${PORT}
 
-CMD pm2-docker start process.yml --auto-exit
+CMD pm2-docker start process.yml --env production --auto-exit
