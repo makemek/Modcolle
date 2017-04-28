@@ -5,35 +5,34 @@ const Kancolle = require('./game')
 const urljoin = require('url-join')
 const log = require('../logger')('service:kancolle')
 
-const Hub = {}
+module.exports = {
+  /**
+   * Application id
+   * @type {Number}
+   */
+  appId: 854854,
 
-/**
- * Application id
- * @type {Number}
- */
-Hub.appId = 854854
+  /**
+   * Request Kancolle server object
+   * @param  {string} key - can be either the world id starting at 1 or server's host name. Checkout @link{http://kancolle.wikia.com/wiki/Servers|Server List} for more detail.
+   * @return {object} server - a Kancolle server object
+   */
+  getServer,
 
-/**
- * Request Kancolle server object
- * @param  {string} key - can be either the world id starting at 1 or server's host name. Checkout @link{http://kancolle.wikia.com/wiki/Servers|Server List} for more detail.
- * @return {object} server - a Kancolle server object
- */
-Hub.getServer = function(key) {
+  /**
+   * Start Kancolle
+   * @param  {object}   gadgetInfo - gadget information containing player's id and security token issued by DMM
+   * @return {Promise<Url>} fileUrl - URL to swf file to launch the game
+   */
+  launch
+}
+
+function getServer(key) {
   log.info(`get server from key ${key}`)
   return servers[key]
 }
 
-/**
- * @typedef {Url}
- * @property {string} fileUrl - URL to swf file to launch the game
- */
-
-/**
- * Start Kancolle
- * @param  {object}   gadgetInfo - gadget information containing player's id and security token issued by DMM
- * @return {Promise<Url>}
- */
-Hub.launch = function(gadgetInfo) {
+function launch(gadgetInfo) {
   log.info(`DMM ID ${gadgetInfo.VIEWER_ID} launch Kancolle`)
   return Kancolle.getWorldServerId(gadgetInfo)
   .then(worldId => {
@@ -52,7 +51,7 @@ function newPlayer(gadgetInfo) {
 
 function oldPlayer(gadgetInfo, worldId) {
   log.info(`DMM ID ${gadgetInfo.VIEWER_ID} is an old player (has already select a world)`)
-  const server = Hub.getServer(worldId)
+  const server = getServer(worldId)
   return server.generateApiToken(gadgetInfo).then(player => {
     if(player.isBan) {
       const screenBan = urljoin(Kancolle.ENTRY_HOST, 'kcs', 'ban.swf')
@@ -65,5 +64,3 @@ function oldPlayer(gadgetInfo, worldId) {
     }
   })
 }
-
-module.exports = Hub
