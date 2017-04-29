@@ -72,7 +72,6 @@ PORT_DEV=<port number> # browser-sync listeing port; default is 3000
 At `env` section in `process.yml` are environment variables that will override `.env.json` for running in production environment.
 
 ### Environment Variables
-- LOGGER_ENABLE: if `true` enables log, `false` disables log
 - LOGGER_LEVEL: select a [logging level](https://github.com/pinojs/pino/blob/master/docs/API.md#level)
 - LOGGER_PRETTY: pretty print log (should be set to `false` in production)
 - PORT: application port

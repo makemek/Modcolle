@@ -10,7 +10,6 @@ apps:
      pid_file: ./log/modcolle.pid
 
      env:
-      LOGGER_ENABLE: true
       LOGGER_PRETTY: true
       LOGGER_LEVEL: info
       PORT: 5000
