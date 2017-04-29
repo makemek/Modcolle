@@ -10,7 +10,8 @@ apps:
      pid_file: ./log/modcolle.pid
 
      env:
-      LOGGER_SILENT: false
+      LOGGER_ENABLE: true
+      LOGGER_PRETTY: true
       LOGGER_LEVEL: info
       PORT: 5000
 
@@ -39,3 +40,4 @@ apps:
      env_production:
       NODE_ENV: production
       PORT: 5000
+      LOGGER_PRETTY: false

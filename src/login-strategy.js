@@ -39,7 +39,7 @@ function dmmSession(session, _, done) {
 
 function _injectCookies(session, subdomains) {
   const injector = new CookieInjector([session], subdomains)
-  log.verbose('revoke region restriction')
+  log.debug('revoke region restriction')
   injector.revokeRegionRestriction()
   return injector.cookies
 }

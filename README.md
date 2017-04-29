@@ -72,8 +72,9 @@ PORT_DEV=<port number> # browser-sync listeing port; default is 3000
 At `env` section in `process.yml` are environment variables that will override `.env.json` for running in production environment.
 
 ### Environment Variables
-- LOGGER_SILENT: if `false` enables log, `true` disables log
-- LOGGER_LEVEL: select a [logging level](https://github.com/winstonjs/winston#logging-levels)
+- LOGGER_ENABLE: if `true` enables log, `false` disables log
+- LOGGER_LEVEL: select a [logging level](https://github.com/pinojs/pino/blob/master/docs/API.md#level)
+- LOGGER_PRETTY: pretty print log (should be set to `false` in production)
 - PORT: application port
 - PORT_DEV: **FOR DEVELOPMENT ONLY** will take effect when run `npm run dev`
 - KANCOLLE_SERVER_MASTER: A host name for main Kancolle server that have interface`/kcsapi/api_world/get_id` for requesting players world id

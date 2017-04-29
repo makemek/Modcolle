@@ -38,13 +38,13 @@
     "morgan": "1.8.1",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
+    "pino": "4.4.0",
     "request": "2.81.0",
     "request-promise": "4.2.0",
     "tough-cookie": "2.3.2",
     "url-join": "2.0.1",
     "url-parse": "1.1.8",
-    "validator": "7.0.0",
-    "winston": "2.3.1"
+    "validator": "7.0.0"
   },
   "devDependencies": {
     "app-root-path": "2.0.1",
