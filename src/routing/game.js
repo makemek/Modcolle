@@ -42,7 +42,7 @@ function redirectKancolleNetworkTraffic(url) {
   const server = kancolle.getServer(url.hostname)
   const apiTokenWithExtraEmbededInfo = [server.worldId, url.query.api_token].join('_') // embed player's info so that any API POST request from flash will contain this information
 
-  log.verbose(`remove host name ${url.hostname} from url`)
+  log.debug(`remove host name ${url.hostname} from url`)
   const interceptedUrl = urljoin(
     url.pathname, // remove hostname from flash url so that it makes http request to this site
     `?api_token=${apiTokenWithExtraEmbededInfo}`,

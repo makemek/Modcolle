@@ -2,7 +2,7 @@
 
 'use strict'
 
-const winston = require('winston')
+const pino = require('pino')()
 const app = require('../src/')
 const http = require('http')
 
@@ -63,11 +63,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
   case 'EACCES':
-    winston.error(bind + ' requires elevated privileges')
+    pino.error(bind + ' requires elevated privileges')
     process.exit(1)
     break
   case 'EADDRINUSE':
-    winston.error(bind + ' is already in use')
+    pino.error(bind + ' is already in use')
     process.exit(1)
     break
   default:
@@ -84,5 +84,5 @@ function onListening() {
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port
-  winston.info('modcolle is listening on ' + bind)
+  pino.info('modcolle is listening on ' + bind)
 }

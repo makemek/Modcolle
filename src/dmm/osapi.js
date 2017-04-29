@@ -69,7 +69,7 @@ function proxyRequest(targetUrl, gadgetInfo) {
   return rp.post(options)
   .then(response => {
     log.info('unwrap response from %s', options.url)
-    log.verbose(response)
+    log.debug(response)
 
     const wrapper = 'throw 1; < don\'t be evil\' >'
     log.debug('remove response wrapper (%s)', wrapper)
@@ -99,7 +99,7 @@ function proxyRequest(targetUrl, gadgetInfo) {
 }
 
 function _getGadgetInfo(htmlString) {
-  log.verbose('get unparsed json from variable gadgetInfo')
+  log.debug('get unparsed json from variable gadgetInfo')
   const varName = 'gadgetInfo = '
   let gadgetInfo = htmlString.match(new RegExp(varName + '{([^}]*)}', 'g'))
   if(!gadgetInfo)

@@ -1,33 +1,24 @@
 'use strict'
 
-const LOGGER_SILENT = process.env.LOGGER_SILENT
+const LOGGER_ENABLE = process.env.LOGGER_ENABLE
 const LOGGER_LEVEL = process.env.LOGGER_LEVEL
+const LOGGER_PRETTY = process.env.LOGGER_PRETTY
 
-const winston = require('winston')
+const pino = require('pino')
 const labels = ['app:middleware', 'app:router', 'service:dmm', 'service:kancolle']
 
 const loggers = {}
 labels.forEach(label => {
-  createCustomWinstonLogger(label)
-  loggers[label] = winston.loggers.get(label)
+  loggers[label] = pino({
+    name: label,
+    enabled: LOGGER_ENABLE,
+    level: LOGGER_LEVEL,
+    prettyPrint: LOGGER_PRETTY
+  })
 })
 
 module.exports = function(label) {
   if(!loggers[label])
     return winston
   return loggers[label]
-}
-
-function createCustomWinstonLogger(label) {
-  const loggerConfig = {
-    console: {
-      label: label,
-      level: LOGGER_LEVEL,
-      colorize: 'all',
-      silent: LOGGER_SILENT === 'true',
-      timestamp: true,
-      prettyPrint: false,
-    }
-  }
-  winston.loggers.add(label, loggerConfig)
 }

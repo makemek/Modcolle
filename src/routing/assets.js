@@ -42,11 +42,11 @@ router.get('/resources/image/world/:worldImg', (req, res, next) => {
   const proxyRequest = targetServer.download(url)
   proxyRequest.on('error', next)
   proxyRequest.on('response', () => {
-    log.verbose(`connected to ${url}`)
+    log.debug(`connected to ${url}`)
   })
   proxyRequest.on('end', () => {
     log.info(`pipe ${url} to client completed`)
-    log.verbose(`terminate connection ${url}`)
+    log.debug(`terminate connection ${url}`)
   })
 
   proxyRequest.pipe(res)
@@ -60,10 +60,10 @@ function getHost(worldImageFilename) {
   const ipStrip = basename.split('_').map(Number).join('.')
   if(validator.isIP(ipStrip)) {
     host = ipStrip
-    log.verbose(`${worldImageFilename} 'is an ip address. Resolved as ${host}`)
+    log.debug(`${worldImageFilename} 'is an ip address. Resolved as ${host}`)
   } else {
     host = basename.split('_').join('.')
-    log.verbose(`${worldImageFilename} 'is a hostname. Resolved as ${host}`)
+    log.debug(`${worldImageFilename} 'is a hostname. Resolved as ${host}`)
   }
   return host
 }
