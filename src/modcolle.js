@@ -35,23 +35,23 @@ function setupRouting() {
 
 function setupMiddleware() {
   log.info('setup middlewares')
-  log.verbose('setup POST body parser')
+  log.debug('setup POST body parser')
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
-  log.verbose('initialize passport')
+  log.debug('initialize passport')
   app.use(passport.initialize())
   passport.use('dmm-account', new LocalStrategy(loginStrategy.dmmAccount))
   passport.use('dmm-session', new LocalStrategy({
     usernameField: 'dmm_session', passwordField: 'dmm_session'},
   loginStrategy.dmmSession))
 
-  log.verbose('configure stream log messages from morgan')
-  log.stream = {
-    write: function(message){
+  log.debug('configure stream log messages from morgan')
+  const writeStream = {
+    write(message){
       log.info(message)
     }
   }
-  app.use(morgan('combined', {stream: log.stream}))
+  app.use(morgan('combined', {stream: writeStream}))
 }
 
 function setupTemplateEngine() {

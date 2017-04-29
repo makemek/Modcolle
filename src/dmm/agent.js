@@ -76,7 +76,7 @@ function authenticate(email, password, dmmAjaxToken) {
 
     if(loginGranted) {
       log.info('%s granted access to user %s', options.uri, email)
-      log.verbose('get "%s"\'s cookies given by %s', email, options.uri)
+      log.debug('get "%s"\'s cookies given by %s', email, options.uri)
 
       const cookies = response.headers['set-cookie'].map(Cookie.parse)
       const session = cookies.find(cookie => cookie.key === 'INT_SESID')
