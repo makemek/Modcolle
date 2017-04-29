@@ -6,7 +6,6 @@ const expressHandlebars = require('express-handlebars')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const loginStrategy = require('./login-strategy')
-const morgan = require('morgan')
 const app = express()
 const log = require('./logger')('app:router')
 const router = require('./routing/')
@@ -44,14 +43,6 @@ function setupMiddleware() {
   passport.use('dmm-session', new LocalStrategy({
     usernameField: 'dmm_session', passwordField: 'dmm_session'},
   loginStrategy.dmmSession))
-
-  log.debug('configure stream log messages from morgan')
-  const writeStream = {
-    write(message){
-      log.info(message)
-    }
-  }
-  app.use(morgan('combined', {stream: writeStream}))
 }
 
 function setupTemplateEngine() {
