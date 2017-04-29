@@ -11,9 +11,9 @@ const loggers = {}
 labels.forEach(label => {
   loggers[label] = pino({
     name: label,
-    enabled: LOGGER_ENABLE,
+    enabled: LOGGER_ENABLE === 'true',
     level: LOGGER_LEVEL,
-    prettyPrint: LOGGER_PRETTY
+    prettyPrint: LOGGER_PRETTY === 'true'
   })
 })
 
