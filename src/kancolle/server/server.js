@@ -58,7 +58,7 @@ class KancolleServer {
 
 function forgeKancolleHttpRequestHeader(fullUrl, initialHttpHeaders) {
   initialHttpHeaders = initialHttpHeaders || {}
-  log.verbose('forge HTTP header as if it comes from a browser')
+  log.debug('forge HTTP header as if it comes from a browser')
 
   let headers = initialHttpHeaders
   headers = asIfInitiateByBrowser(headers, fullUrl)

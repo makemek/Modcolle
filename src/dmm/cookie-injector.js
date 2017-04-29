@@ -21,7 +21,7 @@ class Injector {
     const targetCookie = {key: 'ckcy', value: 1}
 
     log.info('revoke foriegner (non-japan) access restriction')
-    log.verbose('include to original cookie', targetCookie)
+    log.debug('include to original cookie', targetCookie)
     this.cookies = removeAndInjectCookie(this, targetCookie)
     return this.cookies
   }
@@ -29,9 +29,9 @@ class Injector {
 
 function removeAndInjectCookie(self, targetCookie) {
   let cookies
-  log.verbose(`remove cookie ${targetCookie.key}`)
+  log.debug(`remove cookie ${targetCookie.key}`)
   cookies = removeCookie(self.cookies, targetCookie)
-  log.verbose(`${targetCookie.key} include target domain and subdomains`, self.domain, self.subdomains)
+  log.debug(`${targetCookie.key} include target domain and subdomains`, self.domain, self.subdomains)
   cookies = cookies.concat(generateCookies(targetCookie, [self.domain], self.subdomains))
   return cookies
 }

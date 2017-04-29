@@ -18,11 +18,11 @@ function fetchConfig() {
   return rp.get({url})
   .then(jsCode => {
     log.info('extract Kancolle server IP addresses, URL info, and maintenance info')
-    log.verbose('append js code to output variable value')
+    log.debug('append js code to output variable value')
     const var2export = 'JSON.stringify({ConstServerInfo, ConstURLInfo, MaintenanceInfo})'
     jsCode += ';' + var2export
 
-    log.verbose(`emulate javascripts assuming that code from ${url} is trusted`)
+    log.debug(`emulate javascripts assuming that code from ${url} is trusted`)
     const json = JSON.parse(eval(jsCode))
     log.debug('parsed json result', json)
     return Promise.resolve(json)
