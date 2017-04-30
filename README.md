@@ -49,9 +49,13 @@ Please follows steps below to run Modcolle
 
 ## Starting the Application
 ### Cluster Mode
-This command runs [pm2](https://npmjs.org/packages/pm2) using configuration defined in [process.yml](https://github.com/makemek/Modcolle/blob/master/process.yml).
+This command runs [pm2](https://npmjs.org/packages/pm2) using configuration defined in `env` of [process.yml](https://github.com/makemek/Modcolle/blob/master/process.yml).
 ```
 npm start
+```
+You can also start the application in production mode by passing `--env production` to pm2.
+```
+npm start -- --env production
 ```
 
 ### Development Mode
