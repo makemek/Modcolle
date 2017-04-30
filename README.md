@@ -72,8 +72,9 @@ PORT_DEV=<port number> # browser-sync listeing port; default is 3000
 ```
 
 ## Configuration
-`.env.json` is the common configuration for Modcolle which will be created on first-time start or test by copying `.env.json.template` (no overwrite if file already exists).
-At `env` section in `process.yml` are environment variables that will override `.env.json` for running in production environment.
+`process.yml` is PM2's [process file](http://pm2.keymetrics.io/docs/usage/application-declaration/) for Modcolle.
+Inside `process.yml`, `env` contains common environment variables required by the application.
+`env_production` used in production contains envrionment variables that overrides variables in `env`.
 
 ### Environment Variables
 - LOGGER_LEVEL: select a [logging level](https://github.com/pinojs/pino/blob/master/docs/API.md#level)
