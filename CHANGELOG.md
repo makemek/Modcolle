@@ -1,4 +1,38 @@
 # Modcolle Changelog
+## 2017.05.01, Version 0.3.2
+### Notable Changes
+* All environment varaibles are loaded from process.yml which requires pm2 to start
+* `cklg` cookie are not required to access DMM game page and will not be not be injected to a request
+* No logging router requests.
+* Use pino logger over winston for better performance
+
+### Commits
+* [[`c9dc676`](https://github.com/makemek/modcolle/commit/c9dc676)] doc: update outdated configuration section
+* [[`00881de`](https://github.com/makemek/modcolle/commit/00881de)] doc: start the application in production mode
+* [[`aa44463`](https://github.com/makemek/modcolle/commit/aa44463)] fix(package): update pino to version 4.5.0
+* [[`5562000`](https://github.com/makemek/modcolle/commit/5562000)] chore(package): update async to version 2.4.0
+* [[`1b35907`](https://github.com/makemek/modcolle/commit/1b35907)] config: use default pm2 log dir
+* [[`cb52dd4`](https://github.com/makemek/modcolle/commit/cb52dd4)] config: remove LOGGER_ENABLE option
+* [[`c56d994`](https://github.com/makemek/modcolle/commit/c56d994)] config: fix can't config LOGGER_ENABLE and LOGGER_PRETTY
+* [[`42d7d69`](https://github.com/makemek/modcolle/commit/42d7d69)] src: no need to log http request
+* [[`f046d7b`](https://github.com/makemek/modcolle/commit/f046d7b)] src: replace winston logger with pino logger
+* [[`da91530`](https://github.com/makemek/modcolle/commit/da91530)] chore(package): update nyc to version 10.3.0
+* [[`ca72694`](https://github.com/makemek/modcolle/commit/ca72694)] src: refactor code to be es6 complient
+* [[`aa37ff8`](https://github.com/makemek/modcolle/commit/aa37ff8)] build: reduce docker image size
+* [[`bad5e15`](https://github.com/makemek/modcolle/commit/bad5e15)] chore(package): update coveralls to version 2.13.1
+* [[`b4bba33`](https://github.com/makemek/modcolle/commit/b4bba33)] build: start process.yml using production environment
+* [[`1d60216`](https://github.com/makemek/modcolle/commit/1d60216)] build: fix pm2-docker not found config file
+* [[`89fbdda`](https://github.com/makemek/modcolle/commit/89fbdda)] src: js class implementation in cookie injector
+* [[`087d1d7`](https://github.com/makemek/modcolle/commit/087d1d7)] src: remove injecting 'cklg' cookie
+* [[`69222dd`](https://github.com/makemek/modcolle/commit/69222dd)] build: 'gulp build' and 'gulp import' as default task
+* [[`bc1586e`](https://github.com/makemek/modcolle/commit/bc1586e)] src: replace sprintf-js with es6 string template
+* [[`e9a7153`](https://github.com/makemek/modcolle/commit/e9a7153)] dep: dev package should be in devDependencies
+* [[`875fe86`](https://github.com/makemek/modcolle/commit/875fe86)] npm,doc: 'npm start' will launch app using pm2
+* [[`f7cce20`](https://github.com/makemek/modcolle/commit/f7cce20)] chore(package): update mocha to version 3.3.0
+* [[`aa94733`](https://github.com/makemek/modcolle/commit/aa94733)] doc: remarks when running in development mode
+* [[`eac0f9a`](https://github.com/makemek/modcolle/commit/eac0f9a)] pm2,bin,test: load all app's envs from process.yml
+* [[`34549ba`](https://github.com/makemek/modcolle/commit/34549ba)] pm2,doc: prefer starting the app with pm2 yml config
+
 ## 2017.04.26, Version 0.3.1
 ### Notable Changes
 * Maintenance Countdown Timer ([#16](https://github.com/makemek/Modcolle/pull/16))
