@@ -42,7 +42,7 @@
     "request-promise": "4.2.0",
     "tough-cookie": "2.3.2",
     "url-join": "2.0.1",
-    "url-parse": "1.1.8",
+    "url-parse": "1.1.9",
     "validator": "7.0.0"
   },
   "devDependencies": {
