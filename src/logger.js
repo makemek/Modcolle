@@ -1,6 +1,5 @@
 'use strict'
 
-const LOGGER_ENABLE = process.env.LOGGER_ENABLE
 const LOGGER_LEVEL = process.env.LOGGER_LEVEL
 const LOGGER_PRETTY = process.env.LOGGER_PRETTY
 
@@ -18,6 +17,6 @@ labels.forEach(label => {
 
 module.exports = function(label) {
   if(!loggers[label])
-    return winston
+    return pino
   return loggers[label]
 }
