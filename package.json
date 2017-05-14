@@ -48,7 +48,7 @@
   "devDependencies": {
     "app-root-path": "2.0.1",
     "async": "2.4.0",
-    "autoprefixer": "7.0.0",
+    "autoprefixer": "7.1.0",
     "babel": "6.23.0",
     "babel-preset-env": "1.4.0",
     "browser-sync": "2.18.8",
