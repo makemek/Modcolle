@@ -65,7 +65,7 @@
     "gulp-nodemon": "2.2.1",
     "gulp-postcss": "7.0.0",
     "gulp-rename": "1.2.2",
-    "gulp-uglify": "2.1.2",
+    "gulp-uglify": "3.0.0",
     "gulp-util": "3.0.8",
     "js-yaml": "3.8.4",
     "mocha": "3.3.0",
