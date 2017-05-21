@@ -51,7 +51,7 @@
     "autoprefixer": "7.1.1",
     "babel": "6.23.0",
     "babel-preset-env": "1.4.0",
-    "browser-sync": "2.18.8",
+    "browser-sync": "2.18.12",
     "browserify": "14.3.0",
     "cheerio": "0.22.0",
     "coveralls": "2.13.1",
