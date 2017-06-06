@@ -37,7 +37,7 @@
     "express-handlebars": "3.0.0",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
-    "pino": "4.5.2",
+    "pino": "4.5.4",
     "request": "2.81.0",
     "request-promise": "4.2.1",
     "tough-cookie": "2.3.2",
