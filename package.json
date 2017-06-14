@@ -68,7 +68,7 @@
     "gulp-uglify": "3.0.0",
     "gulp-util": "3.0.8",
     "js-yaml": "3.8.4",
-    "mocha": "3.3.0",
+    "mocha": "3.4.0",
     "nock": "9.0.13",
     "nodemon": "1.11.0",
     "nyc": "11.0.2",
