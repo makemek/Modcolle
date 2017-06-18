@@ -21,10 +21,7 @@ router.post('/dmm-session', passport.authenticate('dmm-session', {
 function launchKancolle(req, res, next) {
   kancolle.launch(req.user)
   .then(redirectKancolleNetworkTraffic)
-  .then(url => {
-    log.info('render HTML template "kancolle" with Kancolle game url')
-    return res.render('kancolle', {flashUrl: url})
-  })
+  .then(url => res.json({flashUrl: url}))
   .catch(next)
 }
 

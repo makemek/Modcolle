@@ -2,7 +2,6 @@
 
 const request = require('supertest-as-promised')
 const app = require(global.SRC_ROOT)
-const cheerio = require('cheerio')
 const sinon = require('sinon')
 const game = require(global.SRC_ROOT + '/kancolle/game')
 const playerProfile = require('../mock/kancolle/api-terminal')
@@ -81,13 +80,12 @@ function assertGameLink(appLink, payload, expectedLink) {
   return request(app)
   .post(appLink)
   .expect(200)
+  .expect('Content-Type', /json/)
   .send(payload)
   .then(res => {
-    const $ = cheerio.load(res.text)
-    const url = $('#game').attr('data')
-
-    url.should.be.String()
-    should(url.startsWith(expectedLink))
+    const {flashUrl} = res.body
+    flashUrl.should.be.String()
+    should(flashUrl.startsWith(expectedLink))
   })
 }
 
