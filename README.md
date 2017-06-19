@@ -59,16 +59,10 @@ npm start -- --env production
 ```
 
 ### Development Mode
-With [nodemon](https://npmjs.org/packages/nodemon) and [browser-sync](https://npmjs.org/packages/browser-sync)
-> **In this mode, no environment variables are loaded**.
-You can still set them inside a command line if needed.
+Modcolle use [nodemon](https://npmjs.org/packages/nodemon) to restart server automatically on file changes
+
 ```
 npm run dev
-
------------
-(optional) configure browser-sync using environment variables before running.
-PORT=<port number> # browser-sync app's proxy port; default is 5000
-PORT_DEV=<port number> # browser-sync listeing port; default is 3000
 ```
 
 ## Configuration
@@ -80,6 +74,5 @@ Inside `process.yml`, `env` contains common environment variables required by th
 - LOGGER_LEVEL: select a [logging level](https://github.com/pinojs/pino/blob/master/docs/API.md#level)
 - LOGGER_PRETTY: pretty print log (should be set to `false` in production)
 - PORT: application port
-- PORT_DEV: **FOR DEVELOPMENT ONLY** will take effect when run `npm run dev`
 - KANCOLLE_SERVER_MASTER: A host name for main Kancolle server that have interface`/kcsapi/api_world/get_id` for requesting players world id
 - KANCOLLE_SERVER_#: A host name for other Kancolle servers where `#` is `world id`
