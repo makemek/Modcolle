@@ -14,27 +14,18 @@
     "mocha": "./node_modules/mocha/bin/mocha",
     "eslint": "./node_modules/.bin/eslint"
   },
-  "nyc": {
-    "exclude": [
-      "gulpfile.js"
-    ]
-  },
   "scripts": {
-    "build": "gulp",
-    "prestart": "npm run build",
     "start": "pm2 start process.yml",
-    "dev": "npm run build && gulp browser-sync",
+    "dev": "nodemon bin/www --ignore node_modules",
     "coverage": "nyc npm test",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "eslint": "eslint src/**/*.js test/**/*.js bin/**",
     "utest": "mocha",
-    "pretest": "npm run build",
     "test": "npm run eslint && npm run utest"
   },
   "dependencies": {
     "body-parser": "1.17.1",
     "express": "4.15.2",
-    "express-handlebars": "3.0.0",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
     "pino": "4.5.2",
@@ -48,25 +39,9 @@
   "devDependencies": {
     "app-root-path": "2.0.1",
     "async": "2.4.0",
-    "autoprefixer": "7.0.0",
-    "babel": "6.23.0",
-    "babel-preset-env": "1.4.0",
-    "browser-sync": "2.18.8",
-    "browserify": "14.3.0",
     "coveralls": "2.13.1",
     "eslint": "3.19.0",
     "eslint-config-modcolle": "0.1.1",
-    "fallbackjs": "1.1.8",
-    "font-awesome": "4.7.0",
-    "gulp": "3.9.1",
-    "gulp-babel": "6.1.2",
-    "gulp-clean-css": "3.1.0",
-    "gulp-nodemon": "2.2.1",
-    "gulp-postcss": "7.0.0",
-    "gulp-rename": "1.2.2",
-    "gulp-uglify": "2.1.2",
-    "gulp-util": "3.0.8",
-    "js-yaml": "3.8.4",
     "mocha": "3.3.0",
     "nock": "9.0.13",
     "nodemon": "1.11.0",
@@ -75,9 +50,6 @@
     "sinon": "2.2.0",
     "slash": "1.0.0",
     "supertest": "3.0.0",
-    "supertest-as-promised": "4.0.2",
-    "uglify": "0.1.5",
-    "vinyl-buffer": "1.0.0",
-    "vinyl-source-stream": "1.1.0"
+    "supertest-as-promised": "4.0.2"
   }
 }
