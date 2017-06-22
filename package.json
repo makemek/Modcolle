@@ -43,7 +43,7 @@
     "tough-cookie": "2.3.2",
     "url-join": "2.0.2",
     "url-parse": "1.1.9",
-    "validator": "7.0.0"
+    "validator": "7.1.0"
   },
   "devDependencies": {
     "app-root-path": "2.0.1",
