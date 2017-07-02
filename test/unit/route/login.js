@@ -30,12 +30,15 @@ describe('/dmm-account', () => {
     })
   })
 
-  it('should redirect to / if username and password is incorrect', () => {
+  it('should response http 401 if username and password is incorrect', () => {
     return request(app)
     .post('/dmm-account')
     .send({username: nockAuth.badAccount.email, password: nockAuth.badAccount.password})
-    .expect(302)
-    .expect('location', '/')
+    .expect(401)
+    .expect(res => {
+      res.body.success.should.be.False()
+      res.body.error.status.should.equal(401)
+    })
   })
 })
 
@@ -52,7 +55,7 @@ describe('/dmm-session', () => {
     })
   })
 
-  it('fail to get gadgetInfo should fail authenthentication', () => {
+  it('fail to get gadgetInfo should fail response http 401', () => {
     sandbox.stub(osapi, 'getGameInfo').callsFake(() => {
       return Promise.reject(new errors.DmmError())
     })
@@ -60,8 +63,11 @@ describe('/dmm-session', () => {
     return request(app)
     .post('/dmm-session')
     .send({dmm_session: 'session'})
-    .expect(302)
-    .expect('location', '/')
+    .expect(401)
+    .expect(res => {
+      res.body.success.should.be.False()
+      res.body.error.status.should.equal(401)
+    })
   })
 
   it('other errors occured should be handled by done() callback', () => {

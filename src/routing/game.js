@@ -9,19 +9,32 @@ const urljoin = require('url-join')
 const log = require('../logger')('app:router')
 
 router.post('/dmm-account', passport.authenticate('dmm-account', {
-  failureRedirect: '/',
+  failWithError: true,
   session: false
 }), launchKancolle)
 
 router.post('/dmm-session', passport.authenticate('dmm-session', {
-  failureRedirect: '/',
+  failWithError: true,
   session: false
 }), launchKancolle)
+
+router.use(loginFail)
+
+function loginFail(error, req, res, next) {
+  res.status(error.status || 500).json({
+    success: false,
+    error
+  })
+  return next()
+}
 
 function launchKancolle(req, res, next) {
   kancolle.launch(req.user)
   .then(redirectKancolleNetworkTraffic)
-  .then(url => res.json({flashUrl: url}))
+  .then(url => res.json({
+    success: true,
+    flashUrl: url
+  }))
   .catch(next)
 }
 
