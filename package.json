@@ -67,7 +67,7 @@
     "gulp-rename": "1.2.2",
     "gulp-uglify": "3.0.0",
     "gulp-util": "3.0.8",
-    "js-yaml": "3.8.4",
+    "js-yaml": "3.9.0",
     "mocha": "3.4.1",
     "nock": "9.0.13",
     "nodemon": "1.11.0",
